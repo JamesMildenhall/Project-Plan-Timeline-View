@@ -1,3 +1,703 @@
+<<<<<<< HEAD
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>EX27 Ops - Live Gantt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/vis-timeline/7.7.3/vis-timeline-graph2d.min.css" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis-timeline/7.7.3/vis-timeline-graph2d.min.js"></script>
+<style>
+:root{
+  --s21-blue:#0D0C4E;
+  --s21-blue-2:#08072F;
+  --s21-blue-3:#141370;
+  --s21-blue-4:#1E1D82;
+  --s21-mal:#1AE279;
+  --s21-turq:#49D8CD;
+  --s21-slate:#3E6680;
+  --s21-mslate:#6960EC;
+  --s21-pink:#E21A83;
+  --s21-grey:#6B7280;
+  --ink:#EEF2FF;
+  --ink-2:#B7BEE0;
+  --line:rgba(255,255,255,.08);
+  --panel:rgba(255,255,255,.03);
+  --panel-2:rgba(255,255,255,.06);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--s21-blue-2);color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;height:100%}
+body{display:flex;flex-direction:column;min-height:100vh}
+header{padding:14px 20px;background:linear-gradient(180deg,var(--s21-blue) 0%, var(--s21-blue-2) 100%);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+header h1{font-size:15px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin:0;color:#fff}
+header h1 .mal{color:var(--s21-mal)}
+header .sub{font-size:11px;color:var(--ink-2);letter-spacing:.06em}
+header .spacer{flex:1}
+header .stat{font-size:11px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.1em}
+header .stat b{color:#fff;font-weight:600}
+
+.controls{padding:12px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;background:var(--s21-blue);border-bottom:1px solid var(--line)}
+.ctrl{display:flex;flex-direction:column;gap:4px}
+.ctrl label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+.ctrl select,.ctrl input[type=text]{background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;outline:none}
+.ctrl select:focus,.ctrl input[type=text]:focus{border-color:var(--s21-mal)}
+.ctrl select[multiple]{min-height:76px}
+.buttons{padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;background:var(--s21-blue);border-bottom:1px solid var(--line)}
+.btn{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s ease}
+.btn:hover{border-color:var(--s21-mal);color:var(--s21-mal)}
+.btn.active{background:var(--s21-mal);color:var(--s21-blue);border-color:var(--s21-mal)}
+.btn.ghost{opacity:.7}
+
+.legend{padding:8px 20px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;background:var(--s21-blue-2);border-bottom:1px solid var(--line);font-size:11px;color:var(--ink-2)}
+.legend .chip{display:inline-flex;align-items:center;gap:6px}
+.legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block}
+.legend .swatch.diamond{transform:rotate(45deg);border-radius:2px}
+.legend .divider{width:1px;height:14px;background:var(--line)}
+
+main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
+#timeline{flex:1;min-height:400px;background:var(--s21-blue-2)}
+
+/* vis-timeline dark overrides */
+.vis-timeline{border:none !important;font-family:'Montserrat',sans-serif}
+.vis-panel.vis-center,.vis-panel.vis-left,.vis-panel.vis-right,.vis-panel.vis-top,.vis-panel.vis-bottom{border-color:var(--line) !important}
+.vis-panel .vis-shadow{box-shadow:none}
+.vis-labelset .vis-label{color:var(--ink);border-color:var(--line) !important;background:var(--s21-blue-2)}
+.vis-labelset .vis-label.vis-nesting-group{background:linear-gradient(90deg,var(--s21-blue-3),var(--s21-blue-2));font-weight:600}
+.vis-labelset .vis-label .vis-inner{padding:6px 8px;font-size:12px}
+.vis-foreground .vis-group{border-color:var(--line) !important}
+.vis-time-axis .vis-text{color:var(--ink-2);font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.vis-time-axis .vis-grid.vis-minor{border-color:rgba(255,255,255,.04) !important}
+.vis-time-axis .vis-grid.vis-major{border-color:rgba(255,255,255,.08) !important}
+.vis-time-axis .vis-grid.vis-vertical{border-color:rgba(255,255,255,.04) !important}
+.vis-current-time{background:var(--s21-mal) !important;width:2px !important;z-index:2}
+
+.vis-item{border-width:0;border-radius:4px;font-size:11px;color:#fff;font-weight:500}
+.vis-item.vis-range{padding:2px 8px}
+.vis-item.vis-selected{box-shadow:0 0 0 2px var(--s21-mal)}
+.vis-item.vis-point .vis-item-content{padding:0}
+.vis-item.vis-point .vis-dot{border:none !important;background:transparent !important}
+
+/* status colours */
+.st-complete{background:var(--s21-mal) !important;color:#0D0C4E !important;font-weight:700}
+.st-ontrack{background:var(--s21-turq) !important;color:#0D0C4E !important;font-weight:600}
+.st-atrisk{background:var(--s21-pink) !important}
+.st-notstarted{background:var(--s21-slate) !important}
+.st-noupdate{background:var(--s21-mslate) !important}
+.st-tbc{background:var(--s21-grey) !important}
+.st-unknown{background:#4B5563 !important;opacity:.7}
+
+/* diamond milestones (End-only, no start) */
+.milestone{width:14px;height:14px;transform:rotate(45deg);display:inline-block;margin-top:2px}
+.milestone.st-complete{background:var(--s21-mal)}
+.milestone.st-ontrack{background:var(--s21-turq)}
+.milestone.st-atrisk{background:var(--s21-pink)}
+.milestone.st-notstarted{background:var(--s21-slate)}
+.milestone.st-noupdate{background:var(--s21-mslate)}
+.milestone.st-tbc{background:var(--s21-grey)}
+.milestone.st-unknown{background:#4B5563}
+
+/* tier indent via vis nesting handled by groups; row label extra info */
+.row-tag{font-size:9px;letter-spacing:.06em;color:var(--ink-2);text-transform:uppercase;margin-left:6px;padding:1px 5px;border:1px solid var(--line);border-radius:3px}
+.row-title{display:inline-flex;align-items:center;gap:6px}
+.tier-2{padding-left:10px}
+.tier-3{padding-left:22px;color:var(--ink-2);font-weight:500}
+.tier-4{padding-left:34px;color:var(--ink-2);font-weight:400;font-size:11px}
+
+.tt{background:var(--s21-blue);color:var(--ink);border:1px solid var(--s21-mal);border-radius:8px;padding:10px 12px;font-size:12px;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,.5);font-family:'Montserrat',sans-serif}
+.tt h4{margin:0 0 6px 0;font-size:13px;font-weight:700;color:#fff}
+.tt .tt-row{display:flex;gap:8px;margin:3px 0}
+.tt .tt-k{color:var(--ink-2);font-size:10px;letter-spacing:.08em;text-transform:uppercase;min-width:80px;font-weight:600}
+.tt .tt-v{color:#fff;font-size:11px}
+.tt .st-pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+
+.drawer{background:var(--s21-blue);border-top:1px solid var(--line);max-height:0;overflow:hidden;transition:max-height .25s ease}
+.drawer.open{max-height:260px;overflow:auto}
+.drawer .inner{padding:12px 20px}
+.drawer h3{margin:0 0 8px 0;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s21-mal)}
+.drawer table{width:100%;border-collapse:collapse;font-size:11px}
+.drawer th,.drawer td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.drawer th{color:var(--ink-2);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:10px}
+
+.error-panel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--s21-blue-2);z-index:10}
+.error-card{background:var(--s21-blue);border:1px solid var(--s21-pink);border-radius:12px;padding:24px 28px;max-width:520px;text-align:left}
+.error-card h2{margin:0 0 8px 0;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--s21-pink)}
+.error-card p{margin:8px 0;font-size:13px;color:var(--ink-2);line-height:1.5}
+.error-card code{background:var(--s21-blue-2);padding:2px 6px;border-radius:4px;font-size:11px;color:var(--s21-mal)}
+.hidden{display:none !important}
+
+.loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--s21-blue-2);z-index:9;flex-direction:column;gap:14px}
+.spinner{width:36px;height:36px;border:3px solid rgba(26,226,121,.15);border-top-color:var(--s21-mal);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
+
+.count-badge{display:inline-block;background:var(--s21-mal);color:var(--s21-blue);border-radius:999px;padding:1px 8px;font-size:10px;font-weight:700;margin-left:6px}
+
+@media (max-width: 720px){
+  header h1{font-size:12px}
+  .controls{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>EX27 <span class="mal">/</span> Operations Live Gantt</h1>
+  <span class="sub">Source: <code style="font-size:10px;background:var(--s21-blue-2);padding:2px 6px;border-radius:3px;color:var(--s21-mal)">EX27_Ops_Project_Plan_v4.xlsx</code></span>
+  <div class="spacer"></div>
+  <div class="stat">Rows loaded <b id="stat-rows">0</b></div>
+  <div class="stat">On timeline <b id="stat-visible">0</b></div>
+  <div class="stat">Undated <b id="stat-undated">0</b></div>
+</header>
+
+<div class="controls">
+  <div class="ctrl">
+    <label>Department</label>
+    <select id="f-dept" multiple size="4"></select>
+  </div>
+  <div class="ctrl">
+    <label>Status</label>
+    <select id="f-status" multiple size="4"></select>
+  </div>
+  <div class="ctrl">
+    <label>Tier</label>
+    <select id="f-tier" multiple size="4"></select>
+  </div>
+  <div class="ctrl">
+    <label>Type</label>
+    <select id="f-type" multiple size="4"></select>
+  </div>
+  <div class="ctrl">
+    <label>Search deliverable</label>
+    <input type="text" id="f-search" placeholder="Type to filter..." />
+  </div>
+</div>
+
+<div class="buttons">
+  <button class="btn" data-scale="day">Day</button>
+  <button class="btn active" data-scale="week">Week</button>
+  <button class="btn" data-scale="month">Month</button>
+  <span style="width:1px;background:var(--line);align-self:stretch;margin:0 4px"></span>
+  <button class="btn" id="btn-today">Jump to Today</button>
+  <button class="btn" id="btn-expo">Jump to Expo Window</button>
+  <span style="width:1px;background:var(--line);align-self:stretch;margin:0 4px"></span>
+  <button class="btn" id="btn-milestones">Milestones only</button>
+  <button class="btn" id="btn-pct">Show % Complete</button>
+  <button class="btn" id="btn-drawer">Show Undated <span class="count-badge" id="undated-badge">0</span></button>
+  <div class="spacer" style="flex:1"></div>
+  <button class="btn ghost" id="btn-reset">Reset filters</button>
+</div>
+
+<div class="legend" id="legend"></div>
+
+<main>
+  <div class="loader" id="loader"><div class="spinner"></div><p>Loading tracker...</p></div>
+  <div class="error-panel hidden" id="error">
+    <div class="error-card">
+      <h2>Could not load the tracker</h2>
+      <p id="error-msg"></p>
+      <p style="margin-top:14px"><button class="btn" id="btn-retry">Retry</button></p>
+    </div>
+  </div>
+  <div id="timeline"></div>
+</main>
+
+<div class="drawer" id="drawer">
+  <div class="inner">
+    <h3>Undated deliverables <span class="count-badge" id="drawer-count">0</span></h3>
+    <table id="undated-table">
+      <thead><tr><th>REF</th><th>Department</th><th>Tier</th><th>Type</th><th>Deliverable</th><th>Status</th><th>SME</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+// ---------- config ----------
+const FILE_URL = './EX27_Ops_Project_Plan_v4.xlsx';
+const SHEET_NAME = 'Tracker';
+const HEADER_ROW_INDEX = 7; // 0-indexed, row 8 in Excel
+
+const STATUS_MAP = {
+  'Complete': {key:'complete', label:'Complete', cls:'st-complete', color:'#1AE279'},
+  'On Track': {key:'ontrack', label:'On Track', cls:'st-ontrack', color:'#49D8CD'},
+  'At Risk':  {key:'atrisk',  label:'At Risk',  cls:'st-atrisk',  color:'#E21A83'},
+  'Not Started': {key:'notstarted', label:'Not Started', cls:'st-notstarted', color:'#3E6680'},
+  'No Update Received': {key:'noupdate', label:'No Update Received', cls:'st-noupdate', color:'#6960EC'},
+  'TBC': {key:'tbc', label:'TBC', cls:'st-tbc', color:'#6B7280'},
+  'Unknown': {key:'unknown', label:'Unknown', cls:'st-unknown', color:'#4B5563'}
+};
+
+function normStatus(s){
+  if(!s) return 'Unknown';
+  const t = String(s).trim();
+  if(!t || t.toLowerCase()==='none') return 'Unknown';
+  if(t.toLowerCase()==='not started') return 'Not Started';
+  if(t.toLowerCase().startsWith('tbc')) return 'TBC';
+  return t;
+}
+function normDept(d){
+  if(!d) return 'Unassigned';
+  const t = String(d).trim();
+  if(!t || t.toLowerCase()==='none' || t.toLowerCase()==='tbc') return 'Unassigned';
+  return t;
+}
+function excelDate(v){
+  if(v === null || v === undefined || v === '') return null;
+  if(v instanceof Date) return v;
+  if(typeof v === 'number'){
+    // Excel serial
+    const epoch = new Date(Date.UTC(1899,11,30));
+    return new Date(epoch.getTime() + v*86400000);
+  }
+  const d = new Date(v);
+  return isNaN(d) ? null : d;
+}
+
+// ---------- state ----------
+let RAW = [];       // raw parsed rows
+let ROWS = [];      // enriched
+let GROUPS = new vis.DataSet();
+let ITEMS = new vis.DataSet();
+let timeline;
+let showPct = false;
+let milestonesOnly = false;
+let filters = {dept:new Set(), status:new Set(), tier:new Set(), type:new Set(), search:''};
+
+// ---------- load ----------
+async function load(){
+  document.getElementById('loader').classList.remove('hidden');
+  document.getElementById('error').classList.add('hidden');
+  try{
+    const resp = await fetch(FILE_URL, {cache:'no-store'});
+    if(!resp.ok) throw new Error(`Fetch failed: HTTP ${resp.status} for ${FILE_URL}. Is the file next to index.html in the repo?`);
+    const buf = await resp.arrayBuffer();
+    const wb = XLSX.read(buf, {type:'array', cellDates:true});
+    if(!wb.SheetNames.includes(SHEET_NAME)) throw new Error(`Sheet "${SHEET_NAME}" not found. Sheets: ${wb.SheetNames.join(', ')}`);
+    const ws = wb.Sheets[SHEET_NAME];
+    const grid = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, raw:false, dateNF:'yyyy-mm-dd'});
+    const rawGrid = XLSX.utils.sheet_to_json(ws, {header:1, defval:null});
+    const hdr = rawGrid[HEADER_ROW_INDEX];
+    if(!hdr) throw new Error(`No header row found at row ${HEADER_ROW_INDEX+1}. Sheet only has ${rawGrid.length} rows.`);
+    const need = ['Tier','Type','Department','REF','Deliverable','Owner / Support','SME / SME','Start Date','End Date','Status','Comment','% Complete'];
+    const missing = need.filter(n => !hdr.some(h => h && String(h).trim().toLowerCase() === n.toLowerCase()));
+    if(missing.length) throw new Error(`Header row 8 is missing expected columns: ${missing.join(', ')}. Got: ${hdr.filter(Boolean).join(', ')}`);
+    const norm = hdr.map(h => h ? String(h).trim() : '');
+    RAW = [];
+    for(let i=HEADER_ROW_INDEX+1;i<rawGrid.length;i++){
+      const r = rawGrid[i]; if(!r || !r.some(v => v!==null && v!==undefined && v!=='')) continue;
+      const o = {};
+      norm.forEach((k,idx) => { if(k) o[k] = r[idx]; });
+      RAW.push(o);
+    }
+    build();
+    document.getElementById('loader').classList.add('hidden');
+  }catch(err){
+    document.getElementById('loader').classList.add('hidden');
+    document.getElementById('error').classList.remove('hidden');
+    document.getElementById('error-msg').innerHTML = String(err.message || err);
+    console.error(err);
+  }
+}
+
+// ---------- transform ----------
+function build(){
+  ROWS = RAW.map((r,i) => {
+    const ref = (r['REF']==null?'':String(r['REF'])).trim();
+    const dept = normDept(r['Department']);
+    const status = normStatus(r['Status']);
+    const tier = r['Tier']==null?null:Number(r['Tier']);
+    const sd = excelDate(r['Start Date']);
+    const ed = excelDate(r['End Date']);
+    return {
+      id: i,
+      ref,
+      dept,
+      tier,
+      type: (r['Type']||'').trim(),
+      deliverable: (r['Deliverable']||'').toString().trim(),
+      description: (r['Description of Service']||'').toString().trim(),
+      owner: (r['Owner / Support']||'').toString().trim(),
+      sme: (r['SME / SME']||'').toString().trim(),
+      start: sd,
+      end: ed,
+      status,
+      statusMeta: STATUS_MAP[status] || STATUS_MAP['Unknown'],
+      comment: (r['Comment']||'').toString().trim(),
+      pctRaw: r['% Complete'],
+      parentRef: parentOf(ref),
+      childrenIds: [],
+    };
+  });
+
+  // parent-child by REF prefix
+  const byRef = {};
+  ROWS.forEach(r => { if(r.ref) byRef[r.ref] = r; });
+  ROWS.forEach(r => {
+    if(r.parentRef && byRef[r.parentRef]){
+      byRef[r.parentRef].childrenIds.push(r.id);
+    }
+  });
+
+  // compute derived % complete from descendants (leaves only counted)
+  function descLeaves(id, out){
+    const r = ROWS[id];
+    if(!r.childrenIds.length){ out.push(r); return; }
+    r.childrenIds.forEach(c => descLeaves(c, out));
+  }
+  ROWS.forEach(r => {
+    if(r.childrenIds.length){
+      const leaves = []; descLeaves(r.id, leaves);
+      const scored = leaves.filter(l => l.status !== 'Unknown' && l.status !== 'TBC');
+      if(scored.length){
+        const complete = scored.filter(l => l.status === 'Complete').length;
+        r.pctCalc = Math.round(100 * complete / scored.length);
+      } else r.pctCalc = null;
+    } else {
+      // leaf: use status heuristic
+      r.pctCalc = (r.status === 'Complete') ? 100 : (r.status === 'Not Started' ? 0 : null);
+    }
+  });
+
+  populateFilters();
+  renderLegend();
+  buildTimeline();
+  applyFilters();
+}
+
+function parentOf(ref){
+  if(!ref) return null;
+  const parts = ref.split('.');
+  if(parts.length < 2) return null;
+  // KM.100 has 2 parts -> no parent
+  if(parts.length === 2) return null;
+  return parts.slice(0, -1).join('.');
+}
+
+// ---------- filters ----------
+function unique(arr){ return Array.from(new Set(arr.filter(v => v!==null && v!==undefined && v!==''))).sort((a,b) => String(a).localeCompare(String(b))); }
+
+function populateFilters(){
+  const depts = unique(ROWS.map(r => r.dept));
+  const statuses = ['Complete','On Track','At Risk','Not Started','No Update Received','TBC','Unknown'].filter(s => ROWS.some(r => r.status === s));
+  const tiers = unique(ROWS.map(r => r.tier)).sort((a,b) => a-b);
+  const types = unique(ROWS.map(r => r.type));
+  fill('f-dept', depts);
+  fill('f-status', statuses);
+  fill('f-tier', tiers.map(t => String(t)));
+  fill('f-type', types);
+}
+function fill(id, arr){
+  const el = document.getElementById(id);
+  el.innerHTML = arr.map(v => `<option value="${escapeHtml(String(v))}">${escapeHtml(String(v))}</option>`).join('');
+}
+function selValues(id){
+  const el = document.getElementById(id);
+  return new Set(Array.from(el.selectedOptions).map(o => o.value));
+}
+
+function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function passesFilters(r){
+  if(filters.dept.size && !filters.dept.has(r.dept)) return false;
+  if(filters.status.size && !filters.status.has(r.status)) return false;
+  if(filters.tier.size && !filters.tier.has(String(r.tier))) return false;
+  if(filters.type.size && !filters.type.has(r.type)) return false;
+  if(filters.search){
+    const q = filters.search.toLowerCase();
+    if(!r.deliverable.toLowerCase().includes(q) && !r.ref.toLowerCase().includes(q)) return false;
+  }
+  if(milestonesOnly && !/milestone/i.test(r.type)) return false;
+  return true;
+}
+
+// ---------- timeline ----------
+function buildTimeline(){
+  const container = document.getElementById('timeline');
+  const options = {
+    stack: true,
+    stackSubgroups: true,
+    orientation: {axis: 'top'},
+    zoomMin: 1000*60*60*24*3,
+    zoomMax: 1000*60*60*24*365*3,
+    horizontalScroll: true,
+    zoomKey: 'ctrlKey',
+    margin: {item: 6, axis: 8},
+    tooltip: {followMouse:true, overflowMethod:'flip', template: () => ''},
+    template: (item) => item.htmlContent || '',
+    groupOrder: (a,b) => {
+      // groups are department nodes only in top-level; nesting handled by treeLevel
+      return String(a.content).localeCompare(String(b.content));
+    },
+    format: {
+      minorLabels:{
+        millisecond:'SSS', second:'s', minute:'HH:mm', hour:'HH:mm',
+        weekday:'ddd D', day:'D', week:'w', month:'MMM', year:'YYYY'
+      },
+      majorLabels:{
+        millisecond:'HH:mm:ss', second:'D MMMM HH:mm', minute:'ddd D MMMM', hour:'ddd D MMMM',
+        weekday:'MMMM YYYY', day:'MMMM YYYY', week:'MMMM YYYY', month:'YYYY', year:''
+      }
+    }
+  };
+  timeline = new vis.Timeline(container, ITEMS, GROUPS, options);
+  timeline.addCustomTime(new Date(), 'now');
+
+  // custom tooltip
+  const tt = document.createElement('div');
+  tt.className = 'tt'; tt.style.position='fixed'; tt.style.pointerEvents='none'; tt.style.display='none'; tt.style.zIndex=1000;
+  document.body.appendChild(tt);
+  timeline.on('itemover', (props) => {
+    const r = ROWS.find(x => x.id === props.item);
+    if(!r) return;
+    tt.innerHTML = tooltipHtml(r);
+    tt.style.display = 'block';
+  });
+  timeline.on('itemout', () => { tt.style.display='none'; });
+  document.addEventListener('mousemove', (e) => {
+    if(tt.style.display === 'block'){
+      const pad = 14;
+      let x = e.clientX + pad, y = e.clientY + pad;
+      const rect = tt.getBoundingClientRect();
+      if(x + rect.width > window.innerWidth) x = e.clientX - rect.width - pad;
+      if(y + rect.height > window.innerHeight) y = e.clientY - rect.height - pad;
+      tt.style.left = x+'px'; tt.style.top = y+'px';
+    }
+  });
+}
+
+function tooltipHtml(r){
+  const sm = r.statusMeta;
+  const fmt = d => d ? d.toISOString().slice(0,10) : '<span style="color:#666">(none)</span>';
+  const pctPart = showPct && r.pctCalc !== null
+    ? `<div class="tt-row"><div class="tt-k">% Complete</div><div class="tt-v">${r.pctCalc}%${r.childrenIds.length?' <span style="color:'+sm.color+'">(calc from '+r.childrenIds.length+' child)</span>':''}</div></div>` : '';
+  const cmt = r.comment ? `<div class="tt-row"><div class="tt-k">Comment</div><div class="tt-v">${escapeHtml(r.comment.slice(0,180))}${r.comment.length>180?'...':''}</div></div>` : '';
+  return `<h4>${escapeHtml(r.deliverable || '(untitled)')}</h4>
+    <div class="tt-row"><div class="tt-k">Status</div><div class="tt-v"><span class="st-pill ${sm.cls}" style="background:${sm.color}">${sm.label}</span></div></div>
+    <div class="tt-row"><div class="tt-k">Department</div><div class="tt-v">${escapeHtml(r.dept)}</div></div>
+    <div class="tt-row"><div class="tt-k">Tier / Type</div><div class="tt-v">Tier ${r.tier ?? '-'} · ${escapeHtml(r.type||'-')}</div></div>
+    <div class="tt-row"><div class="tt-k">REF</div><div class="tt-v">${escapeHtml(r.ref||'-')}</div></div>
+    <div class="tt-row"><div class="tt-k">SME</div><div class="tt-v">${escapeHtml(r.sme||'-')}</div></div>
+    <div class="tt-row"><div class="tt-k">Start</div><div class="tt-v">${fmt(r.start)}</div></div>
+    <div class="tt-row"><div class="tt-k">End</div><div class="tt-v">${fmt(r.end)}</div></div>
+    ${pctPart}
+    ${cmt}`;
+}
+
+// ---------- render ----------
+function applyFilters(){
+  filters.dept = selValues('f-dept');
+  filters.status = selValues('f-status');
+  filters.tier = selValues('f-tier');
+  filters.type = selValues('f-type');
+  filters.search = document.getElementById('f-search').value.trim();
+  const visible = ROWS.filter(passesFilters);
+  renderGroupsAndItems(visible);
+  updateStats(visible);
+  renderDrawer(visible);
+}
+
+function renderGroupsAndItems(visible){
+  GROUPS.clear(); ITEMS.clear();
+
+  // Build nested groups: one root per department, then rows as sub-groups only if we want a row-per-item view.
+  // We use a row-per-item layout: each visible item is its own group, indented by tier, grouped under its department.
+  const deptsPresent = Array.from(new Set(visible.map(r => r.dept))).sort();
+
+  const groups = [];
+  const items = [];
+
+  // Order by department, then by tier, then by parent-child dfs
+  const byDept = {};
+  visible.forEach(r => { (byDept[r.dept] = byDept[r.dept] || []).push(r); });
+
+  deptsPresent.forEach(dept => {
+    const deptId = 'dept::'+dept;
+    const deptRows = byDept[dept];
+    const nestedIds = [];
+
+    // build parent-child ordering within dept
+    const idsHere = new Set(deptRows.map(r => r.id));
+    const roots = deptRows.filter(r => !r.parentRef || !idsHere.has(ROWS.findIndex(x => x.ref === r.parentRef)))
+                          .sort((a,b) => (a.tier||9)-(b.tier||9) || a.ref.localeCompare(b.ref));
+    const ordered = [];
+    function walk(r){
+      ordered.push(r);
+      const kids = deptRows.filter(c => c.parentRef === r.ref).sort((a,b)=>a.ref.localeCompare(b.ref));
+      kids.forEach(walk);
+    }
+    roots.forEach(walk);
+    // any leftovers (shouldn't happen)
+    deptRows.forEach(r => { if(!ordered.includes(r)) ordered.push(r); });
+
+    ordered.forEach(r => {
+      const gid = 'row::'+r.id;
+      nestedIds.push(gid);
+      const tierClass = r.tier ? 'tier-'+r.tier : '';
+      const smePill = r.sme ? `<span class="row-tag">${escapeHtml(r.sme.slice(0,18))}</span>` : '';
+      const refPill = r.ref ? `<span class="row-tag">${escapeHtml(r.ref)}</span>` : '';
+      const label = `<div class="row-title ${tierClass}"><span>${escapeHtml((r.deliverable||'(untitled)').slice(0,70))}${(r.deliverable||'').length>70?'...':''}</span>${refPill}${smePill}</div>`;
+      groups.push({id: gid, content: label, treeLevel: 2});
+
+      // build the timeline item
+      if(r.start && r.end){
+        items.push({
+          id: r.id,
+          group: gid,
+          start: r.start,
+          end: r.end,
+          type: 'range',
+          className: r.statusMeta.cls,
+          content: escapeHtml((r.deliverable||'').slice(0,32))
+        });
+      } else if(r.end && !r.start){
+        // point milestone (diamond)
+        items.push({
+          id: r.id,
+          group: gid,
+          start: r.end,
+          type: 'point',
+          className: r.statusMeta.cls,
+          content: `<div class="milestone ${r.statusMeta.cls}"></div>`,
+          htmlContent: `<div class="milestone ${r.statusMeta.cls}"></div>`
+        });
+      } else if(r.start && !r.end){
+        items.push({
+          id: r.id,
+          group: gid,
+          start: r.start,
+          type: 'point',
+          className: r.statusMeta.cls,
+          content: `<div class="milestone ${r.statusMeta.cls}"></div>`,
+          htmlContent: `<div class="milestone ${r.statusMeta.cls}"></div>`
+        });
+      }
+      // undated rows are excluded from the timeline (shown in drawer)
+    });
+
+    groups.push({
+      id: deptId,
+      content: `<span style="letter-spacing:.1em;text-transform:uppercase;font-size:11px;color:#fff">${escapeHtml(dept)}</span> <span class="row-tag">${ordered.length}</span>`,
+      nestedGroups: nestedIds,
+      treeLevel: 1,
+      showNested: true
+    });
+  });
+
+  GROUPS.add(groups);
+  ITEMS.add(items);
+
+  // fit view if reasonable
+  if(items.length){
+    try{ timeline.fit({animation:false}); }catch(e){}
+  }
+}
+
+function updateStats(visible){
+  document.getElementById('stat-rows').textContent = ROWS.length;
+  const onTl = visible.filter(r => r.start || r.end).length;
+  const und = visible.filter(r => !r.start && !r.end).length;
+  document.getElementById('stat-visible').textContent = onTl;
+  document.getElementById('stat-undated').textContent = und;
+  document.getElementById('undated-badge').textContent = und;
+  document.getElementById('drawer-count').textContent = und;
+}
+
+function renderDrawer(visible){
+  const tbody = document.querySelector('#undated-table tbody');
+  const undated = visible.filter(r => !r.start && !r.end)
+    .sort((a,b) => a.dept.localeCompare(b.dept) || (a.tier||9)-(b.tier||9) || a.ref.localeCompare(b.ref));
+  tbody.innerHTML = undated.map(r => `
+    <tr>
+      <td style="color:var(--s21-mal)">${escapeHtml(r.ref||'-')}</td>
+      <td>${escapeHtml(r.dept)}</td>
+      <td>${r.tier ?? '-'}</td>
+      <td>${escapeHtml(r.type||'-')}</td>
+      <td>${escapeHtml(r.deliverable||'-')}</td>
+      <td><span class="st-pill ${r.statusMeta.cls}" style="background:${r.statusMeta.color};padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700">${r.statusMeta.label}</span></td>
+      <td>${escapeHtml(r.sme||'-')}</td>
+    </tr>`).join('');
+}
+
+function renderLegend(){
+  const el = document.getElementById('legend');
+  const parts = Object.values(STATUS_MAP).filter(s => ROWS.some(r => r.status === s.label)).map(s =>
+    `<span class="chip"><span class="swatch" style="background:${s.color}"></span>${s.label}</span>`
+  );
+  parts.push('<span class="divider"></span>');
+  parts.push('<span class="chip"><span class="swatch" style="background:#fff;height:8px;width:22px;border-radius:2px"></span>Range (has Start + End)</span>');
+  parts.push('<span class="chip"><span class="swatch diamond" style="background:#fff"></span>Milestone (End only)</span>');
+  el.innerHTML = parts.join('');
+}
+
+// ---------- controls ----------
+function bindControls(){
+  ['f-dept','f-status','f-tier','f-type'].forEach(id => {
+    document.getElementById(id).addEventListener('change', applyFilters);
+  });
+  document.getElementById('f-search').addEventListener('input', applyFilters);
+  document.querySelectorAll('.btn[data-scale]').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.btn[data-scale]').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      setScale(b.dataset.scale);
+    });
+  });
+  document.getElementById('btn-today').addEventListener('click', () => {
+    const now = new Date();
+    timeline.moveTo(now, {animation:true});
+  });
+  document.getElementById('btn-expo').addEventListener('click', () => {
+    // Data max end date is 2027-12-31; guess Expo window sep-dec 2027
+    timeline.setWindow(new Date('2027-06-01'), new Date('2027-12-31'), {animation:true});
+  });
+  document.getElementById('btn-milestones').addEventListener('click', (e) => {
+    milestonesOnly = !milestonesOnly;
+    e.currentTarget.classList.toggle('active', milestonesOnly);
+    applyFilters();
+  });
+  document.getElementById('btn-pct').addEventListener('click', (e) => {
+    showPct = !showPct;
+    e.currentTarget.textContent = (showPct ? 'Hide' : 'Show') + ' % Complete';
+    e.currentTarget.classList.toggle('active', showPct);
+  });
+  document.getElementById('btn-drawer').addEventListener('click', (e) => {
+    const d = document.getElementById('drawer');
+    d.classList.toggle('open');
+    e.currentTarget.classList.toggle('active', d.classList.contains('open'));
+  });
+  document.getElementById('btn-reset').addEventListener('click', () => {
+    ['f-dept','f-status','f-tier','f-type'].forEach(id => {
+      Array.from(document.getElementById(id).options).forEach(o => o.selected = false);
+    });
+    document.getElementById('f-search').value = '';
+    milestonesOnly = false;
+    document.getElementById('btn-milestones').classList.remove('active');
+    applyFilters();
+  });
+  document.getElementById('btn-retry').addEventListener('click', load);
+}
+
+function setScale(scale){
+  if(!timeline) return;
+  const w = timeline.getWindow();
+  const center = new Date((w.start.getTime()+w.end.getTime())/2);
+  let span;
+  if(scale === 'day') span = 1000*60*60*24*7;         // 1 week visible
+  else if(scale === 'week') span = 1000*60*60*24*90;   // ~3 months visible
+  else span = 1000*60*60*24*365*1.2;                   // ~14 months visible
+  timeline.setWindow(new Date(center.getTime()-span/2), new Date(center.getTime()+span/2), {animation:true});
+}
+
+bindControls();
+load();
+</script>
+</body>
+</html>
+=======
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -478,3 +1178,4 @@
     </script>
 </body>
 </html>
+>>>>>>> a3b4246723509d1a2f4124cb23a6aa803d0d8324
