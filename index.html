@@ -150,23 +150,26 @@ main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;ov
 .vis-item.summary .vis-item-content{display:none}
 
 /* row labels: structured columns instead of one long string */
-.row-line{display:flex;align-items:center;gap:6px;font-size:12px;white-space:nowrap;overflow:hidden}
-.row-line .indent{display:inline-block;flex-shrink:0}
-.row-line .chevron{color:var(--s21-mal);font-size:9px;width:10px;flex-shrink:0}
-.row-line .tier-pill{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.05em;padding:1px 5px;border-radius:3px;flex-shrink:0;min-width:22px;text-align:center}
-.row-line .tier-pill.t-1{background:var(--s21-mal);color:var(--s21-blue)}
-.row-line .tier-pill.t-2{background:var(--s21-turq);color:var(--s21-blue)}
-.row-line .tier-pill.t-3{background:var(--s21-mslate);color:#fff}
-.row-line .tier-pill.t-4{background:rgba(255,255,255,.15);color:var(--ink-2)}
-.row-line .tier-pill.t-x{background:rgba(255,255,255,.08);color:var(--ink-2)}
-.row-line .ref-pill{display:inline-block;font-size:9px;font-weight:600;letter-spacing:.03em;padding:1px 5px;border-radius:3px;background:rgba(26,226,121,.12);color:var(--s21-mal);border:1px solid rgba(26,226,121,.25);flex-shrink:0;font-family:ui-monospace,'SF Mono',Menlo,monospace}
-.row-line .deliv{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
-.row-line .deliv.parent{color:#fff;font-weight:600}
-.row-line .deliv.child{color:var(--ink-2)}
-.row-line .sme-pill{display:inline-block;font-size:9px;letter-spacing:.03em;padding:1px 5px;border-radius:3px;background:rgba(255,255,255,.06);color:var(--ink-2);border:1px solid var(--line);flex-shrink:0;max-width:110px;overflow:hidden;text-overflow:ellipsis}
-.row-line.tier-2 .indent{width:8px}
-.row-line.tier-3 .indent{width:20px}
-.row-line.tier-4 .indent{width:32px}
+.vis-labelset .vis-label .vis-inner{padding:6px 8px !important;font-size:12px;width:100%;display:block !important;box-sizing:border-box}
+.vis-labelset .vis-label .vis-inner .row-line{display:flex !important;align-items:center;gap:6px;font-size:12px;white-space:nowrap;overflow:hidden;width:100%}
+.vis-labelset .vis-label .vis-inner .row-line .indent{display:inline-block;flex-shrink:0;width:0}
+.vis-labelset .vis-label .vis-inner .row-line.tier-2 .indent{width:10px}
+.vis-labelset .vis-label .vis-inner .row-line.tier-3 .indent{width:22px}
+.vis-labelset .vis-label .vis-inner .row-line.tier-4 .indent{width:34px}
+.vis-labelset .vis-label .vis-inner .row-line .chevron{color:var(--s21-mal);font-size:9px;width:12px;text-align:center;flex-shrink:0}
+.vis-labelset .vis-label .vis-inner .row-line .tier-pill{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.05em;padding:2px 6px;border-radius:3px;flex-shrink:0;min-width:26px;text-align:center;line-height:1.2}
+.vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-1{background:#1AE279;color:#0D0C4E}
+.vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-2{background:#49D8CD;color:#0D0C4E}
+.vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-3{background:#6960EC;color:#fff}
+.vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-4{background:rgba(255,255,255,.18);color:#fff}
+.vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-x{background:rgba(255,255,255,.08);color:var(--ink-2)}
+.vis-labelset .vis-label .vis-inner .row-line .ref-pill{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.03em;padding:2px 6px;border-radius:3px;background:rgba(26,226,121,.15);color:#1AE279;border:1px solid rgba(26,226,121,.45);flex-shrink:0;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;line-height:1.2}
+.vis-labelset .vis-label .vis-inner .row-line .deliv{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--ink);white-space:nowrap}
+.vis-labelset .vis-label .vis-inner .row-line .deliv.parent{color:#fff;font-weight:600}
+.vis-labelset .vis-label .vis-inner .row-line .deliv.child{color:var(--ink-2);font-weight:400}
+.vis-labelset .vis-label .vis-inner .row-line .sme-pill{display:inline-block;font-size:9px;letter-spacing:.03em;padding:2px 6px;border-radius:3px;background:rgba(255,255,255,.08);color:var(--ink-2);border:1px solid var(--line);flex-shrink:0;max-width:110px;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.vis-labelset .vis-label .vis-inner .row-line .dept-name{letter-spacing:.1em;text-transform:uppercase;font-size:11px;color:#fff;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis}
+.vis-labelset .vis-label .vis-inner .row-line .dept-count{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--s21-mal);color:#0D0C4E;flex-shrink:0;line-height:1.2}
 
 .tt{background:var(--s21-blue);color:var(--ink);border:1px solid var(--s21-mal);border-radius:8px;padding:10px 12px;font-size:12px;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,.5);font-family:'Montserrat',sans-serif}
 .tt h4{margin:0 0 6px 0;font-size:13px;font-weight:700;color:#fff}
@@ -615,6 +618,41 @@ function tooltipHtml(r, isSummary){
 }
 
 // ---------- render ----------
+
+function el(tag, className, text){
+  const e = document.createElement(tag);
+  if(className) e.className = className;
+  if(text != null) e.textContent = text;
+  return e;
+}
+
+function buildRowLabel(r, hasVisibleChildren){
+  const tier = r.tier || 'x';
+  const wrap = el('div', 'row-line tier-'+tier);
+  wrap.appendChild(el('span', 'indent'));
+  const chev = el('span', 'chevron');
+  if(hasVisibleChildren) chev.textContent = '▼';
+  wrap.appendChild(chev);
+  wrap.appendChild(el('span', 'tier-pill t-'+tier, 'T'+(r.tier ?? '-')));
+  if(r.ref) wrap.appendChild(el('span', 'ref-pill', r.ref));
+  const delivClass = hasVisibleChildren ? 'parent' : (r.tier >= 3 ? 'child' : '');
+  const dv = el('span', 'deliv '+delivClass, r.deliverable || '(untitled)');
+  dv.title = r.deliverable || '';
+  wrap.appendChild(dv);
+  if(r.sme){
+    const sp = el('span', 'sme-pill', r.sme);
+    sp.title = r.sme;
+    wrap.appendChild(sp);
+  }
+  return wrap;
+}
+
+function buildDeptLabel(dept, count){
+  const wrap = el('div', 'row-line dept-line');
+  wrap.appendChild(el('span', 'dept-name', dept));
+  wrap.appendChild(el('span', 'dept-count', count));
+  return wrap;
+}
 function applyFilters(){
   filters.search = document.getElementById('f-search').value.trim();
   const visible = ROWS.filter(passesFilters);
@@ -662,20 +700,9 @@ function renderGroupsAndItems(visible){
     ordered.forEach(r => {
       const gid = 'row::'+r.id;
       nestedIds.push(gid);
-      // is this a parent whose children are showing?
       const visibleKids = deptRows.filter(c => c.parentRef === r.ref);
       const hasVisibleChildren = visibleKids.length > 0;
-
-      const tier = r.tier || 'x';
-      const tierClass = 'tier-'+(r.tier || 'x');
-      const chevron = hasVisibleChildren ? '<span class="chevron">▼</span>' : '<span class="chevron"></span>';
-      const tierPill = `<span class="tier-pill t-${tier}">T${r.tier ?? '-'}</span>`;
-      const refPill = r.ref ? `<span class="ref-pill">${escapeHtml(r.ref)}</span>` : '';
-      const smePill = r.sme ? `<span class="sme-pill" title="${escapeHtml(r.sme)}">${escapeHtml(r.sme)}</span>` : '';
-      const delivClass = hasVisibleChildren ? 'parent' : (r.tier >= 3 ? 'child' : '');
-      const delivText = escapeHtml(r.deliverable || '(untitled)');
-      const label = `<div class="row-line ${tierClass}"><span class="indent"></span>${chevron}${tierPill}${refPill}<span class="deliv ${delivClass}" title="${escapeHtml(r.deliverable||'')}">${delivText}</span>${smePill}</div>`;
-      groups.push({id: gid, content: label, treeLevel: 2});
+      groups.push({id: gid, content: buildRowLabel(r, hasVisibleChildren), treeLevel: 2});
 
       // build items
       // If row has its own start+end, always show a bar
@@ -740,7 +767,7 @@ function renderGroupsAndItems(visible){
 
     groups.push({
       id: deptId,
-      content: `<div class="row-line" style="gap:8px"><span style="letter-spacing:.1em;text-transform:uppercase;font-size:11px;color:#fff;font-weight:700">${escapeHtml(dept)}</span><span class="ref-pill" style="background:rgba(255,255,255,.08);color:#fff;border-color:var(--line)">${ordered.length}</span></div>`,
+      content: buildDeptLabel(dept, ordered.length),
       nestedGroups: nestedIds,
       treeLevel: 1,
       showNested: true
@@ -793,6 +820,8 @@ function renderLegend(){
   parts.push('<span class="chip"><span class="swatch circle" style="background:#fff"></span>Other (single date)</span>');
   parts.push('<span class="divider"></span>');
   parts.push('<span class="chip"><span class="swatch" style="background:transparent;border:1px dashed rgba(26,226,121,.7)"></span>Rolled up (parent summary)</span>');
+  parts.push('<span class="divider"></span>');
+  parts.push('<span class="chip" style="gap:4px">Tiers <span style="background:#1AE279;color:#0D0C4E;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:800">T1</span><span style="background:#49D8CD;color:#0D0C4E;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:800">T2</span><span style="background:#6960EC;color:#fff;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:800">T3</span><span style="background:rgba(255,255,255,.18);color:#fff;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:800">T4</span></span>');
   el.innerHTML = parts.join('');
 }
 
