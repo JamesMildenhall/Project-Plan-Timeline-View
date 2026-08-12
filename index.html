@@ -191,7 +191,7 @@ body.resizing *{cursor:col-resize !important}
 
 /* row labels: structured columns instead of one long string */
 .vis-labelset .vis-label .vis-inner{padding:6px 8px !important;font-size:12px;width:100%;display:block !important;box-sizing:border-box}
-.vis-labelset .vis-label .vis-inner .row-line{display:flex !important;align-items:center;gap:6px;font-size:12px;white-space:nowrap;overflow:hidden;width:100%}
+.vis-labelset .vis-label .vis-inner .row-line{display:flex !important;align-items:center;gap:6px;font-size:12px;white-space:nowrap;overflow:hidden;width:100%;padding-right:18px;box-sizing:border-box}
 .vis-labelset .vis-label .vis-inner .row-line .indent{display:inline-block;flex-shrink:0;width:0}
 .vis-labelset .vis-label .vis-inner .row-line.tier-2 .indent{width:10px}
 .vis-labelset .vis-label .vis-inner .row-line.tier-3 .indent{width:22px}
@@ -204,11 +204,11 @@ body.resizing *{cursor:col-resize !important}
 .vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-4{background:rgba(255,255,255,.18);color:#fff}
 .vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-x{background:rgba(255,255,255,.08);color:var(--ink-2)}
 .vis-labelset .vis-label .vis-inner .row-line .ref-pill{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.03em;padding:2px 6px;border-radius:3px;background:rgba(26,226,121,.15);color:#1AE279;border:1px solid rgba(26,226,121,.45);flex-shrink:0;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;line-height:1.2}
-.vis-labelset .vis-label .vis-inner .row-line .deliv{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--ink);white-space:nowrap}
+.vis-labelset .vis-label .vis-inner .row-line .deliv{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--ink);white-space:nowrap;display:block}
 .vis-labelset .vis-label .vis-inner .row-line .deliv.parent{color:#fff;font-weight:600}
 .vis-labelset .vis-label .vis-inner .row-line .deliv.child{color:var(--ink-2);font-weight:400}
-.vis-labelset .vis-label .vis-inner .row-line .sme-pill{display:inline-block;font-size:9px;letter-spacing:.03em;padding:2px 6px;border-radius:3px;background:rgba(255,255,255,.08);color:var(--ink-2);border:1px solid var(--line);flex-shrink:0;max-width:110px;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
-.vis-labelset .vis-label .vis-inner .row-line .dept-name{letter-spacing:.1em;text-transform:uppercase;font-size:11px;color:#fff;font-weight:700;flex:1;overflow:hidden;text-overflow:ellipsis}
+.vis-labelset .vis-label .vis-inner .row-line .sme-pill{display:inline-block;font-size:9px;letter-spacing:.03em;padding:2px 6px;border-radius:3px;background:rgba(255,255,255,.08);color:var(--ink-2);border:1px solid var(--line);flex-shrink:0;max-width:80px;overflow:hidden;text-overflow:ellipsis;line-height:1.2;white-space:nowrap}
+.vis-labelset .vis-label .vis-inner .row-line .dept-name{letter-spacing:.1em;text-transform:uppercase;font-size:11px;color:#fff;font-weight:700;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;display:block;white-space:nowrap}
 .vis-labelset .vis-label .vis-inner .row-line .dept-count{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--s21-mal);color:#0D0C4E;flex-shrink:0;line-height:1.2}
 
 .tt{background:var(--s21-blue);color:var(--ink);border:1px solid var(--s21-mal);border-radius:8px;padding:10px 12px;font-size:12px;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,.5);font-family:'Montserrat',sans-serif}
