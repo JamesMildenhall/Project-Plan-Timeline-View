@@ -29,9 +29,10 @@
   --panel-2:rgba(255,255,255,.06);
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--s21-blue-2);color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;height:100%}
-body{display:flex;flex-direction:column;min-height:100vh}
-header{padding:14px 20px;background:linear-gradient(180deg,var(--s21-blue) 0%, var(--s21-blue-2) 100%);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+html,body{margin:0;padding:0;background:var(--s21-blue-2);color:var(--ink);font-family:'Montserrat',system-ui,sans-serif}
+html,body{height:100%}
+body{display:flex;flex-direction:column;overflow:hidden}
+header{padding:14px 20px;background:linear-gradient(180deg,var(--s21-blue) 0%, var(--s21-blue-2) 100%);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap;flex-shrink:0}
 header h1{font-size:15px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin:0;color:#fff}
 header h1 .mal{color:var(--s21-mal)}
 header .sub{font-size:11px;color:var(--ink-2);letter-spacing:.06em}
@@ -39,26 +40,46 @@ header .spacer{flex:1}
 header .stat{font-size:11px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.1em}
 header .stat b{color:#fff;font-weight:600}
 
-.controls{padding:12px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;background:var(--s21-blue);border-bottom:1px solid var(--line)}
-.ctrl{display:flex;flex-direction:column;gap:4px}
+.controls{padding:12px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;background:var(--s21-blue);border-bottom:1px solid var(--line);flex-shrink:0}
+.ctrl{display:flex;flex-direction:column;gap:4px;position:relative}
 .ctrl label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
-.ctrl select,.ctrl input[type=text]{background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;outline:none}
-.ctrl select:focus,.ctrl input[type=text]:focus{border-color:var(--s21-mal)}
-.ctrl select[multiple]{min-height:76px}
-.buttons{padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;background:var(--s21-blue);border-bottom:1px solid var(--line)}
+.ctrl input[type=text]{background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;outline:none}
+.ctrl input[type=text]:focus{border-color:var(--s21-mal)}
+
+/* Custom checkbox dropdown */
+.dd{position:relative}
+.dd-btn{width:100%;background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;outline:none}
+.dd-btn:hover{border-color:var(--s21-mal)}
+.dd-btn.active{border-color:var(--s21-mal)}
+.dd-btn .dd-count{background:var(--s21-mal);color:var(--s21-blue);font-weight:700;font-size:10px;padding:1px 7px;border-radius:999px;flex-shrink:0}
+.dd-btn .dd-arrow{color:var(--ink-2);font-size:10px;flex-shrink:0}
+.dd-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--s21-blue);border:1px solid var(--s21-mal);border-radius:8px;padding:8px;z-index:20;box-shadow:0 8px 30px rgba(0,0,0,.5);display:none;min-width:220px}
+.dd-panel.open{display:block}
+.dd-search{width:100%;background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:6px 8px;font-size:11px;font-family:inherit;outline:none;margin-bottom:6px}
+.dd-actions{display:flex;gap:6px;margin-bottom:6px}
+.dd-actions button{flex:1;background:transparent;color:var(--ink-2);border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-family:inherit;font-size:10px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
+.dd-actions button:hover{color:var(--s21-mal);border-color:var(--s21-mal)}
+.dd-list{max-height:220px;overflow-y:auto}
+.dd-list label{display:flex;align-items:center;gap:8px;padding:4px 6px;cursor:pointer;border-radius:4px;font-size:12px;color:var(--ink);text-transform:none;letter-spacing:0;font-weight:400}
+.dd-list label:hover{background:var(--s21-blue-2)}
+.dd-list input[type=checkbox]{accent-color:var(--s21-mal);flex-shrink:0}
+
+.buttons{padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;background:var(--s21-blue);border-bottom:1px solid var(--line);flex-shrink:0}
 .btn{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s ease}
 .btn:hover{border-color:var(--s21-mal);color:var(--s21-mal)}
 .btn.active{background:var(--s21-mal);color:var(--s21-blue);border-color:var(--s21-mal)}
 .btn.ghost{opacity:.7}
 
-.legend{padding:8px 20px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;background:var(--s21-blue-2);border-bottom:1px solid var(--line);font-size:11px;color:var(--ink-2)}
+.legend{padding:8px 20px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;background:var(--s21-blue-2);border-bottom:1px solid var(--line);font-size:11px;color:var(--ink-2);flex-shrink:0}
 .legend .chip{display:inline-flex;align-items:center;gap:6px}
 .legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block}
 .legend .swatch.diamond{transform:rotate(45deg);border-radius:2px}
+.legend .swatch.circle{border-radius:50%}
+.legend .swatch.triangle{width:0;height:0;background:transparent;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #fff}
 .legend .divider{width:1px;height:14px;background:var(--line)}
 
 main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
-#timeline{flex:1;min-height:400px;background:var(--s21-blue-2)}
+#timeline{flex:1;min-height:0;background:var(--s21-blue-2)}
 
 /* vis-timeline dark overrides */
 .vis-timeline{border:none !important;font-family:'Montserrat',sans-serif}
@@ -77,10 +98,11 @@ main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
 .vis-item{border-width:0;border-radius:4px;font-size:11px;color:#fff;font-weight:500}
 .vis-item.vis-range{padding:2px 8px}
 .vis-item.vis-selected{box-shadow:0 0 0 2px var(--s21-mal)}
-.vis-item.vis-point .vis-item-content{padding:0}
-.vis-item.vis-point .vis-dot{border:none !important;background:transparent !important}
+.vis-item.vis-point{background:transparent !important;border:none !important}
+.vis-item.vis-point .vis-item-content{padding:0;transform:translateX(-50%)}
+.vis-item.vis-point .vis-dot{display:none !important}
 
-/* status colours */
+/* status colours for range bars */
 .st-complete{background:var(--s21-mal) !important;color:#0D0C4E !important;font-weight:700}
 .st-ontrack{background:var(--s21-turq) !important;color:#0D0C4E !important;font-weight:600}
 .st-atrisk{background:var(--s21-pink) !important}
@@ -89,22 +111,30 @@ main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
 .st-tbc{background:var(--s21-grey) !important}
 .st-unknown{background:#4B5563 !important;opacity:.7}
 
-/* diamond milestones (End-only, no start) */
-.milestone{width:14px;height:14px;transform:rotate(45deg);display:inline-block;margin-top:2px}
-.milestone.st-complete{background:var(--s21-mal)}
-.milestone.st-ontrack{background:var(--s21-turq)}
-.milestone.st-atrisk{background:var(--s21-pink)}
-.milestone.st-notstarted{background:var(--s21-slate)}
-.milestone.st-noupdate{background:var(--s21-mslate)}
-.milestone.st-tbc{background:var(--s21-grey)}
-.milestone.st-unknown{background:#4B5563}
+/* summary bar for parents whose children are showing */
+.vis-item.summary{background:transparent !important;border:1px dashed rgba(26,226,121,.55) !important;border-radius:3px;height:10px;padding:0 !important}
+.vis-item.summary .vis-item-content{display:none}
 
-/* tier indent via vis nesting handled by groups; row label extra info */
+/* point shapes */
+.marker{display:block;width:14px;height:14px;pointer-events:auto}
+.marker.dot{border-radius:50%;background:currentColor}
+.marker.rhombus{transform:rotate(45deg);background:currentColor}
+.marker.triangle{width:0;height:0;background:transparent;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:14px solid currentColor}
+.marker.c-complete{color:var(--s21-mal)}
+.marker.c-ontrack{color:var(--s21-turq)}
+.marker.c-atrisk{color:var(--s21-pink)}
+.marker.c-notstarted{color:var(--s21-slate)}
+.marker.c-noupdate{color:var(--s21-mslate)}
+.marker.c-tbc{color:var(--s21-grey)}
+.marker.c-unknown{color:#4B5563}
+
+/* row labels */
 .row-tag{font-size:9px;letter-spacing:.06em;color:var(--ink-2);text-transform:uppercase;margin-left:6px;padding:1px 5px;border:1px solid var(--line);border-radius:3px}
-.row-title{display:inline-flex;align-items:center;gap:6px}
+.row-title{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .tier-2{padding-left:10px}
 .tier-3{padding-left:22px;color:var(--ink-2);font-weight:500}
 .tier-4{padding-left:34px;color:var(--ink-2);font-weight:400;font-size:11px}
+.has-children{color:var(--s21-mal);font-weight:600}
 
 .tt{background:var(--s21-blue);color:var(--ink);border:1px solid var(--s21-mal);border-radius:8px;padding:10px 12px;font-size:12px;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,.5);font-family:'Montserrat',sans-serif}
 .tt h4{margin:0 0 6px 0;font-size:13px;font-weight:700;color:#fff}
@@ -113,13 +143,13 @@ main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
 .tt .tt-v{color:#fff;font-size:11px}
 .tt .st-pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
 
-.drawer{background:var(--s21-blue);border-top:1px solid var(--line);max-height:0;overflow:hidden;transition:max-height .25s ease}
-.drawer.open{max-height:260px;overflow:auto}
-.drawer .inner{padding:12px 20px}
+.drawer{background:var(--s21-blue);border-top:1px solid var(--line);flex-shrink:0;display:none;flex-direction:column;max-height:35vh}
+.drawer.open{display:flex}
+.drawer .inner{padding:12px 20px;overflow:auto;flex:1}
 .drawer h3{margin:0 0 8px 0;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s21-mal)}
 .drawer table{width:100%;border-collapse:collapse;font-size:11px}
 .drawer th,.drawer td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
-.drawer th{color:var(--ink-2);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:10px}
+.drawer th{color:var(--ink-2);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:10px;position:sticky;top:0;background:var(--s21-blue)}
 
 .error-panel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--s21-blue-2);z-index:10}
 .error-card{background:var(--s21-blue);border:1px solid var(--s21-pink);border-radius:12px;padding:24px 28px;max-width:520px;text-align:left}
@@ -155,19 +185,31 @@ main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
 <div class="controls">
   <div class="ctrl">
     <label>Department</label>
-    <select id="f-dept" multiple size="4"></select>
+    <div class="dd" data-key="dept">
+      <button class="dd-btn" type="button"><span class="dd-lbl">All departments</span><span class="dd-count hidden">0</span><span class="dd-arrow">▾</span></button>
+      <div class="dd-panel"></div>
+    </div>
   </div>
   <div class="ctrl">
     <label>Status</label>
-    <select id="f-status" multiple size="4"></select>
+    <div class="dd" data-key="status">
+      <button class="dd-btn" type="button"><span class="dd-lbl">All statuses</span><span class="dd-count hidden">0</span><span class="dd-arrow">▾</span></button>
+      <div class="dd-panel"></div>
+    </div>
   </div>
   <div class="ctrl">
     <label>Tier</label>
-    <select id="f-tier" multiple size="4"></select>
+    <div class="dd" data-key="tier">
+      <button class="dd-btn" type="button"><span class="dd-lbl">All tiers</span><span class="dd-count hidden">0</span><span class="dd-arrow">▾</span></button>
+      <div class="dd-panel"></div>
+    </div>
   </div>
   <div class="ctrl">
     <label>Type</label>
-    <select id="f-type" multiple size="4"></select>
+    <div class="dd" data-key="type">
+      <button class="dd-btn" type="button"><span class="dd-lbl">All types</span><span class="dd-count hidden">0</span><span class="dd-arrow">▾</span></button>
+      <div class="dd-panel"></div>
+    </div>
   </div>
   <div class="ctrl">
     <label>Search deliverable</label>
@@ -218,16 +260,15 @@ main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
 // ---------- config ----------
 const FILE_URL = './EX27_Ops_Project_Plan_v4.xlsx';
 const SHEET_NAME = 'Tracker';
-const HEADER_ROW_INDEX = 7; // 0-indexed, row 8 in Excel
 
 const STATUS_MAP = {
-  'Complete': {key:'complete', label:'Complete', cls:'st-complete', color:'#1AE279'},
-  'On Track': {key:'ontrack', label:'On Track', cls:'st-ontrack', color:'#49D8CD'},
-  'At Risk':  {key:'atrisk',  label:'At Risk',  cls:'st-atrisk',  color:'#E21A83'},
-  'Not Started': {key:'notstarted', label:'Not Started', cls:'st-notstarted', color:'#3E6680'},
-  'No Update Received': {key:'noupdate', label:'No Update Received', cls:'st-noupdate', color:'#6960EC'},
-  'TBC': {key:'tbc', label:'TBC', cls:'st-tbc', color:'#6B7280'},
-  'Unknown': {key:'unknown', label:'Unknown', cls:'st-unknown', color:'#4B5563'}
+  'Complete': {key:'complete', label:'Complete', cls:'st-complete', mark:'c-complete', color:'#1AE279'},
+  'On Track': {key:'ontrack', label:'On Track', cls:'st-ontrack', mark:'c-ontrack', color:'#49D8CD'},
+  'At Risk':  {key:'atrisk',  label:'At Risk',  cls:'st-atrisk', mark:'c-atrisk',  color:'#E21A83'},
+  'Not Started': {key:'notstarted', label:'Not Started', cls:'st-notstarted', mark:'c-notstarted', color:'#3E6680'},
+  'No Update Received': {key:'noupdate', label:'No Update Received', cls:'st-noupdate', mark:'c-noupdate', color:'#6960EC'},
+  'TBC': {key:'tbc', label:'TBC', cls:'st-tbc', mark:'c-tbc', color:'#6B7280'},
+  'Unknown': {key:'unknown', label:'Unknown', cls:'st-unknown', mark:'c-unknown', color:'#4B5563'}
 };
 
 function normStatus(s){
@@ -248,7 +289,6 @@ function excelDate(v){
   if(v === null || v === undefined || v === '') return null;
   if(v instanceof Date) return v;
   if(typeof v === 'number'){
-    // Excel serial
     const epoch = new Date(Date.UTC(1899,11,30));
     return new Date(epoch.getTime() + v*86400000);
   }
@@ -257,14 +297,15 @@ function excelDate(v){
 }
 
 // ---------- state ----------
-let RAW = [];       // raw parsed rows
-let ROWS = [];      // enriched
+let RAW = [];
+let ROWS = [];
 let GROUPS = new vis.DataSet();
 let ITEMS = new vis.DataSet();
 let timeline;
 let showPct = false;
 let milestonesOnly = false;
 let filters = {dept:new Set(), status:new Set(), tier:new Set(), type:new Set(), search:''};
+let filterOptions = {dept:[], status:[], tier:[], type:[]};
 
 // ---------- load ----------
 async function load(){
@@ -277,13 +318,10 @@ async function load(){
     const wb = XLSX.read(buf, {type:'array', cellDates:true});
     if(!wb.SheetNames.includes(SHEET_NAME)) throw new Error(`Sheet "${SHEET_NAME}" not found. Sheets: ${wb.SheetNames.join(', ')}`);
     const ws = wb.Sheets[SHEET_NAME];
-    const grid = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, raw:false, dateNF:'yyyy-mm-dd'});
-    // Read the range explicitly starting at A1 so blank top rows are preserved as empty arrays.
     const range = XLSX.utils.decode_range(ws['!ref']);
     range.s.r = 0; range.s.c = 0;
     const rawGrid = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, range: XLSX.utils.encode_range(range), blankrows:true});
     const need = ['Tier','Type','Department','REF','Deliverable','Owner / Support','SME / SME','Start Date','End Date','Status','Comment','% Complete'];
-    // Auto-detect header row: scan first 25 rows for one containing "Deliverable" AND "Tier"
     let hdrIdx = -1;
     for(let i=0;i<Math.min(rawGrid.length, 25);i++){
       const row = rawGrid[i] || [];
@@ -328,7 +366,7 @@ function build(){
       ref,
       dept,
       tier,
-      type: (r['Type']||'').trim(),
+      type: (r['Type']||'').toString().trim(),
       deliverable: (r['Deliverable']||'').toString().trim(),
       description: (r['Description of Service']||'').toString().trim(),
       owner: (r['Owner / Support']||'').toString().trim(),
@@ -353,7 +391,7 @@ function build(){
     }
   });
 
-  // compute derived % complete from descendants (leaves only counted)
+  // derived % complete from descendant leaves
   function descLeaves(id, out){
     const r = ROWS[id];
     if(!r.childrenIds.length){ out.push(r); return; }
@@ -368,7 +406,6 @@ function build(){
         r.pctCalc = Math.round(100 * complete / scored.length);
       } else r.pctCalc = null;
     } else {
-      // leaf: use status heuristic
       r.pctCalc = (r.status === 'Complete') ? 100 : (r.status === 'Not Started' ? 0 : null);
     }
   });
@@ -382,35 +419,89 @@ function build(){
 function parentOf(ref){
   if(!ref) return null;
   const parts = ref.split('.');
-  if(parts.length < 2) return null;
-  // KM.100 has 2 parts -> no parent
-  if(parts.length === 2) return null;
+  if(parts.length < 3) return null;
   return parts.slice(0, -1).join('.');
 }
 
-// ---------- filters ----------
+// ---------- filter dropdowns ----------
 function unique(arr){ return Array.from(new Set(arr.filter(v => v!==null && v!==undefined && v!==''))).sort((a,b) => String(a).localeCompare(String(b))); }
 
 function populateFilters(){
-  const depts = unique(ROWS.map(r => r.dept));
-  const statuses = ['Complete','On Track','At Risk','Not Started','No Update Received','TBC','Unknown'].filter(s => ROWS.some(r => r.status === s));
-  const tiers = unique(ROWS.map(r => r.tier)).sort((a,b) => a-b);
-  const types = unique(ROWS.map(r => r.type));
-  fill('f-dept', depts);
-  fill('f-status', statuses);
-  fill('f-tier', tiers.map(t => String(t)));
-  fill('f-type', types);
-}
-function fill(id, arr){
-  const el = document.getElementById(id);
-  el.innerHTML = arr.map(v => `<option value="${escapeHtml(String(v))}">${escapeHtml(String(v))}</option>`).join('');
-}
-function selValues(id){
-  const el = document.getElementById(id);
-  return new Set(Array.from(el.selectedOptions).map(o => o.value));
+  filterOptions.dept = unique(ROWS.map(r => r.dept));
+  filterOptions.status = ['Complete','On Track','At Risk','Not Started','No Update Received','TBC','Unknown'].filter(s => ROWS.some(r => r.status === s));
+  filterOptions.tier = unique(ROWS.map(r => r.tier)).sort((a,b) => a-b).map(String);
+  filterOptions.type = unique(ROWS.map(r => r.type));
+  document.querySelectorAll('.dd').forEach(dd => buildDropdown(dd));
 }
 
-function escapeHtml(s){ return s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function buildDropdown(dd){
+  const key = dd.dataset.key;
+  const panel = dd.querySelector('.dd-panel');
+  const opts = filterOptions[key];
+  panel.innerHTML = `
+    <input type="text" class="dd-search" placeholder="Filter..." />
+    <div class="dd-actions">
+      <button class="all" type="button">Select all</button>
+      <button class="none" type="button">Clear</button>
+    </div>
+    <div class="dd-list">
+      ${opts.map(v => `<label><input type="checkbox" value="${escapeHtml(v)}" /> <span>${escapeHtml(v)}</span></label>`).join('')}
+    </div>
+  `;
+  const btn = dd.querySelector('.dd-btn');
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const wasOpen = panel.classList.contains('open');
+    document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('open'));
+    document.querySelectorAll('.dd-btn').forEach(b => b.classList.remove('active'));
+    if(!wasOpen){ panel.classList.add('open'); btn.classList.add('active'); }
+  });
+  panel.addEventListener('click', (e) => e.stopPropagation());
+  panel.querySelector('.dd-search').addEventListener('input', (e) => {
+    const q = e.target.value.toLowerCase();
+    panel.querySelectorAll('.dd-list label').forEach(lbl => {
+      lbl.style.display = lbl.textContent.toLowerCase().includes(q) ? '' : 'none';
+    });
+  });
+  panel.querySelector('.all').addEventListener('click', () => {
+    panel.querySelectorAll('.dd-list label:not([style*="none"]) input').forEach(cb => cb.checked = true);
+    syncDropdown(dd);
+  });
+  panel.querySelector('.none').addEventListener('click', () => {
+    panel.querySelectorAll('.dd-list input').forEach(cb => cb.checked = false);
+    syncDropdown(dd);
+  });
+  panel.querySelectorAll('.dd-list input').forEach(cb => {
+    cb.addEventListener('change', () => syncDropdown(dd));
+  });
+}
+
+function syncDropdown(dd){
+  const key = dd.dataset.key;
+  const checked = Array.from(dd.querySelectorAll('.dd-list input:checked')).map(cb => cb.value);
+  filters[key] = new Set(checked);
+  const cnt = dd.querySelector('.dd-count');
+  const lbl = dd.querySelector('.dd-lbl');
+  if(checked.length === 0){
+    cnt.classList.add('hidden');
+    lbl.textContent = ({dept:'All departments',status:'All statuses',tier:'All tiers',type:'All types'})[key];
+  } else if(checked.length === 1){
+    cnt.classList.add('hidden');
+    lbl.textContent = checked[0];
+  } else {
+    cnt.classList.remove('hidden');
+    cnt.textContent = checked.length;
+    lbl.textContent = ({dept:'Departments',status:'Statuses',tier:'Tiers',type:'Types'})[key];
+  }
+  applyFilters();
+}
+
+document.addEventListener('click', () => {
+  document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('open'));
+  document.querySelectorAll('.dd-btn').forEach(b => b.classList.remove('active'));
+});
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 function passesFilters(r){
   if(filters.dept.size && !filters.dept.has(r.dept)) return false;
@@ -429,30 +520,15 @@ function passesFilters(r){
 function buildTimeline(){
   const container = document.getElementById('timeline');
   const options = {
-    stack: true,
-    stackSubgroups: true,
+    stack: false,
     orientation: {axis: 'top'},
     zoomMin: 1000*60*60*24*3,
     zoomMax: 1000*60*60*24*365*3,
     horizontalScroll: true,
     zoomKey: 'ctrlKey',
-    margin: {item: 6, axis: 8},
+    margin: {item: 4, axis: 8},
     tooltip: {followMouse:true, overflowMethod:'flip', template: () => ''},
-    template: (item) => item.htmlContent || '',
-    groupOrder: (a,b) => {
-      // groups are department nodes only in top-level; nesting handled by treeLevel
-      return String(a.content).localeCompare(String(b.content));
-    },
-    format: {
-      minorLabels:{
-        millisecond:'SSS', second:'s', minute:'HH:mm', hour:'HH:mm',
-        weekday:'ddd D', day:'D', week:'w', month:'MMM', year:'YYYY'
-      },
-      majorLabels:{
-        millisecond:'HH:mm:ss', second:'D MMMM HH:mm', minute:'ddd D MMMM', hour:'ddd D MMMM',
-        weekday:'MMMM YYYY', day:'MMMM YYYY', week:'MMMM YYYY', month:'YYYY', year:''
-      }
-    }
+    template: (item) => item.htmlContent !== undefined ? item.htmlContent : (item.content || '')
   };
   timeline = new vis.Timeline(container, ITEMS, GROUPS, options);
   timeline.addCustomTime(new Date(), 'now');
@@ -462,9 +538,12 @@ function buildTimeline(){
   tt.className = 'tt'; tt.style.position='fixed'; tt.style.pointerEvents='none'; tt.style.display='none'; tt.style.zIndex=1000;
   document.body.appendChild(tt);
   timeline.on('itemover', (props) => {
-    const r = ROWS.find(x => x.id === props.item);
+    const raw = ITEMS.get(props.item);
+    if(!raw) return;
+    const rowId = raw.rowId !== undefined ? raw.rowId : props.item;
+    const r = ROWS[rowId];
     if(!r) return;
-    tt.innerHTML = tooltipHtml(r);
+    tt.innerHTML = tooltipHtml(r, raw.isSummary);
     tt.style.display = 'block';
   });
   timeline.on('itemout', () => { tt.style.display='none'; });
@@ -480,12 +559,13 @@ function buildTimeline(){
   });
 }
 
-function tooltipHtml(r){
+function tooltipHtml(r, isSummary){
   const sm = r.statusMeta;
   const fmt = d => d ? d.toISOString().slice(0,10) : '<span style="color:#666">(none)</span>';
   const pctPart = showPct && r.pctCalc !== null
     ? `<div class="tt-row"><div class="tt-k">% Complete</div><div class="tt-v">${r.pctCalc}%${r.childrenIds.length?' <span style="color:'+sm.color+'">(calc from '+r.childrenIds.length+' child)</span>':''}</div></div>` : '';
   const cmt = r.comment ? `<div class="tt-row"><div class="tt-k">Comment</div><div class="tt-v">${escapeHtml(r.comment.slice(0,180))}${r.comment.length>180?'...':''}</div></div>` : '';
+  const summaryFlag = isSummary ? '<div class="tt-row"><div class="tt-k"></div><div class="tt-v" style="color:var(--s21-mal);font-style:italic;font-size:10px">(rolled up from child dates)</div></div>' : '';
   return `<h4>${escapeHtml(r.deliverable || '(untitled)')}</h4>
     <div class="tt-row"><div class="tt-k">Status</div><div class="tt-v"><span class="st-pill ${sm.cls}" style="background:${sm.color}">${sm.label}</span></div></div>
     <div class="tt-row"><div class="tt-k">Department</div><div class="tt-v">${escapeHtml(r.dept)}</div></div>
@@ -495,15 +575,20 @@ function tooltipHtml(r){
     <div class="tt-row"><div class="tt-k">Start</div><div class="tt-v">${fmt(r.start)}</div></div>
     <div class="tt-row"><div class="tt-k">End</div><div class="tt-v">${fmt(r.end)}</div></div>
     ${pctPart}
+    ${summaryFlag}
     ${cmt}`;
+}
+
+function markerHtml(row){
+  // choose shape by Type
+  let shape = 'dot';
+  if(/key milestone/i.test(row.type)) shape = 'triangle';
+  else if(/sme milestone/i.test(row.type)) shape = 'rhombus';
+  return `<span class="marker ${shape} ${row.statusMeta.mark}"></span>`;
 }
 
 // ---------- render ----------
 function applyFilters(){
-  filters.dept = selValues('f-dept');
-  filters.status = selValues('f-status');
-  filters.tier = selValues('f-tier');
-  filters.type = selValues('f-type');
   filters.search = document.getElementById('f-search').value.trim();
   const visible = ROWS.filter(passesFilters);
   renderGroupsAndItems(visible);
@@ -514,49 +599,58 @@ function applyFilters(){
 function renderGroupsAndItems(visible){
   GROUPS.clear(); ITEMS.clear();
 
-  // Build nested groups: one root per department, then rows as sub-groups only if we want a row-per-item view.
-  // We use a row-per-item layout: each visible item is its own group, indented by tier, grouped under its department.
+  const visibleIds = new Set(visible.map(v => v.id));
   const deptsPresent = Array.from(new Set(visible.map(r => r.dept))).sort();
+  const byDept = {};
+  visible.forEach(r => { (byDept[r.dept] = byDept[r.dept] || []).push(r); });
 
   const groups = [];
   const items = [];
-
-  // Order by department, then by tier, then by parent-child dfs
-  const byDept = {};
-  visible.forEach(r => { (byDept[r.dept] = byDept[r.dept] || []).push(r); });
 
   deptsPresent.forEach(dept => {
     const deptId = 'dept::'+dept;
     const deptRows = byDept[dept];
     const nestedIds = [];
 
-    // build parent-child ordering within dept
-    const idsHere = new Set(deptRows.map(r => r.id));
-    const roots = deptRows.filter(r => !r.parentRef || !idsHere.has(ROWS.findIndex(x => x.ref === r.parentRef)))
-                          .sort((a,b) => (a.tier||9)-(b.tier||9) || a.ref.localeCompare(b.ref));
+    // build parent-child ordering within dept (only counting visible)
+    const idSetHere = new Set(deptRows.map(r => r.id));
+    const roots = deptRows.filter(r => {
+      if(!r.parentRef) return true;
+      // parent must be visible AND in same dept
+      return !ROWS.some(x => x.ref === r.parentRef && idSetHere.has(x.id));
+    }).sort((a,b) => (a.tier||9)-(b.tier||9) || a.ref.localeCompare(b.ref) || a.deliverable.localeCompare(b.deliverable));
+
     const ordered = [];
+    const seen = new Set();
     function walk(r){
+      if(seen.has(r.id)) return;
+      seen.add(r.id);
       ordered.push(r);
       const kids = deptRows.filter(c => c.parentRef === r.ref).sort((a,b)=>a.ref.localeCompare(b.ref));
       kids.forEach(walk);
     }
     roots.forEach(walk);
-    // any leftovers (shouldn't happen)
-    deptRows.forEach(r => { if(!ordered.includes(r)) ordered.push(r); });
+    deptRows.forEach(r => { if(!seen.has(r.id)) ordered.push(r); });
 
     ordered.forEach(r => {
       const gid = 'row::'+r.id;
       nestedIds.push(gid);
       const tierClass = r.tier ? 'tier-'+r.tier : '';
+      // is this a parent whose children are showing?
+      const visibleKids = deptRows.filter(c => c.parentRef === r.ref);
+      const hasVisibleChildren = visibleKids.length > 0;
       const smePill = r.sme ? `<span class="row-tag">${escapeHtml(r.sme.slice(0,18))}</span>` : '';
       const refPill = r.ref ? `<span class="row-tag">${escapeHtml(r.ref)}</span>` : '';
-      const label = `<div class="row-title ${tierClass}"><span>${escapeHtml((r.deliverable||'(untitled)').slice(0,70))}${(r.deliverable||'').length>70?'...':''}</span>${refPill}${smePill}</div>`;
+      const chevron = hasVisibleChildren ? '<span style="color:var(--s21-mal);font-size:9px;margin-right:4px">▼</span>' : '';
+      const titleClass = hasVisibleChildren ? 'has-children' : '';
+      const label = `<div class="row-title ${tierClass}">${chevron}<span class="${titleClass}">${escapeHtml((r.deliverable||'(untitled)').slice(0,70))}${(r.deliverable||'').length>70?'...':''}</span>${refPill}${smePill}</div>`;
       groups.push({id: gid, content: label, treeLevel: 2});
 
-      // build the timeline item
+      // build items
+      // If row has its own start+end, always show a bar
       if(r.start && r.end){
         items.push({
-          id: r.id,
+          id: 'i-'+r.id, rowId: r.id,
           group: gid,
           start: r.start,
           end: r.end,
@@ -564,29 +658,51 @@ function renderGroupsAndItems(visible){
           className: r.statusMeta.cls,
           content: escapeHtml((r.deliverable||'').slice(0,32))
         });
-      } else if(r.end && !r.start){
-        // point milestone (diamond)
+      } else if(r.end || r.start){
+        // point milestone
+        const when = r.end || r.start;
         items.push({
-          id: r.id,
+          id: 'i-'+r.id, rowId: r.id,
           group: gid,
-          start: r.end,
+          start: when,
           type: 'point',
-          className: r.statusMeta.cls,
-          content: `<div class="milestone ${r.statusMeta.cls}"></div>`,
-          htmlContent: `<div class="milestone ${r.statusMeta.cls}"></div>`
-        });
-      } else if(r.start && !r.end){
-        items.push({
-          id: r.id,
-          group: gid,
-          start: r.start,
-          type: 'point',
-          className: r.statusMeta.cls,
-          content: `<div class="milestone ${r.statusMeta.cls}"></div>`,
-          htmlContent: `<div class="milestone ${r.statusMeta.cls}"></div>`
+          className: 'pt',
+          content: markerHtml(r),
+          htmlContent: markerHtml(r)
         });
       }
-      // undated rows are excluded from the timeline (shown in drawer)
+      // if fully undated AND has visible children, we'll add a summary bar below
+
+      // parent summary bar (if children are visible)
+      if(hasVisibleChildren){
+        // collect date range from ALL currently visible descendants
+        const descDates = [];
+        function collectDates(node){
+          const kids = deptRows.filter(c => c.parentRef === node.ref);
+          kids.forEach(k => {
+            if(k.start) descDates.push(k.start);
+            if(k.end) descDates.push(k.end);
+            collectDates(k);
+          });
+        }
+        collectDates(r);
+        if(descDates.length){
+          const minD = new Date(Math.min.apply(null, descDates));
+          const maxD = new Date(Math.max.apply(null, descDates));
+          // only add if there's a real range OR the parent has no own dates
+          const hasOwnRange = r.start && r.end;
+          if(!hasOwnRange && minD.getTime() !== maxD.getTime()){
+            items.push({
+              id: 's-'+r.id, rowId: r.id, isSummary: true,
+              group: gid,
+              start: minD,
+              end: maxD,
+              type: 'range',
+              className: 'summary'
+            });
+          }
+        }
+      }
     });
 
     groups.push({
@@ -601,7 +717,6 @@ function renderGroupsAndItems(visible){
   GROUPS.add(groups);
   ITEMS.add(items);
 
-  // fit view if reasonable
   if(items.length){
     try{ timeline.fit({animation:false}); }catch(e){}
   }
@@ -639,16 +754,17 @@ function renderLegend(){
     `<span class="chip"><span class="swatch" style="background:${s.color}"></span>${s.label}</span>`
   );
   parts.push('<span class="divider"></span>');
-  parts.push('<span class="chip"><span class="swatch" style="background:#fff;height:8px;width:22px;border-radius:2px"></span>Range (has Start + End)</span>');
-  parts.push('<span class="chip"><span class="swatch diamond" style="background:#fff"></span>Milestone (End only)</span>');
+  parts.push('<span class="chip"><span class="swatch" style="background:#fff;height:8px;width:22px;border-radius:2px"></span>Range (Start + End)</span>');
+  parts.push('<span class="chip"><span class="swatch triangle"></span>Key Milestone</span>');
+  parts.push('<span class="chip"><span class="swatch diamond" style="background:#fff"></span>SME Milestone</span>');
+  parts.push('<span class="chip"><span class="swatch circle" style="background:#fff"></span>Other (single date)</span>');
+  parts.push('<span class="divider"></span>');
+  parts.push('<span class="chip"><span class="swatch" style="background:transparent;border:1px dashed rgba(26,226,121,.7)"></span>Rolled up (parent summary)</span>');
   el.innerHTML = parts.join('');
 }
 
 // ---------- controls ----------
 function bindControls(){
-  ['f-dept','f-status','f-tier','f-type'].forEach(id => {
-    document.getElementById(id).addEventListener('change', applyFilters);
-  });
   document.getElementById('f-search').addEventListener('input', applyFilters);
   document.querySelectorAll('.btn[data-scale]').forEach(b => {
     b.addEventListener('click', () => {
@@ -662,7 +778,6 @@ function bindControls(){
     timeline.moveTo(now, {animation:true});
   });
   document.getElementById('btn-expo').addEventListener('click', () => {
-    // Data max end date is 2027-12-31; guess Expo window sep-dec 2027
     timeline.setWindow(new Date('2027-06-01'), new Date('2027-12-31'), {animation:true});
   });
   document.getElementById('btn-milestones').addEventListener('click', (e) => {
@@ -678,11 +793,20 @@ function bindControls(){
   document.getElementById('btn-drawer').addEventListener('click', (e) => {
     const d = document.getElementById('drawer');
     d.classList.toggle('open');
-    e.currentTarget.classList.toggle('active', d.classList.contains('open'));
+    const btn = e.currentTarget;
+    btn.classList.toggle('active', d.classList.contains('open'));
+    // preserve the badge count element
+    const badge = document.getElementById('undated-badge');
+    const openState = d.classList.contains('open');
+    btn.innerHTML = (openState ? 'Hide' : 'Show') + ' Undated ';
+    btn.appendChild(badge);
+    // trigger vis-timeline redraw so it recalculates height
+    if(timeline) setTimeout(() => timeline.redraw(), 50);
   });
   document.getElementById('btn-reset').addEventListener('click', () => {
-    ['f-dept','f-status','f-tier','f-type'].forEach(id => {
-      Array.from(document.getElementById(id).options).forEach(o => o.selected = false);
+    document.querySelectorAll('.dd').forEach(dd => {
+      dd.querySelectorAll('.dd-list input').forEach(cb => cb.checked = false);
+      syncDropdown(dd);
     });
     document.getElementById('f-search').value = '';
     milestonesOnly = false;
@@ -697,9 +821,9 @@ function setScale(scale){
   const w = timeline.getWindow();
   const center = new Date((w.start.getTime()+w.end.getTime())/2);
   let span;
-  if(scale === 'day') span = 1000*60*60*24*7;         // 1 week visible
-  else if(scale === 'week') span = 1000*60*60*24*90;   // ~3 months visible
-  else span = 1000*60*60*24*365*1.2;                   // ~14 months visible
+  if(scale === 'day') span = 1000*60*60*24*7;
+  else if(scale === 'week') span = 1000*60*60*24*90;
+  else span = 1000*60*60*24*365*1.2;
   timeline.setWindow(new Date(center.getTime()-span/2), new Date(center.getTime()+span/2), {animation:true});
 }
 
