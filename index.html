@@ -86,8 +86,33 @@ main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;ov
 .vis-panel.vis-center,.vis-panel.vis-left,.vis-panel.vis-right,.vis-panel.vis-top,.vis-panel.vis-bottom{border-color:var(--line) !important}
 .vis-panel .vis-shadow{box-shadow:none}
 .vis-labelset .vis-label{color:var(--ink);border-color:var(--line) !important;background:var(--s21-blue-2)}
-.vis-labelset .vis-label.vis-nesting-group{background:linear-gradient(90deg,var(--s21-blue-3),var(--s21-blue-2));font-weight:600;align-items:flex-start !important}
-.vis-labelset .vis-label.vis-nesting-group .vis-inner{padding-top:8px !important}
+.vis-labelset .vis-label.vis-nesting-group{
+  background:linear-gradient(90deg,var(--s21-blue-3),var(--s21-blue-2));
+  font-weight:600;
+  align-items:flex-start !important;
+  vertical-align:top !important;
+  position:relative;
+}
+.vis-labelset .vis-label.vis-nesting-group .vis-inner{
+  padding:0 !important;
+  position:absolute !important;
+  top:0 !important;
+  left:0 !important;
+  right:0 !important;
+  height:36px !important;
+  display:flex !important;
+  align-items:center !important;
+  background:linear-gradient(90deg,var(--s21-blue),var(--s21-blue-3));
+  border-bottom:2px solid var(--s21-mal);
+  z-index:2;
+  box-sizing:border-box;
+  padding-left:8px !important;
+  padding-right:8px !important;
+}
+/* push the corresponding items row down so the dept header doesn't overlap the first child */
+.vis-foreground .vis-group.dept-row{
+  min-height:36px !important;
+}
 .vis-left .vis-labelset{width:420px}
 .vis-left{width:420px !important}
 .vis-foreground .vis-group{border-color:var(--line) !important}
@@ -770,7 +795,9 @@ function renderGroupsAndItems(visible){
       content: buildDeptLabel(dept, ordered.length),
       nestedGroups: nestedIds,
       treeLevel: 1,
-      showNested: true
+      showNested: true,
+      className: 'dept-row',
+      style: 'height:36px;'
     });
   });
 
