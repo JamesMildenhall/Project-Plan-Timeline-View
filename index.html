@@ -27,6 +27,7 @@
   --line:rgba(255,255,255,.08);
   --panel:rgba(255,255,255,.03);
   --panel-2:rgba(255,255,255,.06);
+  --label-width:420px;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--s21-blue-2);color:var(--ink);font-family:'Montserrat',system-ui,sans-serif}
@@ -113,8 +114,22 @@ main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;ov
 .vis-foreground .vis-group.dept-row{
   min-height:36px !important;
 }
-.vis-left .vis-labelset{width:420px}
-.vis-left{width:420px !important}
+.vis-left .vis-labelset{width:var(--label-width) !important}
+.vis-left{width:var(--label-width) !important}
+
+/* resizer for label column */
+#resizer{
+  position:absolute;top:0;bottom:0;left:var(--label-width);
+  width:8px;margin-left:-4px;z-index:50;cursor:col-resize;
+  user-select:none;
+}
+#resizer::before{
+  content:'';position:absolute;top:0;bottom:0;left:3px;width:2px;
+  background:transparent;transition:background .15s ease;
+}
+#resizer:hover::before,#resizer.active::before{background:var(--s21-mal)}
+body.resizing{cursor:col-resize !important;user-select:none !important}
+body.resizing *{cursor:col-resize !important}
 .vis-foreground .vis-group{border-color:var(--line) !important}
 .vis-time-axis .vis-text{color:var(--ink-2);font-size:10px;letter-spacing:.06em;text-transform:uppercase}
 .vis-time-axis .vis-grid.vis-minor{border-color:rgba(255,255,255,.04) !important}
@@ -304,6 +319,7 @@ main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;ov
     </div>
   </div>
   <div id="timeline"></div>
+  <div id="resizer" title="Drag to resize label column"></div>
 </main>
 
 <div class="drawer" id="drawer">
@@ -807,6 +823,17 @@ function renderGroupsAndItems(visible){
   if(items.length){
     try{ timeline.fit({animation:false}); }catch(e){}
   }
+  // reset vertical scroll to top so the first group is always at the top of the viewport
+  setTimeout(scrollTimelineTop, 40);
+}
+
+function scrollTimelineTop(){
+  const candidates = [
+    document.querySelector('#timeline .vis-vertical-scroll'),
+    document.querySelector('#timeline .vis-panel.vis-left'),
+    document.querySelector('#timeline .vis-panel.vis-center'),
+  ];
+  candidates.forEach(el => { if(el) el.scrollTop = 0; });
 }
 
 function updateStats(visible){
@@ -855,6 +882,30 @@ function renderLegend(){
 // ---------- controls ----------
 function bindControls(){
   document.getElementById('f-search').addEventListener('input', applyFilters);
+  // resizer for label column
+  const resizer = document.getElementById('resizer');
+  let isResizing = false, startX = 0, startW = 420;
+  resizer.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    startX = e.clientX;
+    startW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--label-width')) || 420;
+    resizer.classList.add('active');
+    document.body.classList.add('resizing');
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', (e) => {
+    if(!isResizing) return;
+    const dx = e.clientX - startX;
+    const w = Math.max(220, Math.min(760, startW + dx));
+    document.documentElement.style.setProperty('--label-width', w + 'px');
+  });
+  document.addEventListener('mouseup', () => {
+    if(!isResizing) return;
+    isResizing = false;
+    resizer.classList.remove('active');
+    document.body.classList.remove('resizing');
+    if(timeline) setTimeout(() => timeline.redraw(), 20);
+  });
   document.querySelectorAll('.btn[data-scale]').forEach(b => {
     b.addEventListener('click', () => {
       document.querySelectorAll('.btn[data-scale]').forEach(x => x.classList.remove('active'));
