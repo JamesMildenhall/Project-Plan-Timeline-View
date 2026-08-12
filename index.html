@@ -78,8 +78,8 @@ header .stat b{color:#fff;font-weight:600}
 .legend .swatch.triangle{width:0;height:0;background:transparent;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #fff}
 .legend .divider{width:1px;height:14px;background:var(--line)}
 
-main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative}
-#timeline{flex:1;min-height:0;background:var(--s21-blue-2)}
+main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;overflow:hidden}
+#timeline{flex:1;min-height:0;background:var(--s21-blue-2);overflow:hidden}
 
 /* vis-timeline dark overrides */
 .vis-timeline{border:none !important;font-family:'Montserrat',sans-serif}
@@ -525,6 +525,9 @@ function buildTimeline(){
     zoomMin: 1000*60*60*24*3,
     zoomMax: 1000*60*60*24*365*3,
     horizontalScroll: true,
+    verticalScroll: true,
+    height: '100%',
+    maxHeight: '100%',
     zoomKey: 'ctrlKey',
     margin: {item: 4, axis: 8},
     tooltip: {followMouse:true, overflowMethod:'flip', template: () => ''},
