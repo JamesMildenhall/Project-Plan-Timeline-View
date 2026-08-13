@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>EX27 Ops - Live Gantt</title>
+<title>EX27 Operations - Live Delivery Timeline</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,215 +21,290 @@
   --s21-slate:#3E6680;
   --s21-mslate:#6960EC;
   --s21-pink:#E21A83;
+  --s21-amber:#F2B01E;
   --s21-grey:#6B7280;
   --ink:#EEF2FF;
   --ink-2:#B7BEE0;
   --line:rgba(255,255,255,.08);
   --panel:rgba(255,255,255,.03);
-  --panel-2:rgba(255,255,255,.06);
-  --label-width:420px;
+  --label-width:440px;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--s21-blue-2);color:var(--ink);font-family:'Montserrat',system-ui,sans-serif}
-html,body{height:100%}
+html,body{margin:0;padding:0;background:var(--s21-blue-2);color:var(--ink);font-family:'Montserrat',system-ui,sans-serif;height:100%}
 body{display:flex;flex-direction:column;overflow:hidden}
-header{padding:14px 20px;background:linear-gradient(180deg,var(--s21-blue) 0%, var(--s21-blue-2) 100%);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:16px;flex-wrap:wrap;flex-shrink:0}
-header h1{font-size:15px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;margin:0;color:#fff}
-header h1 .mal{color:var(--s21-mal)}
-header .sub{font-size:11px;color:var(--ink-2);letter-spacing:.06em}
+
+/* ---------- header / co-branding lockup ---------- */
+header{
+  padding:10px 20px;background:linear-gradient(105deg,var(--s21-blue) 0%, #0A0940 55%, var(--s21-blue-2) 100%);
+  border-bottom:1px solid var(--line);display:flex;align-items:center;gap:18px;flex-shrink:0;position:relative;
+}
+header::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:2px;
+  background:linear-gradient(90deg,var(--s21-mal),var(--s21-turq) 35%,var(--s21-mslate) 65%,var(--s21-pink));opacity:.9}
+.lockup{display:flex;align-items:center;gap:16px;flex-shrink:0}
+.lockup img.s21{height:30px;width:auto;display:block}
+.lockup img.expo{height:38px;width:auto;display:block}
+.lockup .rule{width:1px;height:34px;background:rgba(255,255,255,.22)}
+.titles{display:flex;flex-direction:column;gap:2px;min-width:0}
+.titles h1{font-size:14px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;margin:0;color:#fff;white-space:nowrap}
+.titles h1 .mal{color:var(--s21-mal)}
+.titles .sub{font-size:10px;color:var(--ink-2);letter-spacing:.08em;white-space:nowrap}
+.titles .sub code{background:rgba(255,255,255,.06);padding:1px 6px;border-radius:3px;color:var(--s21-mal);font-size:9px}
 header .spacer{flex:1}
-header .stat{font-size:11px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.1em}
-header .stat b{color:#fff;font-weight:600}
+.countdown{text-align:right;flex-shrink:0}
+.countdown .big{font-size:22px;font-weight:800;color:var(--s21-mal);line-height:1}
+.countdown .lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-top:3px}
 
-.controls{padding:12px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;background:var(--s21-blue);border-bottom:1px solid var(--line);flex-shrink:0}
+/* ---------- KPI strip ---------- */
+.kpis{display:flex;gap:8px;padding:10px 20px;background:var(--s21-blue);border-bottom:1px solid var(--line);flex-shrink:0;overflow-x:auto}
+.kpi{flex:1 1 0;min-width:96px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-left:3px solid var(--k,var(--s21-slate));
+  border-radius:6px;padding:7px 10px;cursor:pointer;transition:background .15s ease,border-color .15s ease}
+.kpi:hover{background:rgba(255,255,255,.09)}
+.kpi.on{background:rgba(26,226,121,.10);border-color:var(--s21-mal)}
+.kpi .n{font-size:19px;font-weight:800;color:#fff;line-height:1.1}
+.kpi .t{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-top:2px;font-weight:600;white-space:nowrap}
+.kpi .pc{font-size:9px;color:var(--ink-2);opacity:.75}
+
+/* ---------- density strip ---------- */
+.toprow{display:flex;align-items:stretch;gap:0;background:var(--s21-blue);border-bottom:1px solid var(--line);flex-shrink:0}
+.donut{display:flex;align-items:center;gap:12px;padding:6px 18px 8px 20px;border-right:1px solid var(--line);flex-shrink:0}
+.donut .dwrap{position:relative;width:88px;height:88px;flex-shrink:0}
+.donut svg{width:88px;height:88px;transform:rotate(-90deg);display:block}
+.donut svg circle{fill:none;stroke-width:13;cursor:pointer;transition:opacity .15s ease,stroke-width .15s ease}
+.donut svg circle:hover{stroke-width:16}
+.donut svg circle.dim{opacity:.22}
+.donut .dcentre{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
+.donut .dcentre b{font-size:19px;font-weight:800;color:#fff;line-height:1}
+.donut .dcentre s{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);text-decoration:none;margin-top:2px}
+.donut .dkey{display:flex;flex-direction:column;gap:1px;min-width:168px}
+.donut .dkey .kh{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:600;margin-bottom:3px}
+.donut .dkey .krow{display:flex;align-items:center;gap:6px;font-size:10.5px;cursor:pointer;padding:1px 4px;border-radius:3px;line-height:1.45}
+.donut .dkey .krow:hover{background:rgba(255,255,255,.07)}
+.donut .dkey .krow.on{background:rgba(26,226,121,.14)}
+.donut .dkey .krow i{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.donut .dkey .krow span.lb{flex:1;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.donut .dkey .krow b{color:#fff;font-weight:700}
+.donut .dkey .krow em{color:var(--ink-2);font-style:normal;font-size:9px;min-width:30px;text-align:right}
+.donut select{margin-top:5px;background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:4px 6px;font-family:inherit;font-size:10px;outline:none;max-width:190px}
+.donut select:focus{border-color:var(--s21-mal)}
+.density{padding:6px 20px 8px;background:var(--s21-blue);flex:1;min-width:0}
+.density .dh{display:flex;align-items:center;gap:10px;margin-bottom:3px}
+.density .dh span{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+.dchart{display:flex;align-items:flex-end;gap:2px;height:42px}
+.dcol{flex:1 1 0;display:flex;flex-direction:column;justify-content:flex-end;height:100%;position:relative;cursor:pointer;min-width:3px}
+.dcol .seg{width:100%;border-radius:1px}
+.dcol:hover{filter:brightness(1.4)}
+.dcol.expo::before{content:'';position:absolute;left:-1px;right:-1px;top:-3px;bottom:-3px;background:rgba(26,226,121,.14);border-radius:2px;pointer-events:none}
+.dcol.now::after{content:'';position:absolute;left:50%;top:-5px;bottom:-5px;width:2px;background:var(--s21-mal);margin-left:-1px;pointer-events:none}
+.dlabels{display:flex;gap:2px;margin-top:3px}
+.dlab{flex:1 1 0;font-size:8px;color:var(--ink-2);text-align:center;white-space:nowrap;overflow:hidden;min-width:3px;letter-spacing:.02em}
+.dlab b{color:#fff;font-weight:700}
+
+/* ---------- controls ---------- */
+.controls{padding:10px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;background:var(--s21-blue-2);border-bottom:1px solid var(--line);flex-shrink:0}
 .ctrl{display:flex;flex-direction:column;gap:4px;position:relative}
-.ctrl label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
-.ctrl input[type=text]{background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;outline:none}
-.ctrl input[type=text]:focus{border-color:var(--s21-mal)}
+.ctrl label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+.ctrl input[type=text],.ctrl select{background:var(--s21-blue);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;outline:none}
+.ctrl input[type=text]:focus,.ctrl select:focus{border-color:var(--s21-mal)}
 
-/* Custom checkbox dropdown */
 .dd{position:relative}
-.dd-btn{width:100%;background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;outline:none}
-.dd-btn:hover{border-color:var(--s21-mal)}
-.dd-btn.active{border-color:var(--s21-mal)}
+.dd-btn{width:100%;background:var(--s21-blue);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;outline:none}
+.dd-btn:hover,.dd-btn.active{border-color:var(--s21-mal)}
+.dd-btn .dd-lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .dd-btn .dd-count{background:var(--s21-mal);color:var(--s21-blue);font-weight:700;font-size:10px;padding:1px 7px;border-radius:999px;flex-shrink:0}
 .dd-btn .dd-arrow{color:var(--ink-2);font-size:10px;flex-shrink:0}
-.dd-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--s21-blue);border:1px solid var(--s21-mal);border-radius:8px;padding:8px;z-index:20;box-shadow:0 8px 30px rgba(0,0,0,.5);display:none;min-width:220px}
+.dd-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--s21-blue);border:1px solid var(--s21-mal);border-radius:8px;padding:8px;z-index:40;box-shadow:0 8px 30px rgba(0,0,0,.6);display:none;min-width:240px}
 .dd-panel.open{display:block}
 .dd-search{width:100%;background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:6px 8px;font-size:11px;font-family:inherit;outline:none;margin-bottom:6px}
 .dd-actions{display:flex;gap:6px;margin-bottom:6px}
 .dd-actions button{flex:1;background:transparent;color:var(--ink-2);border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-family:inherit;font-size:10px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer}
 .dd-actions button:hover{color:var(--s21-mal);border-color:var(--s21-mal)}
-.dd-list{max-height:220px;overflow-y:auto}
-.dd-list label{display:flex;align-items:center;gap:8px;padding:4px 6px;cursor:pointer;border-radius:4px;font-size:12px;color:var(--ink);text-transform:none;letter-spacing:0;font-weight:400}
+.dd-list{max-height:240px;overflow-y:auto}
+.dd-list label{display:flex;align-items:center;gap:8px;padding:4px 6px;cursor:pointer;border-radius:4px;font-size:12px;color:var(--ink);font-weight:400}
 .dd-list label:hover{background:var(--s21-blue-2)}
+.dd-list label .cnt{margin-left:auto;font-size:9px;color:var(--ink-2);background:rgba(255,255,255,.07);padding:1px 6px;border-radius:999px}
 .dd-list input[type=checkbox]{accent-color:var(--s21-mal);flex-shrink:0}
 
-.buttons{padding:10px 20px;display:flex;flex-wrap:wrap;gap:8px;background:var(--s21-blue);border-bottom:1px solid var(--line);flex-shrink:0}
-.btn{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s ease}
+.buttons{padding:8px 20px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--s21-blue-2);border-bottom:1px solid var(--line);flex-shrink:0}
+.btn{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-family:inherit;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s ease;white-space:nowrap}
 .btn:hover{border-color:var(--s21-mal);color:var(--s21-mal)}
 .btn.active{background:var(--s21-mal);color:var(--s21-blue);border-color:var(--s21-mal)}
-.btn.ghost{opacity:.7}
+.btn.warn.active{background:var(--s21-pink);border-color:var(--s21-pink);color:#fff}
+.btn.ghost{opacity:.65}
+.vr{width:1px;background:var(--line);align-self:stretch;margin:0 4px}
 
-.legend{padding:8px 20px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;background:var(--s21-blue-2);border-bottom:1px solid var(--line);font-size:11px;color:var(--ink-2);flex-shrink:0}
+.legend{padding:7px 20px;display:flex;flex-wrap:wrap;gap:13px;align-items:center;background:var(--s21-blue);border-bottom:1px solid var(--line);font-size:10.5px;color:var(--ink-2);flex-shrink:0}
 .legend .chip{display:inline-flex;align-items:center;gap:6px}
-.legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block}
+.legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;flex-shrink:0}
 .legend .swatch.diamond{transform:rotate(45deg);border-radius:2px}
 .legend .swatch.circle{border-radius:50%}
-.legend .swatch.triangle{width:0;height:0;background:transparent;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #fff}
+.legend .swatch.triangle{width:0;height:0;background:transparent !important;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid #fff}
 .legend .divider{width:1px;height:14px;background:var(--line)}
 
 main{flex:1;display:flex;flex-direction:column;min-height:0;position:relative;overflow:hidden}
+.inspector{display:none;flex-shrink:0;background:linear-gradient(90deg,var(--s21-blue),var(--s21-blue-2));border-bottom:1px solid var(--s21-mal);padding:9px 20px;gap:14px;align-items:flex-start;position:relative}
+.inspector.open{display:flex}
+.inspector .ins-left{flex:1;min-width:0}
+.inspector .ins-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.inspector .ins-title{font-size:13px;font-weight:700;color:#fff}
+.inspector .ins-meta{margin-top:5px;display:flex;flex-wrap:wrap;gap:6px 16px;font-size:10.5px;color:var(--ink-2)}
+.inspector .ins-meta b{color:#fff;font-weight:600}
+.inspector .ins-note{margin-top:5px;font-size:10.5px;color:var(--ink-2);line-height:1.5;max-width:1000px}
+.inspector .ins-note b{color:var(--s21-mal);font-weight:700;letter-spacing:.06em;font-size:9px;text-transform:uppercase}
+.inspector .ins-actions{display:flex;flex-direction:column;gap:6px;flex-shrink:0;align-items:flex-end}
+.inspector a.btn{text-decoration:none;display:inline-block}
+.chainbar{display:none;align-items:center;gap:12px;padding:7px 20px;background:rgba(26,226,121,.10);border-bottom:1px solid rgba(26,226,121,.4);font-size:11px;color:var(--ink);flex-shrink:0}
+.chainbar.open{display:flex}
+.chainbar b{color:var(--s21-mal)}
 #timeline{flex:1;min-height:0;background:var(--s21-blue-2);overflow:hidden}
 
-/* vis-timeline dark overrides */
+/* ---------- vis-timeline theme ---------- */
 .vis-timeline{border:none !important;font-family:'Montserrat',sans-serif}
 .vis-panel.vis-center,.vis-panel.vis-left,.vis-panel.vis-right,.vis-panel.vis-top,.vis-panel.vis-bottom{border-color:var(--line) !important}
 .vis-panel .vis-shadow{box-shadow:none}
 .vis-labelset .vis-label{color:var(--ink);border-color:var(--line) !important;background:var(--s21-blue-2)}
-.vis-labelset .vis-label.vis-nesting-group{
-  background:linear-gradient(90deg,var(--s21-blue-3),var(--s21-blue-2));
-  font-weight:600;
-  align-items:flex-start !important;
-  vertical-align:top !important;
-  position:relative;
-}
+.vis-labelset .vis-label.vis-nesting-group{background:linear-gradient(90deg,var(--s21-blue-3),var(--s21-blue-2));font-weight:600;align-items:flex-start !important;position:relative;cursor:pointer}
 .vis-labelset .vis-label.vis-nesting-group .vis-inner{
-  padding:0 !important;
-  position:absolute !important;
-  top:0 !important;
-  left:0 !important;
-  right:0 !important;
-  height:36px !important;
-  display:flex !important;
-  align-items:center !important;
+  padding:0 !important;position:absolute !important;top:0 !important;left:0 !important;right:0 !important;
+  height:34px !important;display:flex !important;align-items:center !important;
   background:linear-gradient(90deg,var(--s21-blue),var(--s21-blue-3));
-  border-bottom:2px solid var(--s21-mal);
-  z-index:2;
-  box-sizing:border-box;
-  padding-left:8px !important;
-  padding-right:8px !important;
+  border-bottom:2px solid var(--s21-mal);z-index:2;box-sizing:border-box;padding-left:8px !important;padding-right:8px !important;
 }
-/* push the corresponding items row down so the dept header doesn't overlap the first child */
-.vis-foreground .vis-group.dept-row{
-  min-height:36px !important;
-}
+.vis-foreground .vis-group.dept-row{min-height:34px !important}
 .vis-left .vis-labelset{width:var(--label-width) !important}
 .vis-left{width:var(--label-width) !important}
-
-/* resizer for label column */
-#resizer{
-  position:absolute;top:0;bottom:0;left:var(--label-width);
-  width:8px;margin-left:-4px;z-index:50;cursor:col-resize;
-  user-select:none;
-}
-#resizer::before{
-  content:'';position:absolute;top:0;bottom:0;left:3px;width:2px;
-  background:transparent;transition:background .15s ease;
-}
-#resizer:hover::before,#resizer.active::before{background:var(--s21-mal)}
-body.resizing{cursor:col-resize !important;user-select:none !important}
-body.resizing *{cursor:col-resize !important}
 .vis-foreground .vis-group{border-color:var(--line) !important}
+.vis-foreground .vis-group:nth-child(even){background:rgba(255,255,255,.012)}
 .vis-time-axis .vis-text{color:var(--ink-2);font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.vis-time-axis .vis-text.vis-major{color:#fff;font-weight:600}
 .vis-time-axis .vis-grid.vis-minor{border-color:rgba(255,255,255,.04) !important}
-.vis-time-axis .vis-grid.vis-major{border-color:rgba(255,255,255,.08) !important}
+.vis-time-axis .vis-grid.vis-major{border-color:rgba(255,255,255,.10) !important}
 .vis-time-axis .vis-grid.vis-vertical{border-color:rgba(255,255,255,.04) !important}
-.vis-current-time{background:var(--s21-mal) !important;width:2px !important;z-index:2}
+.vis-time-axis .vis-grid.vis-saturday,.vis-time-axis .vis-grid.vis-sunday{background:rgba(255,255,255,.022)}
+.vis-current-time{background:var(--s21-mal) !important;width:2px !important;z-index:3}
 
+#resizer{position:absolute;top:0;bottom:0;left:var(--label-width);width:8px;margin-left:-4px;z-index:50;cursor:col-resize;user-select:none}
+#resizer::before{content:'';position:absolute;top:0;bottom:0;left:3px;width:2px;background:transparent;transition:background .15s ease}
+#resizer:hover::before,#resizer.active::before{background:var(--s21-mal)}
+body.resizing,body.resizing *{cursor:col-resize !important;user-select:none !important}
+
+/* items */
 .vis-item{border-width:0;border-radius:4px;font-size:11px;color:#fff;font-weight:500}
-.vis-item.vis-range{padding:2px 8px}
-.vis-item.vis-selected{box-shadow:0 0 0 2px var(--s21-mal)}
+.vis-item.vis-range{padding:0}
+.vis-item.vis-range .vis-item-content{padding:2px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%;position:relative;z-index:2}
+.vis-item.vis-selected{box-shadow:0 0 0 2px var(--s21-mal);z-index:5}
+.vis-item .bar-fill{position:absolute;left:0;top:0;bottom:0;background:rgba(255,255,255,.28);border-right:1px solid rgba(255,255,255,.5);z-index:1;pointer-events:none;border-radius:4px 0 0 4px}
 
-/* point items: hide default content label, style the dot as the shape */
+/* expo / phase background bands */
+.vis-item.vis-background.band-expo{background:rgba(26,226,121,.10);border-left:2px solid rgba(26,226,121,.55);border-right:2px solid rgba(26,226,121,.55)}
+.vis-item.vis-background.band-or{background:rgba(105,96,236,.10)}
+.vis-item.vis-background.band-bump{background:rgba(226,26,131,.09)}
+/* Opening Ceremony is a single evening, so it is drawn as a rule rather than a
+   fill. border-left survives a sub pixel width at year zoom, a background will not. */
+.vis-item.vis-background.band-oc{background:rgba(226,26,131,.30);border-left:3px solid var(--s21-pink);box-shadow:0 0 10px rgba(226,26,131,.5)}
+
+/* point items */
 .vis-item.vis-point{background:transparent !important;border:none !important;height:20px;overflow:visible !important}
 .vis-item.vis-point .vis-item-content{display:none !important}
-.vis-item.vis-point .vis-dot{
-  width:16px !important; height:16px !important;
-  border:none !important; border-radius:0 !important;
-  background:transparent !important;
-  transform:translate(-50%, -50%);
-  top:50% !important; left:0 !important;
-  position:absolute;
-}
-.vis-item.vis-point.shape-dot .vis-dot{
-  background:currentColor !important; border-radius:50% !important;
-}
-.vis-item.vis-point.shape-rhombus .vis-dot{
-  background:currentColor !important;
-  transform:translate(-50%, -50%) rotate(45deg);
-  width:13px !important; height:13px !important;
-}
-.vis-item.vis-point.shape-triangle .vis-dot{
-  width:0 !important; height:0 !important;
-  background:transparent !important;
-  border-left:9px solid transparent !important;
-  border-right:9px solid transparent !important;
-  border-bottom:16px solid currentColor !important;
-  transform:translate(-50%, -60%);
-}
-.vis-item.vis-point.c-complete{color:var(--s21-mal)}
-.vis-item.vis-point.c-ontrack{color:var(--s21-turq)}
-.vis-item.vis-point.c-atrisk{color:var(--s21-pink)}
-.vis-item.vis-point.c-notstarted{color:var(--s21-slate)}
-.vis-item.vis-point.c-noupdate{color:var(--s21-mslate)}
-.vis-item.vis-point.c-tbc{color:var(--s21-grey)}
-.vis-item.vis-point.c-unknown{color:#4B5563}
+body.labels-on .vis-item.vis-point .vis-item-content{display:block !important;padding-left:13px;font-size:9.5px;color:var(--ink-2) !important;white-space:nowrap;letter-spacing:.03em}
+.vis-item.vis-point .vis-dot{width:16px !important;height:16px !important;border:none !important;border-radius:0 !important;background:transparent !important;transform:translate(-50%,-50%);top:50% !important;left:0 !important;position:absolute}
+.vis-item.vis-point.shape-dot .vis-dot{background:currentColor !important;border-radius:50% !important}
+.vis-item.vis-point.shape-rhombus .vis-dot{background:currentColor !important;transform:translate(-50%,-50%) rotate(45deg);width:13px !important;height:13px !important}
+.vis-item.vis-point.shape-triangle .vis-dot{width:0 !important;height:0 !important;background:transparent !important;border-left:9px solid transparent !important;border-right:9px solid transparent !important;border-bottom:16px solid currentColor !important;transform:translate(-50%,-60%)}
+.vis-item.c-complete,.vis-item.vis-dot.c-complete{color:var(--s21-mal) !important}
+.vis-item.c-ontrack,.vis-item.vis-dot.c-ontrack{color:var(--s21-turq) !important}
+.vis-item.c-atrisk,.vis-item.vis-dot.c-atrisk{color:var(--s21-pink) !important}
+.vis-item.c-notstarted,.vis-item.vis-dot.c-notstarted{color:var(--s21-slate) !important}
+.vis-item.c-noupdate,.vis-item.vis-dot.c-noupdate{color:var(--s21-mslate) !important}
+.vis-item.c-tbc,.vis-item.vis-dot.c-tbc{color:var(--s21-grey) !important}
+.vis-item.c-unknown,.vis-item.vis-dot.c-unknown{color:#4B5563 !important}
 
-/* status colours for range bars */
+/* overdue emphasis */
+.vis-item.od{box-shadow:0 0 0 1.5px var(--s21-pink),0 0 12px rgba(226,26,131,.55)}
+.vis-item.vis-point.od .vis-dot{filter:drop-shadow(0 0 5px var(--s21-pink))}
+.vis-item.vis-point.od::after{content:'';position:absolute;left:-9px;top:50%;width:18px;height:18px;margin-top:-9px;border:1.5px solid var(--s21-pink);border-radius:50%}
+
+/* status colours */
 .st-complete{background:var(--s21-mal) !important;color:#0D0C4E !important;font-weight:700}
 .st-ontrack{background:var(--s21-turq) !important;color:#0D0C4E !important;font-weight:600}
 .st-atrisk{background:var(--s21-pink) !important}
 .st-notstarted{background:var(--s21-slate) !important}
 .st-noupdate{background:var(--s21-mslate) !important}
 .st-tbc{background:var(--s21-grey) !important}
-.st-unknown{background:#4B5563 !important;opacity:.7}
+.st-unknown{background:#4B5563 !important;opacity:.75}
 
-/* summary bar for parents whose children are showing */
+.vis-item.baseline{background:transparent !important;border:1px solid rgba(255,255,255,.30) !important;border-radius:3px;height:7px;padding:0 !important;opacity:.85}
+.vis-item.baseline .vis-item-content{display:none}
+.vis-item.baseline.slipped{border-color:rgba(226,26,131,.75) !important;border-style:dashed !important}
+.vis-item.vis-point.baseline-pt{background:transparent !important;border:none !important;height:20px;overflow:visible !important}
+.vis-item.vis-point.baseline-pt .vis-item-content{display:none !important}
+.vis-item.vis-point.baseline-pt .vis-dot{width:11px !important;height:11px !important;border:1.5px solid rgba(255,255,255,.45) !important;
+  border-radius:50% !important;background:transparent !important;transform:translate(-50%,-50%) rotate(45deg);top:50% !important;left:0 !important;position:absolute}
+.vis-item.vis-point.baseline-pt.slipped .vis-dot{border-color:var(--s21-pink) !important;border-style:dashed !important}
 .vis-item.summary{background:transparent !important;border:1px dashed rgba(26,226,121,.55) !important;border-radius:3px;height:10px;padding:0 !important}
 .vis-item.summary .vis-item-content{display:none}
 
-/* row labels: structured columns instead of one long string */
+/* row labels */
 .vis-labelset .vis-label .vis-inner{padding:6px 8px !important;font-size:12px;width:100%;display:block !important;box-sizing:border-box}
-.vis-labelset .vis-label .vis-inner .row-line{display:flex !important;align-items:center;gap:6px;font-size:12px;white-space:nowrap;overflow:hidden;width:100%;padding-right:18px;box-sizing:border-box}
-.vis-labelset .vis-label .vis-inner .row-line .indent{display:inline-block;flex-shrink:0;width:0}
-.vis-labelset .vis-label .vis-inner .row-line.tier-2 .indent{width:10px}
-.vis-labelset .vis-label .vis-inner .row-line.tier-3 .indent{width:22px}
-.vis-labelset .vis-label .vis-inner .row-line.tier-4 .indent{width:34px}
-.vis-labelset .vis-label .vis-inner .row-line .chevron{color:var(--s21-mal);font-size:9px;width:12px;text-align:center;flex-shrink:0}
-.vis-labelset .vis-label .vis-inner .row-line .tier-pill{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.05em;padding:2px 6px;border-radius:3px;flex-shrink:0;min-width:26px;text-align:center;line-height:1.2}
-.vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-1{background:#1AE279;color:#0D0C4E}
-.vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-2{background:#49D8CD;color:#0D0C4E}
-.vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-3{background:#6960EC;color:#fff}
-.vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-4{background:rgba(255,255,255,.18);color:#fff}
-.vis-labelset .vis-label .vis-inner .row-line .tier-pill.t-x{background:rgba(255,255,255,.08);color:var(--ink-2)}
-.vis-labelset .vis-label .vis-inner .row-line .ref-pill{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.03em;padding:2px 6px;border-radius:3px;background:rgba(26,226,121,.15);color:#1AE279;border:1px solid rgba(26,226,121,.45);flex-shrink:0;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;line-height:1.2}
-.vis-labelset .vis-label .vis-inner .row-line .deliv{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--ink);white-space:nowrap;display:block}
-.vis-labelset .vis-label .vis-inner .row-line .deliv.parent{color:#fff;font-weight:600}
-.vis-labelset .vis-label .vis-inner .row-line .deliv.child{color:var(--ink-2);font-weight:400}
-.vis-labelset .vis-label .vis-inner .row-line .sme-pill{display:inline-block;font-size:9px;letter-spacing:.03em;padding:2px 6px;border-radius:3px;background:rgba(255,255,255,.08);color:var(--ink-2);border:1px solid var(--line);flex-shrink:0;max-width:80px;overflow:hidden;text-overflow:ellipsis;line-height:1.2;white-space:nowrap}
-.vis-labelset .vis-label .vis-inner .row-line .dept-name{letter-spacing:.1em;text-transform:uppercase;font-size:11px;color:#fff;font-weight:700;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;display:block;white-space:nowrap}
-.vis-labelset .vis-label .vis-inner .row-line .dept-count{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--s21-mal);color:#0D0C4E;flex-shrink:0;line-height:1.2}
+.row-line{display:flex !important;align-items:center;gap:6px;font-size:12px;white-space:nowrap;overflow:hidden;width:100%;padding-right:14px;box-sizing:border-box}
+.row-line .indent{display:inline-block;flex-shrink:0;width:0}
+.row-line.tier-2 .indent{width:10px}
+.row-line.tier-3 .indent{width:22px}
+.row-line.tier-4 .indent{width:34px}
+.row-line .chevron{color:var(--s21-mal);font-size:9px;width:11px;text-align:center;flex-shrink:0}
+.row-line .tier-pill{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.05em;padding:2px 6px;border-radius:3px;flex-shrink:0;min-width:26px;text-align:center;line-height:1.2}
+.row-line .tier-pill.t-1{background:#1AE279;color:#0D0C4E}
+.row-line .tier-pill.t-2{background:#49D8CD;color:#0D0C4E}
+.row-line .tier-pill.t-3{background:#6960EC;color:#fff}
+.row-line .tier-pill.t-4{background:rgba(255,255,255,.18);color:#fff}
+.row-line .tier-pill.t-x{background:rgba(255,255,255,.08);color:var(--ink-2)}
+.row-line .ref-pill{display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;background:rgba(26,226,121,.15);color:#1AE279;border:1px solid rgba(26,226,121,.45);flex-shrink:0;font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;line-height:1.2}
+.row-line .ref-pill.ph{background:rgba(255,255,255,.06);color:var(--ink-2);border-color:var(--line);font-style:italic}
+.row-line .deliv{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;color:var(--ink);white-space:nowrap;display:block}
+.row-line .deliv.parent{color:#fff;font-weight:600}
+.row-line .deliv.child{color:var(--ink-2);font-weight:400}
+.row-line .deliv mark{background:rgba(242,176,30,.35);color:#fff;border-radius:2px;padding:0 1px}
+.row-line .sme-pill{display:inline-block;font-size:9px;padding:2px 6px;border-radius:3px;background:rgba(255,255,255,.08);color:var(--ink-2);border:1px solid var(--line);flex-shrink:0;max-width:78px;overflow:hidden;text-overflow:ellipsis;line-height:1.2;white-space:nowrap}
+.row-line .late-pill{display:inline-block;font-size:9px;font-weight:800;padding:2px 6px;border-radius:3px;background:var(--s21-pink);color:#fff;flex-shrink:0;line-height:1.2}
+.row-line .stale-pill{display:inline-block;font-size:9px;font-weight:800;padding:2px 5px;border-radius:3px;background:var(--s21-mslate);color:#fff;flex-shrink:0;line-height:1.2}
+.row-line .slip-pill{display:inline-block;font-size:9px;font-weight:800;padding:2px 5px;border-radius:3px;background:transparent;border:1px solid var(--s21-pink);color:var(--s21-pink);flex-shrink:0;line-height:1.2}
+.row-line .dq-pill{display:inline-block;font-size:9px;font-weight:800;padding:2px 5px;border-radius:3px;background:var(--s21-amber);color:#0D0C4E;flex-shrink:0;line-height:1.2;cursor:help}
+.row-line .dept-name{letter-spacing:.1em;text-transform:uppercase;font-size:11px;color:#fff;font-weight:700;flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;display:block;white-space:nowrap}
+.row-line .dept-count{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--s21-mal);color:#0D0C4E;flex-shrink:0;line-height:1.2}
+.row-line .dept-mini{display:inline-flex;height:6px;width:64px;border-radius:999px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.10)}
+.row-line .dept-mini i{display:block;height:100%}
 
-.tt{background:var(--s21-blue);color:var(--ink);border:1px solid var(--s21-mal);border-radius:8px;padding:10px 12px;font-size:12px;max-width:360px;box-shadow:0 8px 40px rgba(0,0,0,.5);font-family:'Montserrat',sans-serif}
-.tt h4{margin:0 0 6px 0;font-size:13px;font-weight:700;color:#fff}
+/* tooltip */
+.tt{background:var(--s21-blue);color:var(--ink);border:1px solid var(--s21-mal);border-radius:8px;padding:10px 12px;font-size:12px;max-width:380px;box-shadow:0 8px 40px rgba(0,0,0,.6);font-family:'Montserrat',sans-serif}
+.tt h4{margin:0 0 6px 0;font-size:13px;font-weight:700;color:#fff;line-height:1.3}
 .tt .tt-row{display:flex;gap:8px;margin:3px 0}
-.tt .tt-k{color:var(--ink-2);font-size:10px;letter-spacing:.08em;text-transform:uppercase;min-width:80px;font-weight:600}
-.tt .tt-v{color:#fff;font-size:11px}
+.tt .tt-k{color:var(--ink-2);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;min-width:84px;font-weight:600;flex-shrink:0}
+.tt .tt-v{color:#fff;font-size:11px;line-height:1.4}
 .tt .st-pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+.tt .tt-warn{color:var(--s21-pink);font-weight:700;font-size:10.5px;margin-top:6px;border-top:1px solid var(--line);padding-top:6px}
 
-.drawer{background:var(--s21-blue);border-top:1px solid var(--line);flex-shrink:0;display:none;flex-direction:column;max-height:35vh}
+/* drawer */
+.drawer{background:var(--s21-blue);border-top:1px solid var(--line);flex-shrink:0;display:none;flex-direction:column;max-height:38vh}
 .drawer.open{display:flex}
-.drawer .inner{padding:12px 20px;overflow:auto;flex:1}
-.drawer h3{margin:0 0 8px 0;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--s21-mal)}
+.drawer .tabs{display:flex;gap:0;border-bottom:1px solid var(--line);flex-shrink:0}
+.drawer .tabs button{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--ink-2);font-family:inherit;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;padding:10px 16px;cursor:pointer}
+.drawer .tabs button.on{color:var(--s21-mal);border-bottom-color:var(--s21-mal)}
+.drawer .tabs .sp{flex:1}
+.drawer .tabs .cls{color:var(--ink-2);padding:10px 16px}
+.drawer .inner{padding:10px 20px 16px;overflow:auto;flex:1}
 .drawer table{width:100%;border-collapse:collapse;font-size:11px}
-.drawer th,.drawer td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
-.drawer th{color:var(--ink-2);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:10px;position:sticky;top:0;background:var(--s21-blue)}
+.drawer th,.drawer td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.drawer th{color:var(--ink-2);font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:9.5px;position:sticky;top:0;background:var(--s21-blue);z-index:2}
+.drawer tr:hover td{background:rgba(255,255,255,.03)}
+.dq-sev{display:inline-block;padding:2px 7px;border-radius:999px;font-size:9px;font-weight:800;text-transform:uppercase}
+.dq-sev.high{background:var(--s21-pink);color:#fff}
+.dq-sev.med{background:var(--s21-amber);color:#0D0C4E}
+.dq-sev.low{background:rgba(255,255,255,.14);color:var(--ink)}
+.dq-empty{color:var(--ink-2);font-size:12px;padding:14px 0}
 
-.error-panel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--s21-blue-2);z-index:10}
-.error-card{background:var(--s21-blue);border:1px solid var(--s21-pink);border-radius:12px;padding:24px 28px;max-width:520px;text-align:left}
-.error-card h2{margin:0 0 8px 0;font-size:14px;letter-spacing:.14em;text-transform:uppercase;color:var(--s21-pink)}
-.error-card p{margin:8px 0;font-size:13px;color:var(--ink-2);line-height:1.5}
+.error-panel{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--s21-blue-2);z-index:10;padding:20px}
+.error-card{background:var(--s21-blue);border:1px solid var(--s21-pink);border-radius:12px;padding:22px 26px;max-width:560px;text-align:left}
+.error-card h2{margin:0 0 8px 0;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--s21-pink)}
+.error-card p{margin:8px 0;font-size:12.5px;color:var(--ink-2);line-height:1.55}
 .error-card code{background:var(--s21-blue-2);padding:2px 6px;border-radius:4px;font-size:11px;color:var(--s21-mal)}
 .hidden{display:none !important}
 
@@ -239,72 +314,139 @@ body.resizing *{cursor:col-resize !important}
 .loader p{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2)}
 
 .count-badge{display:inline-block;background:var(--s21-mal);color:var(--s21-blue);border-radius:999px;padding:1px 8px;font-size:10px;font-weight:700;margin-left:6px}
+.count-badge.pink{background:var(--s21-pink);color:#fff}
+.count-badge.amber{background:var(--s21-amber);color:#0D0C4E}
 
-@media (max-width: 720px){
-  header h1{font-size:12px}
-  .controls{grid-template-columns:1fr 1fr}
+@media (max-width: 1200px){
+  .toprow{flex-direction:column}
+  .donut{border-right:none;border-bottom:1px solid var(--line)}
+}
+@media (max-width: 900px){
+  .titles .sub{display:none}
+  .kpi{min-width:84px}
+}
+@media print{
+  body{overflow:visible;height:auto;background:#fff}
+  .controls,.buttons,.density,#resizer,.drawer{display:none !important}
+  header{background:#0D0C4E !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>EX27 <span class="mal">/</span> Operations Live Gantt</h1>
-  <span class="sub">Source: <code style="font-size:10px;background:var(--s21-blue-2);padding:2px 6px;border-radius:3px;color:var(--s21-mal)">EX27_Ops_Project_Plan_v4.xlsx</code></span>
+  <div class="lockup">
+    <img class="s21" src="data:image/png;base64,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" alt="Switch21" />
+    <span class="rule"></span>
+    <img class="expo" src="data:image/png;base64,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" alt="Expo 2027 Belgrade" />
+  </div>
+  <div class="titles">
+    <h1>EX27 <span class="mal">/</span> Operations Delivery Timeline</h1>
+    <div class="sub">Source <code id="src-name">EX27_Ops_Project_Plan_v4.xlsx</code> &nbsp;Tracker last updated <code id="src-updated">-</code></div>
+  </div>
   <div class="spacer"></div>
-  <div class="stat">Rows loaded <b id="stat-rows">0</b></div>
-  <div class="stat">On timeline <b id="stat-visible">0</b></div>
-  <div class="stat">Undated <b id="stat-undated">0</b></div>
+  <div class="countdown">
+    <div class="big" id="cd-days">-</div>
+    <div class="lbl" id="cd-lbl">Days to Expo opening</div>
+  </div>
 </header>
+
+<div class="kpis" id="kpis"></div>
+
+<div class="toprow">
+  <div class="donut">
+    <div class="dwrap">
+      <svg id="donut-svg" viewBox="0 0 88 88"></svg>
+      <div class="dcentre"><b id="donut-total">0</b><s id="donut-sub">of plan</s></div>
+    </div>
+    <div class="dkey">
+      <div class="kh">Delivery position</div>
+      <div id="donut-key"></div>
+      <select id="f-donut-scope"><option value="">All departments</option></select>
+    </div>
+  </div>
+  <div class="density">
+    <div class="dh"><span>Milestones landing per month</span><span style="opacity:.6">click a month to zoom</span></div>
+    <div class="dchart" id="dchart"></div>
+    <div class="dlabels" id="dlabels"></div>
+  </div>
+</div>
 
 <div class="controls">
   <div class="ctrl">
+    <label>Group rows by</label>
+    <select id="f-groupby">
+      <option value="dept">Department (hierarchy)</option>
+      <option value="status">Status</option>
+      <option value="tier">Tier</option>
+      <option value="owner">Owner / Support</option>
+      <option value="sme">SME</option>
+      <option value="quarter">Quarter due</option>
+    </select>
+  </div>
+  <div class="ctrl">
     <label>Department</label>
     <div class="dd" data-key="dept">
-      <button class="dd-btn" type="button"><span class="dd-lbl">All departments</span><span class="dd-count hidden">0</span><span class="dd-arrow">▾</span></button>
+      <button class="dd-btn" type="button"><span class="dd-lbl">All departments</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button>
       <div class="dd-panel"></div>
     </div>
   </div>
   <div class="ctrl">
     <label>Status</label>
     <div class="dd" data-key="status">
-      <button class="dd-btn" type="button"><span class="dd-lbl">All statuses</span><span class="dd-count hidden">0</span><span class="dd-arrow">▾</span></button>
+      <button class="dd-btn" type="button"><span class="dd-lbl">All statuses</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button>
       <div class="dd-panel"></div>
     </div>
   </div>
   <div class="ctrl">
     <label>Tier</label>
     <div class="dd" data-key="tier">
-      <button class="dd-btn" type="button"><span class="dd-lbl">All tiers</span><span class="dd-count hidden">0</span><span class="dd-arrow">▾</span></button>
+      <button class="dd-btn" type="button"><span class="dd-lbl">All tiers</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button>
       <div class="dd-panel"></div>
     </div>
   </div>
   <div class="ctrl">
     <label>Type</label>
     <div class="dd" data-key="type">
-      <button class="dd-btn" type="button"><span class="dd-lbl">All types</span><span class="dd-count hidden">0</span><span class="dd-arrow">▾</span></button>
+      <button class="dd-btn" type="button"><span class="dd-lbl">All types</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button>
       <div class="dd-panel"></div>
     </div>
   </div>
   <div class="ctrl">
-    <label>Search deliverable</label>
+    <label>Owner / Support</label>
+    <div class="dd" data-key="owner">
+      <button class="dd-btn" type="button"><span class="dd-lbl">All owners</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button>
+      <div class="dd-panel"></div>
+    </div>
+  </div>
+  <div class="ctrl">
+    <label>Search (ref, deliverable, owner, comment)</label>
     <input type="text" id="f-search" placeholder="Type to filter..." />
   </div>
 </div>
 
 <div class="buttons">
-  <button class="btn" data-scale="day">Day</button>
-  <button class="btn active" data-scale="week">Week</button>
   <button class="btn" data-scale="month">Month</button>
-  <span style="width:1px;background:var(--line);align-self:stretch;margin:0 4px"></span>
-  <button class="btn" id="btn-today">Jump to Today</button>
-  <button class="btn" id="btn-expo">Jump to Expo Window</button>
-  <span style="width:1px;background:var(--line);align-self:stretch;margin:0 4px"></span>
-  <button class="btn" id="btn-milestones">Milestones only</button>
-  <button class="btn" id="btn-pct">Show % Complete</button>
-  <button class="btn" id="btn-drawer">Show Undated <span class="count-badge" id="undated-badge">0</span></button>
-  <div class="spacer" style="flex:1"></div>
-  <button class="btn ghost" id="btn-reset">Reset filters</button>
+  <button class="btn active" data-scale="quarter">Quarter</button>
+  <button class="btn" data-scale="year">Year</button>
+  <button class="btn" id="btn-fit">Fit all</button>
+  <span class="vr"></span>
+  <button class="btn" id="btn-today">Today</button>
+  <button class="btn" id="btn-expo">Expo window</button>
+  <span class="vr"></span>
+  <button class="btn warn" id="btn-overdue">Overdue only <span class="count-badge pink" id="overdue-badge">0</span></button>
+  <button class="btn" id="btn-key">Key milestones only</button>
+  <button class="btn" id="btn-pct">Progress bars</button>
+  <button class="btn" id="btn-labels">Point labels</button>
+  <button class="btn" id="btn-collapse">Collapse all</button>
+  <span class="vr"></span>
+  <button class="btn" id="btn-dq">Data quality <span class="count-badge amber" id="dq-badge">0</span></button>
+  <button class="btn" id="btn-undated">Undated <span class="count-badge" id="undated-badge">0</span></button>
+  <span class="vr"></span>
+  <button class="btn ghost" id="btn-csv">Export CSV</button>
+  <button class="btn ghost" id="btn-link">Copy view link</button>
+  <button class="btn ghost" id="btn-reset">Reset</button>
 </div>
 
 <div class="legend" id="legend"></div>
@@ -315,660 +457,1411 @@ body.resizing *{cursor:col-resize !important}
     <div class="error-card">
       <h2>Could not load the tracker</h2>
       <p id="error-msg"></p>
-      <p style="margin-top:14px"><button class="btn" id="btn-retry">Retry</button></p>
+      <p>If you opened this file straight off your desktop, browsers block local file reads. Either serve the folder over http, or just load the workbook by hand below.</p>
+      <p style="margin-top:14px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn" id="btn-retry">Retry fetch</button>
+        <label class="btn" for="file-input" style="margin:0">Choose xlsx</label>
+        <input type="file" id="file-input" accept=".xlsx,.xlsm" style="display:none" />
+      </p>
     </div>
   </div>
+  <div class="chainbar" id="chainbar">
+    <span>Chain view isolated on <b id="chain-ref"></b> <span id="chain-count" style="color:var(--ink-2)"></span></span>
+    <button class="btn" id="btn-chain-exit">Exit chain view</button>
+  </div>
+  <div class="inspector" id="inspector">
+    <div class="ins-left">
+      <div class="ins-head" id="ins-head"></div>
+      <div class="ins-meta" id="ins-meta"></div>
+      <div class="ins-note" id="ins-note"></div>
+    </div>
+    <div class="ins-actions" id="ins-actions"></div>
+  </div>
   <div id="timeline"></div>
-  <div id="resizer" title="Drag to resize label column"></div>
+  <div id="resizer" title="Drag to resize the label column"></div>
 </main>
 
 <div class="drawer" id="drawer">
-  <div class="inner">
-    <h3>Undated deliverables <span class="count-badge" id="drawer-count">0</span></h3>
-    <table id="undated-table">
-      <thead><tr><th>REF</th><th>Department</th><th>Tier</th><th>Type</th><th>Deliverable</th><th>Status</th><th>SME</th></tr></thead>
-      <tbody></tbody>
-    </table>
+  <div class="tabs">
+    <button data-tab="undated" class="on">Undated <span class="count-badge" id="drawer-undated-count">0</span></button>
+    <button data-tab="dq">Data quality <span class="count-badge amber" id="drawer-dq-count">0</span></button>
+    <button data-tab="overdue">Overdue <span class="count-badge pink" id="drawer-overdue-count">0</span></button>
+    <span class="sp"></span>
+    <button class="cls" id="btn-drawer-close">Close</button>
   </div>
+  <div class="inner" id="drawer-body"></div>
 </div>
-
 <script>
-// ---------- config ----------
-const FILE_URL = './EX27_Ops_Project_Plan_v4.xlsx';
+/* ============================================================
+   EX27 Operations Delivery Timeline - v5
+   Reads the Tracker sheet of the Ops project plan on every load.
+   ============================================================ */
+
+/* ---------- CONFIG (edit these two blocks and nothing else) ---------- */
+const FILE_URL   = './EX27_Ops_Project_Plan_v4.xlsx';
 const SHEET_NAME = 'Tracker';
 
+// Confirmed: 93 day single site window, Opening Ceremony the evening before.
+const OPENING_CEREMONY = '2027-05-14';
+const EXPO_START       = '2027-05-15';
+const EXPO_END         = '2027-08-15';
+
+// Optional context bands drawn behind the bars. Set to [] to switch off.
+const BANDS = [
+  {start:'2027-01-01',      end:'2027-05-13', cls:'band-or',   label:'Operational readiness'},
+  {start:OPENING_CEREMONY,  end:EXPO_START,   cls:'band-oc',   label:'Opening Ceremony'},
+  {start:EXPO_START,        end:EXPO_END,     cls:'band-expo', label:'Expo live (93 days)'},
+  {start:'2027-08-16',      end:'2027-12-31', cls:'band-bump', label:'Dissolution'}
+];
+/* -------------------------------------------------------------------- */
+
 const STATUS_MAP = {
-  'Complete': {key:'complete', label:'Complete', cls:'st-complete', mark:'c-complete', color:'#1AE279'},
-  'On Track': {key:'ontrack', label:'On Track', cls:'st-ontrack', mark:'c-ontrack', color:'#49D8CD'},
-  'At Risk':  {key:'atrisk',  label:'At Risk',  cls:'st-atrisk', mark:'c-atrisk',  color:'#E21A83'},
-  'Not Started': {key:'notstarted', label:'Not Started', cls:'st-notstarted', mark:'c-notstarted', color:'#3E6680'},
-  'No Update Received': {key:'noupdate', label:'No Update Received', cls:'st-noupdate', mark:'c-noupdate', color:'#6960EC'},
-  'TBC': {key:'tbc', label:'TBC', cls:'st-tbc', mark:'c-tbc', color:'#6B7280'},
-  'Unknown': {key:'unknown', label:'Unknown', cls:'st-unknown', mark:'c-unknown', color:'#4B5563'}
+  'Complete':            {key:'complete',   label:'Complete',            cls:'st-complete',   mark:'c-complete',   color:'#1AE279'},
+  'On Track':            {key:'ontrack',    label:'On Track',            cls:'st-ontrack',    mark:'c-ontrack',    color:'#49D8CD'},
+  'At Risk':             {key:'atrisk',     label:'At Risk',             cls:'st-atrisk',     mark:'c-atrisk',     color:'#E21A83'},
+  'Not Started':         {key:'notstarted', label:'Not Started',         cls:'st-notstarted', mark:'c-notstarted', color:'#3E6680'},
+  'No Update Received':  {key:'noupdate',   label:'No Update Received',  cls:'st-noupdate',   mark:'c-noupdate',   color:'#6960EC'},
+  'TBC':                 {key:'tbc',        label:'TBC',                 cls:'st-tbc',        mark:'c-tbc',        color:'#6B7280'},
+  'Unknown':             {key:'unknown',    label:'Unknown',             cls:'st-unknown',    mark:'c-unknown',    color:'#4B5563'}
 };
+const STATUS_ORDER = ['Complete','On Track','At Risk','No Update Received','Not Started','TBC','Unknown'];
+
+// Delivery position buckets for the donut. Mutually exclusive, overdue wins.
+const CATS = [
+  {key:'overdue',    label:'Overdue',        color:'#E21A83'},
+  {key:'atrisk',     label:'At Risk',        color:'#F2B01E'},
+  {key:'inprogress', label:'In Progress',    color:'#49D8CD'},
+  {key:'complete',   label:'Complete',       color:'#1AE279'},
+  {key:'notstarted', label:'Not Started',    color:'#3E6680'},
+  {key:'noupdate',   label:'No update / TBC',color:'#6960EC'}
+];
+
+// How many days before a reported status is treated as stale.
+const STALE_DAYS = 21;
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+/* ---------- helpers ---------- */
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function d0(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+function fmtDate(d){
+  if(!d) return null;
+  return String(d.getDate()).padStart(2,'0')+' '+MONTHS[d.getMonth()]+' '+d.getFullYear();
+}
+function daysBetween(a,b){ return Math.round((d0(b) - d0(a)) / 86400000); }
+const TODAY = d0(new Date());
 
 function normStatus(s){
-  if(!s) return 'Unknown';
+  if(s === null || s === undefined) return 'Unknown';
   const t = String(s).trim();
-  if(!t || t.toLowerCase()==='none') return 'Unknown';
-  if(t.toLowerCase()==='not started') return 'Not Started';
-  if(t.toLowerCase().startsWith('tbc')) return 'TBC';
+  if(!t || t.toLowerCase() === 'none') return 'Unknown';
+  const l = t.toLowerCase();
+  if(l === 'not started') return 'Not Started';
+  if(l === 'on track') return 'On Track';
+  if(l === 'at risk') return 'At Risk';
+  if(l === 'complete' || l === 'completed') return 'Complete';
+  if(l.startsWith('no update')) return 'No Update Received';
+  if(l.startsWith('tbc')) return 'TBC';
   return t;
+}
+function cleanText(v){
+  if(v === null || v === undefined) return '';
+  const t = String(v).replace(/\s+/g,' ').trim();
+  return (t.toLowerCase() === 'none') ? '' : t;
 }
 function normDept(d){
-  if(!d) return 'Unassigned';
-  const t = String(d).trim();
-  if(!t || t.toLowerCase()==='none' || t.toLowerCase()==='tbc') return 'Unassigned';
+  const t = cleanText(d);
+  if(!t || t.toLowerCase() === 'tbc') return 'Unassigned';
   return t;
 }
-function excelDate(v){
+
+/* Accepts 60, "60", "60%" and the 0-1 decimal Excel gives a percent formatted cell. */
+function parsePct(v){
   if(v === null || v === undefined || v === '') return null;
-  if(v instanceof Date) return v;
-  if(typeof v === 'number'){
-    const epoch = new Date(Date.UTC(1899,11,30));
-    return new Date(epoch.getTime() + v*86400000);
-  }
-  const d = new Date(v);
-  return isNaN(d) ? null : d;
+  let n = (typeof v === 'number') ? v : parseFloat(String(v).replace('%','').trim());
+  if(isNaN(n)) return null;
+  if(n > 0 && n <= 1) n = n * 100;
+  return Math.max(0, Math.min(100, Math.round(n)));
 }
 
-// ---------- state ----------
-let RAW = [];
-let ROWS = [];
-let GROUPS = new vis.DataSet();
-let ITEMS = new vis.DataSet();
-let timeline;
-let showPct = false;
-let milestonesOnly = false;
-let filters = {dept:new Set(), status:new Set(), tier:new Set(), type:new Set(), search:''};
-let filterOptions = {dept:[], status:[], tier:[], type:[]};
+/* Date parsing that copes with what is actually in the sheet:
+   real dates, Excel serials, "01.May.27", "?", blanks.
+   Returns {date, raw, bad} so unreadable text can be reported instead of vanishing. */
+const MON3 = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+function parseCellDate(v){
+  if(v === null || v === undefined || v === '') return {date:null, raw:'', bad:false};
+  if(v instanceof Date && !isNaN(v)) return {date:d0(v), raw:'', bad:false};
+  if(typeof v === 'number'){
+    if(v < 1 || v > 80000) return {date:null, raw:String(v), bad:true};
+    const ms = Date.UTC(1899,11,30) + v*86400000;
+    const u = new Date(ms);
+    return {date:new Date(u.getUTCFullYear(), u.getUTCMonth(), u.getUTCDate()), raw:'', bad:false};
+  }
+  const s = String(v).trim();
+  if(!s) return {date:null, raw:'', bad:false};
+  if(/^(\?+|tbc|n\/a|na|-)$/i.test(s)) return {date:null, raw:s, bad:true};
+  // 01.May.27 / 1-May-2027 / 01 May 27
+  let m = s.match(/^(\d{1,2})[.\-\/\s]([A-Za-z]{3,})[.\-\/\s](\d{2,4})$/);
+  if(m){
+    const mo = MON3[m[2].slice(0,3).toLowerCase()];
+    if(mo !== undefined){
+      let y = parseInt(m[3],10); if(y < 100) y += 2000;
+      return {date:new Date(y, mo, parseInt(m[1],10)), raw:'', bad:false};
+    }
+  }
+  // dd/mm/yyyy or dd.mm.yyyy
+  m = s.match(/^(\d{1,2})[.\-\/](\d{1,2})[.\-\/](\d{2,4})$/);
+  if(m){
+    let y = parseInt(m[3],10); if(y < 100) y += 2000;
+    return {date:new Date(y, parseInt(m[2],10)-1, parseInt(m[1],10)), raw:'', bad:false};
+  }
+  // yyyy-mm-dd
+  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m) return {date:new Date(+m[1], +m[2]-1, +m[3]), raw:'', bad:false};
+  const d = new Date(s);
+  if(!isNaN(d)) return {date:d0(d), raw:'', bad:false};
+  return {date:null, raw:s, bad:true};
+}
 
-// ---------- load ----------
+/* Optional columns. The tracker does not have all of these yet, so each feature
+   that depends on one stays dormant until the column appears and gets populated. */
+const OPTIONAL_COLS = {
+  pct:        ['% Complete','Percent Complete','% Done'],
+  evidence:   ['Evidence/Link to Docs','Evidence','Link to Docs','Evidence Link'],
+  reported:   ['Last Reported (Week Ending)','Last Reported','Last Report'],
+  predecessor:['Predecessor REF','Predecessor','Depends On','Predecessors'],
+  baseStart:  ['Baseline Start','Baseline Start Date','Original Start'],
+  baseEnd:    ['Baseline End','Baseline End Date','Original End']
+};
+let COLS = {};      // resolved header name per optional field, or null
+let HAS  = {};      // whether that column actually contains any data
+
+function resolveOptionalCols(hdr){
+  COLS = {};
+  Object.keys(OPTIONAL_COLS).forEach(k => {
+    const hit = OPTIONAL_COLS[k].find(name => hdr.some(h => h.toLowerCase() === name.toLowerCase()));
+    COLS[k] = hit ? hdr.find(h => h.toLowerCase() === hit.toLowerCase()) : null;
+  });
+}
+function opt(r, k){ return COLS[k] ? r[COLS[k]] : null; }
+
+/* ---------- state ---------- */
+let RAW = [], ROWS = [], DQ = [];
+let GROUPS = new vis.DataSet(), ITEMS = new vis.DataSet();
+let timeline = null, firstFit = true, collapsed = false;
+let showPct = false, keyOnly = false, showLabels = false;
+let groupBy = 'dept';
+let lastUpdated = null;
+let catFilter = null, chainRoot = null, selectedId = null;
+let filters = {dept:new Set(), status:new Set(), tier:new Set(), type:new Set(), owner:new Set(), search:''};
+let filterOptions = {dept:[], status:[], tier:[], type:[], owner:[]};
+let drawerTab = 'undated';
+
+/* ---------- load ---------- */
 async function load(){
   document.getElementById('loader').classList.remove('hidden');
   document.getElementById('error').classList.add('hidden');
   try{
     const resp = await fetch(FILE_URL, {cache:'no-store'});
-    if(!resp.ok) throw new Error(`Fetch failed: HTTP ${resp.status} for ${FILE_URL}. Is the file next to index.html in the repo?`);
-    const buf = await resp.arrayBuffer();
+    if(!resp.ok) throw new Error('Fetch failed: HTTP '+resp.status+' for '+FILE_URL+'. Is the workbook sitting next to index.html in the repo?');
+    parseWorkbook(await resp.arrayBuffer());
+  }catch(err){ showError(err); }
+}
+function showError(err){
+  document.getElementById('loader').classList.add('hidden');
+  document.getElementById('error').classList.remove('hidden');
+  document.getElementById('error-msg').textContent = String(err && err.message ? err.message : err);
+  console.error(err);
+}
+function parseWorkbook(buf){
+  try{
     const wb = XLSX.read(buf, {type:'array', cellDates:true});
-    if(!wb.SheetNames.includes(SHEET_NAME)) throw new Error(`Sheet "${SHEET_NAME}" not found. Sheets: ${wb.SheetNames.join(', ')}`);
+    if(!wb.SheetNames.includes(SHEET_NAME)) throw new Error('Sheet "'+SHEET_NAME+'" not found. Sheets present: '+wb.SheetNames.join(', '));
     const ws = wb.Sheets[SHEET_NAME];
-    const range = XLSX.utils.decode_range(ws['!ref']);
-    range.s.r = 0; range.s.c = 0;
-    const rawGrid = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, range: XLSX.utils.encode_range(range), blankrows:true});
-    const need = ['Tier','Type','Department','REF','Deliverable','Owner / Support','SME / SME','Start Date','End Date','Status','Comment','% Complete'];
-    let hdrIdx = -1;
-    for(let i=0;i<Math.min(rawGrid.length, 25);i++){
-      const row = rawGrid[i] || [];
-      const names = row.map(c => c==null?'':String(c).trim().toLowerCase());
-      if(names.includes('deliverable') && names.includes('tier') && names.includes('start date')){
-        hdrIdx = i; break;
+    const grid = XLSX.utils.sheet_to_json(ws, {header:1, defval:null, blankrows:true});
+
+    // "Last Updated:" label anywhere in the preamble
+    for(let i=0;i<Math.min(grid.length,30);i++){
+      const row = grid[i] || [];
+      for(let c=0;c<row.length;c++){
+        if(row[c] && /last updated/i.test(String(row[c]))){
+          for(let c2=c+1;c2<row.length;c2++){
+            const p = parseCellDate(row[c2]);
+            if(p.date){ lastUpdated = p.date; break; }
+          }
+        }
       }
+      if(lastUpdated) break;
     }
-    if(hdrIdx === -1) throw new Error(`Could not find header row. Looked for a row containing "Tier", "Deliverable" and "Start Date" in the first 25 rows of sheet "${SHEET_NAME}".`);
-    const hdr = rawGrid[hdrIdx];
-    const missing = need.filter(n => !hdr.some(h => h && String(h).trim().toLowerCase() === n.toLowerCase()));
-    if(missing.length) throw new Error(`Header row (detected at row ${hdrIdx+1}) is missing expected columns: ${missing.join(', ')}. Got: ${hdr.filter(Boolean).join(', ')}`);
-    const norm = hdr.map(h => h ? String(h).trim() : '');
+
+    let hdrIdx = -1;
+    for(let i=0;i<Math.min(grid.length,30);i++){
+      const names = (grid[i]||[]).map(c => c==null ? '' : String(c).trim().toLowerCase());
+      if(names.includes('deliverable') && names.includes('tier') && names.includes('start date')){ hdrIdx = i; break; }
+    }
+    if(hdrIdx === -1) throw new Error('Could not find the header row. Looked for a row containing "Tier", "Deliverable" and "Start Date" in the first 30 rows of "'+SHEET_NAME+'".');
+
+    const hdr = grid[hdrIdx].map(h => h ? String(h).trim() : '');
+    const need = ['Tier','Type','Department','REF','Deliverable','Start Date','End Date','Status'];
+    const missing = need.filter(n => !hdr.some(h => h.toLowerCase() === n.toLowerCase()));
+    if(missing.length) throw new Error('Header row (row '+(hdrIdx+1)+') is missing: '+missing.join(', ')+'. Columns found: '+hdr.filter(Boolean).join(', '));
+
+    resolveOptionalCols(hdr);
+
     RAW = [];
-    for(let i=hdrIdx+1;i<rawGrid.length;i++){
-      const r = rawGrid[i]; if(!r || !r.some(v => v!==null && v!==undefined && v!=='')) continue;
-      const o = {};
-      norm.forEach((k,idx) => { if(k) o[k] = r[idx]; });
+    for(let i=hdrIdx+1;i<grid.length;i++){
+      const r = grid[i];
+      if(!r || !r.some(v => v !== null && v !== undefined && v !== '')) continue;
+      const o = {__xlRow:i+1};
+      hdr.forEach((k,idx) => { if(k) o[k] = r[idx]; });
       RAW.push(o);
     }
+    if(!RAW.length) throw new Error('Header row found but no data rows underneath it.');
+
     build();
     document.getElementById('loader').classList.add('hidden');
-  }catch(err){
-    document.getElementById('loader').classList.add('hidden');
-    document.getElementById('error').classList.remove('hidden');
-    document.getElementById('error-msg').innerHTML = String(err.message || err);
-    console.error(err);
-  }
+    document.getElementById('error').classList.add('hidden');
+  }catch(err){ showError(err); }
 }
 
-// ---------- transform ----------
-function build(){
-  ROWS = RAW.map((r,i) => {
-    const ref = (r['REF']==null?'':String(r['REF'])).trim();
-    const dept = normDept(r['Department']);
-    const status = normStatus(r['Status']);
-    const tier = r['Tier']==null?null:Number(r['Tier']);
-    const sd = excelDate(r['Start Date']);
-    const ed = excelDate(r['End Date']);
-    return {
-      id: i,
-      ref,
-      dept,
-      tier,
-      type: (r['Type']||'').toString().trim(),
-      deliverable: (r['Deliverable']||'').toString().trim(),
-      description: (r['Description of Service']||'').toString().trim(),
-      owner: (r['Owner / Support']||'').toString().trim(),
-      sme: (r['SME / SME']||'').toString().trim(),
-      start: sd,
-      end: ed,
-      status,
-      statusMeta: STATUS_MAP[status] || STATUS_MAP['Unknown'],
-      comment: (r['Comment']||'').toString().trim(),
-      pctRaw: r['% Complete'],
-      parentRef: parentOf(ref),
-      childrenIds: [],
-    };
-  });
+/* ---------- transform ---------- */
+function ROWS_any(fn){ return ROWS.some(fn); }
 
-  // parent-child by REF prefix
-  const byRef = {};
-  ROWS.forEach(r => { if(r.ref) byRef[r.ref] = r; });
-  ROWS.forEach(r => {
-    if(r.parentRef && byRef[r.parentRef]){
-      byRef[r.parentRef].childrenIds.push(r.id);
-    }
-  });
-
-  // derived % complete from descendant leaves
-  function descLeaves(id, out){
-    const r = ROWS[id];
-    if(!r.childrenIds.length){ out.push(r); return; }
-    r.childrenIds.forEach(c => descLeaves(c, out));
-  }
-  ROWS.forEach(r => {
-    if(r.childrenIds.length){
-      const leaves = []; descLeaves(r.id, leaves);
-      const scored = leaves.filter(l => l.status !== 'Unknown' && l.status !== 'TBC');
-      if(scored.length){
-        const complete = scored.filter(l => l.status === 'Complete').length;
-        r.pctCalc = Math.round(100 * complete / scored.length);
-      } else r.pctCalc = null;
-    } else {
-      r.pctCalc = (r.status === 'Complete') ? 100 : (r.status === 'Not Started' ? 0 : null);
-    }
-  });
-
-  populateFilters();
-  renderLegend();
-  buildTimeline();
-  applyFilters();
+function categoryOf(r){
+  const due = r.end || r.start;
+  if(r.status === 'Complete') return 'complete';
+  if(due && due < TODAY) return 'overdue';
+  if(r.status === 'At Risk') return 'atrisk';
+  if(r.status === 'On Track') return 'inprogress';
+  if(r.status === 'Not Started') return 'notstarted';
+  return 'noupdate';
 }
 
 function parentOf(ref){
   if(!ref) return null;
   const parts = ref.split('.');
   if(parts.length < 3) return null;
-  return parts.slice(0, -1).join('.');
+  return parts.slice(0,-1).join('.');
 }
 
-// ---------- filter dropdowns ----------
-function unique(arr){ return Array.from(new Set(arr.filter(v => v!==null && v!==undefined && v!==''))).sort((a,b) => String(a).localeCompare(String(b))); }
-
-function populateFilters(){
-  filterOptions.dept = unique(ROWS.map(r => r.dept));
-  filterOptions.status = ['Complete','On Track','At Risk','Not Started','No Update Received','TBC','Unknown'].filter(s => ROWS.some(r => r.status === s));
-  filterOptions.tier = unique(ROWS.map(r => r.tier)).sort((a,b) => a-b).map(String);
-  filterOptions.type = unique(ROWS.map(r => r.type));
-  document.querySelectorAll('.dd').forEach(dd => buildDropdown(dd));
-}
-
-function buildDropdown(dd){
-  const key = dd.dataset.key;
-  const panel = dd.querySelector('.dd-panel');
-  const opts = filterOptions[key];
-  panel.innerHTML = `
-    <input type="text" class="dd-search" placeholder="Filter..." />
-    <div class="dd-actions">
-      <button class="all" type="button">Select all</button>
-      <button class="none" type="button">Clear</button>
-    </div>
-    <div class="dd-list">
-      ${opts.map(v => `<label><input type="checkbox" value="${escapeHtml(v)}" /> <span>${escapeHtml(v)}</span></label>`).join('')}
-    </div>
-  `;
-  const btn = dd.querySelector('.dd-btn');
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const wasOpen = panel.classList.contains('open');
-    document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('open'));
-    document.querySelectorAll('.dd-btn').forEach(b => b.classList.remove('active'));
-    if(!wasOpen){ panel.classList.add('open'); btn.classList.add('active'); }
+function build(){
+  DQ = [];
+  ROWS = RAW.map((r,i) => {
+    const ref  = cleanText(r['REF']);
+    const sdP  = parseCellDate(r['Start Date']);
+    const edP  = parseCellDate(r['End Date']);
+    let start = sdP.date, end = edP.date, swapped = false;
+    if(start && end && end < start){ const t = start; start = end; end = t; swapped = true; }
+    const tierN = (r['Tier'] === null || r['Tier'] === undefined || r['Tier'] === '') ? null : Number(r['Tier']);
+    const status = normStatus(r['Status']);
+    return {
+      id:i, xlRow:r.__xlRow, ref,
+      dept:normDept(r['Department']),
+      sector:cleanText(r['Sector']),
+      subteam:cleanText(r['Sub-Team']),
+      tier:(isNaN(tierN) ? null : tierN),
+      type:cleanText(r['Type']),
+      deliverable:cleanText(r['Deliverable']),
+      description:cleanText(r['Description of Service']),
+      owner:cleanText(r['Owner / Support']),
+      sme:cleanText(r['SME / SME']),
+      start, end, swapped,
+      badStart:sdP.bad ? sdP.raw : '',
+      badEnd:edP.bad ? edP.raw : '',
+      status,
+      statusMeta:STATUS_MAP[status] || STATUS_MAP['Unknown'],
+      comment:cleanText(r['Comment']),
+      update:cleanText(r["This Week's Update (S21)"]),
+      evidence:cleanText(opt(r,'evidence')),
+      pctRaw:parsePct(opt(r,'pct')),
+      reported:parseCellDate(opt(r,'reported')).date,
+      predRefs:cleanText(opt(r,'predecessor')).split(/[,;|]+/).map(x => x.trim()).filter(Boolean),
+      baseStart:parseCellDate(opt(r,'baseStart')).date,
+      baseEnd:parseCellDate(opt(r,'baseEnd')).date,
+      succIds:[],
+      refPlaceholder:/^(new|tbd|tbc|n\/a|na|-|\?+)$/i.test(ref),
+      parentRef:parentOf(ref),
+      childrenIds:[]
+    };
   });
-  panel.addEventListener('click', (e) => e.stopPropagation());
-  panel.querySelector('.dd-search').addEventListener('input', (e) => {
-    const q = e.target.value.toLowerCase();
-    panel.querySelectorAll('.dd-list label').forEach(lbl => {
-      lbl.style.display = lbl.textContent.toLowerCase().includes(q) ? '' : 'none';
+
+  // which optional columns actually carry data
+  HAS = {
+    pct:         ROWS_any(r => r.pctRaw !== null),
+    evidence:    ROWS_any(r => !!r.evidence),
+    reported:    ROWS_any(r => !!r.reported),
+    predecessor: ROWS_any(r => r.predRefs.length > 0),
+    baseline:    ROWS_any(r => !!(r.baseStart || r.baseEnd))
+  };
+
+  // derived flags
+  ROWS.forEach(r => {
+    const due = r.end || r.start;
+    r.due = due || null;
+    r.overdue = !!(due && due < TODAY && r.status !== 'Complete');
+    r.daysLate = r.overdue ? daysBetween(due, TODAY) : 0;
+    r.inFlight = !!(r.start && r.end && r.start <= TODAY && TODAY <= r.end && r.status !== 'Complete');
+    r.dueSoon  = !!(due && !r.overdue && daysBetween(TODAY, due) <= 30 && r.status !== 'Complete');
+    r.isKey = /key milestone/i.test(r.type) || r.tier === 1;
+    r.cat = categoryOf(r);
+    // stale only means anything once somebody is filling in Last Reported
+    r.staleDays = (r.reported && ['On Track','At Risk'].includes(r.status)) ? daysBetween(r.reported, TODAY) : 0;
+    r.stale = r.staleDays > STALE_DAYS;
+    // slip against baseline, measured on the end date
+    r.slip = (r.baseEnd && r.end) ? daysBetween(r.baseEnd, r.end) : 0;
+  });
+
+  // parent / child by REF prefix, keeping duplicates honest
+  const byRef = {};
+  ROWS.forEach(r => {
+    if(!r.ref || r.refPlaceholder) return;
+    if(byRef[r.ref] !== undefined){
+      byRef[r.ref].dupRef = true; r.dupRef = true;
+    } else byRef[r.ref] = r;
+  });
+  ROWS.forEach(r => { if(r.parentRef && byRef[r.parentRef]) byRef[r.parentRef].childrenIds.push(r.id); });
+
+  // predecessor graph, both directions
+  ROWS.forEach(r => {
+    r.predIds = [];
+    r.predRefs.forEach(pr => {
+      const t = byRef[pr];
+      if(t){ r.predIds.push(t.id); t.succIds.push(r.id); }
+      else r.predMissing = (r.predMissing || []).concat(pr);
     });
   });
-  panel.querySelector('.all').addEventListener('click', () => {
-    panel.querySelectorAll('.dd-list label:not([style*="none"]) input').forEach(cb => cb.checked = true);
-    syncDropdown(dd);
-  });
-  panel.querySelector('.none').addEventListener('click', () => {
-    panel.querySelectorAll('.dd-list input').forEach(cb => cb.checked = false);
-    syncDropdown(dd);
-  });
-  panel.querySelectorAll('.dd-list input').forEach(cb => {
-    cb.addEventListener('change', () => syncDropdown(dd));
-  });
-}
 
-function syncDropdown(dd){
-  const key = dd.dataset.key;
-  const checked = Array.from(dd.querySelectorAll('.dd-list input:checked')).map(cb => cb.value);
-  filters[key] = new Set(checked);
-  const cnt = dd.querySelector('.dd-count');
-  const lbl = dd.querySelector('.dd-lbl');
-  if(checked.length === 0){
-    cnt.classList.add('hidden');
-    lbl.textContent = ({dept:'All departments',status:'All statuses',tier:'All tiers',type:'All types'})[key];
-  } else if(checked.length === 1){
-    cnt.classList.add('hidden');
-    lbl.textContent = checked[0];
-  } else {
-    cnt.classList.remove('hidden');
-    cnt.textContent = checked.length;
-    lbl.textContent = ({dept:'Departments',status:'Statuses',tier:'Tiers',type:'Types'})[key];
+  // roll up progress from descendant leaves. Uses the real % Complete column when
+  // it is populated, otherwise falls back to counting Complete statuses.
+  function leaves(id, out){
+    const r = ROWS[id];
+    if(!r.childrenIds.length){ out.push(r); return; }
+    r.childrenIds.forEach(c => leaves(c, out));
   }
+  ROWS.forEach(r => {
+    if(r.childrenIds.length){
+      const lv = []; leaves(r.id, lv);
+      r.leafCount = lv.length;
+      const withPct = lv.filter(l => l.pctRaw !== null);
+      if(HAS.pct && withPct.length){
+        r.pctCalc = Math.round(withPct.reduce((a,l) => a + l.pctRaw, 0) / withPct.length);
+        r.pctSource = 'reported';
+      } else {
+        const scored = lv.filter(l => l.status !== 'Unknown' && l.status !== 'TBC');
+        r.pctCalc = scored.length ? Math.round(100 * scored.filter(l => l.status === 'Complete').length / scored.length) : null;
+        r.pctSource = 'derived';
+      }
+    } else {
+      r.leafCount = 0;
+      if(r.pctRaw !== null){ r.pctCalc = r.pctRaw; r.pctSource = 'reported'; }
+      else { r.pctCalc = r.status === 'Complete' ? 100 : (r.status === 'Not Started' ? 0 : null); r.pctSource = 'derived'; }
+    }
+  });
+
+  buildDQ(byRef);
+  populateFilters();
+  renderLegend();
+  renderKpis();
+  populateDonutScope();
+  renderDensity();
+  renderCountdown();
+  document.getElementById('src-updated').textContent = lastUpdated ? fmtDate(lastUpdated) : 'not stated in sheet';
+  if(!timeline) buildTimeline();
   applyFilters();
 }
 
-document.addEventListener('click', () => {
+function buildDQ(byRef){
+  const push = (r, sev, issue, detail) => DQ.push({row:r, sev, issue, detail});
+  ROWS.forEach(r => {
+    if(r.swapped)  push(r,'high','End date before start date','Dates auto-swapped for display. Fix the source: '+fmtDate(r.start)+' to '+fmtDate(r.end));
+    if(r.dupRef)   push(r,'high','Duplicate REF','"'+r.ref+'" is used by more than one row, so parent and child links cannot be trusted');
+    if(!r.ref)             push(r,'med','No REF','Row cannot be linked into the hierarchy or referenced in a report');
+    else if(r.refPlaceholder) push(r,'med','REF not assigned','Still reads "'+r.ref+'". Cannot be cited in a report or linked to a parent');
+    if(r.badStart) push(r,'med','Start date not readable','Cell contains "'+r.badStart+'"');
+    if(r.badEnd)   push(r,'med','End date not readable','Cell contains "'+r.badEnd+'"');
+    if(r.start && !r.end)  push(r,'low','Start with no end','Shown as a single point rather than a bar');
+    if(r.status === 'Unknown') push(r,'med','Status blank','Nobody has reported against this line');
+    if(!r.owner)   push(r,'low','No owner','Owner / Support is empty');
+    if(r.tier === null) push(r,'low','No tier','Cannot be placed in the hierarchy');
+    if(r.stale) push(r,'med','Reported status is stale','Marked '+r.status+' but last reported '+r.staleDays+' days ago on '+fmtDate(r.reported));
+    if(r.predMissing) push(r,'high','Predecessor REF not found','Points at '+r.predMissing.join(', ')+' which does not exist in the tracker');
+    if(r.slip > 0) push(r,'med','Slipped against baseline','End moved '+r.slip+' days later than the baseline of '+fmtDate(r.baseEnd));
+    (r.predIds||[]).forEach(pid => {
+      const pr = ROWS[pid];
+      const pEnd = pr.end || pr.start, mStart = r.start || r.end;
+      if(pEnd && mStart && mStart < pEnd)
+        push(r,'high','Starts before its predecessor ends','Starts '+fmtDate(mStart)+' but '+pr.ref+' does not finish until '+fmtDate(pEnd));
+    });
+  });
+  // child outside parent window
+  ROWS.forEach(p => {
+    if(!p.childrenIds.length || !p.start || !p.end) return;
+    p.childrenIds.forEach(cid => {
+      const c = ROWS[cid];
+      const cd = c.end || c.start;
+      if(cd && (cd < p.start || cd > p.end)){
+        DQ.push({row:c, sev:'med', issue:'Falls outside parent window',
+          detail:'Due '+fmtDate(cd)+' but parent '+p.ref+' runs '+fmtDate(p.start)+' to '+fmtDate(p.end)});
+      }
+    });
+  });
+  const rank = {high:0, med:1, low:2};
+  DQ.sort((a,b) => rank[a.sev]-rank[b.sev] || a.row.dept.localeCompare(b.row.dept) || String(a.row.ref).localeCompare(String(b.row.ref)));
+  const dqRows = new Set(DQ.map(d => d.row.id));
+  ROWS.forEach(r => { r.dqCount = DQ.filter(d => d.row.id === r.id).length; });
+  const actionable = DQ.filter(d => d.sev !== 'low').length;
+  document.getElementById('dq-badge').textContent = actionable;
+  document.getElementById('drawer-dq-count').textContent = DQ.length;
+  void dqRows;
+}
+
+/* ---------- filters ---------- */
+function unique(arr){
+  return Array.from(new Set(arr.filter(v => v !== null && v !== undefined && v !== '')))
+    .sort((a,b) => String(a).localeCompare(String(b)));
+}
+function populateFilters(){
+  filterOptions.dept   = unique(ROWS.map(r => r.dept));
+  filterOptions.status = STATUS_ORDER.filter(s => ROWS.some(r => r.status === s));
+  filterOptions.tier   = unique(ROWS.map(r => r.tier)).sort((a,b) => a-b).map(String);
+  filterOptions.type   = unique(ROWS.map(r => r.type));
+  filterOptions.owner  = unique(ROWS.map(r => r.owner));
+  document.querySelectorAll('.dd').forEach(buildDropdown);
+}
+function optCount(key, val){
+  return ROWS.filter(r => String(key === 'tier' ? r.tier : r[key]) === val).length;
+}
+function buildDropdown(dd){
+  const key = dd.dataset.key;
+  const panel = dd.querySelector('.dd-panel');
+  panel.innerHTML =
+    '<input type="text" class="dd-search" placeholder="Filter..." />' +
+    '<div class="dd-actions"><button class="all" type="button">Select all</button><button class="none" type="button">Clear</button></div>' +
+    '<div class="dd-list">' +
+      filterOptions[key].map(v =>
+        '<label><input type="checkbox" value="'+escapeHtml(v)+'" /> <span>'+escapeHtml(v)+'</span><span class="cnt">'+optCount(key,String(v))+'</span></label>'
+      ).join('') +
+    '</div>';
+  const btn = dd.querySelector('.dd-btn');
+  btn.onclick = (e) => {
+    e.stopPropagation();
+    const wasOpen = panel.classList.contains('open');
+    closeDropdowns();
+    if(!wasOpen){ panel.classList.add('open'); btn.classList.add('active'); }
+  };
+  panel.onclick = (e) => e.stopPropagation();
+  panel.querySelector('.dd-search').oninput = (e) => {
+    const q = e.target.value.toLowerCase();
+    panel.querySelectorAll('.dd-list label').forEach(l => { l.style.display = l.textContent.toLowerCase().includes(q) ? '' : 'none'; });
+  };
+  panel.querySelector('.all').onclick = () => {
+    panel.querySelectorAll('.dd-list label').forEach(l => { if(l.style.display !== 'none') l.querySelector('input').checked = true; });
+    syncDropdown(dd);
+  };
+  panel.querySelector('.none').onclick = () => {
+    panel.querySelectorAll('.dd-list input').forEach(cb => cb.checked = false);
+    syncDropdown(dd);
+  };
+  panel.querySelectorAll('.dd-list input').forEach(cb => { cb.onchange = () => syncDropdown(dd); });
+  syncDropdownLabel(dd);
+}
+function closeDropdowns(){
   document.querySelectorAll('.dd-panel').forEach(p => p.classList.remove('open'));
   document.querySelectorAll('.dd-btn').forEach(b => b.classList.remove('active'));
-});
+}
+function syncDropdownLabel(dd){
+  const key = dd.dataset.key;
+  const checked = Array.from(dd.querySelectorAll('.dd-list input:checked')).map(cb => cb.value);
+  const cnt = dd.querySelector('.dd-count'), lbl = dd.querySelector('.dd-lbl');
+  const allLbl = {dept:'All departments', status:'All statuses', tier:'All tiers', type:'All types', owner:'All owners'}[key];
+  const manyLbl = {dept:'Departments', status:'Statuses', tier:'Tiers', type:'Types', owner:'Owners'}[key];
+  if(!checked.length){ cnt.classList.add('hidden'); lbl.textContent = allLbl; }
+  else if(checked.length === 1){ cnt.classList.add('hidden'); lbl.textContent = checked[0]; }
+  else { cnt.classList.remove('hidden'); cnt.textContent = checked.length; lbl.textContent = manyLbl; }
+  return checked;
+}
+function syncDropdown(dd){
+  filters[dd.dataset.key] = new Set(syncDropdownLabel(dd));
+  applyFilters();
+}
+document.addEventListener('click', closeDropdowns);
+document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeDropdowns(); });
 
-function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+let CHAIN = new Set();
 
 function passesFilters(r){
-  if(filters.dept.size && !filters.dept.has(r.dept)) return false;
-  if(filters.status.size && !filters.status.has(r.status)) return false;
-  if(filters.tier.size && !filters.tier.has(String(r.tier))) return false;
-  if(filters.type.size && !filters.type.has(r.type)) return false;
+  if(filters.dept.size   && !filters.dept.has(r.dept))     return false;
+  if(filters.status.size && !filters.status.has(r.status))  return false;
+  if(filters.tier.size   && !filters.tier.has(String(r.tier))) return false;
+  if(filters.type.size   && !filters.type.has(r.type))      return false;
+  if(filters.owner.size  && !filters.owner.has(r.owner))    return false;
+  if(catFilter && r.cat !== catFilter) return false;
+  if(keyOnly && !r.isKey) return false;
+  if(chainRoot !== null && !CHAIN.has(r.id)) return false;
   if(filters.search){
     const q = filters.search.toLowerCase();
-    if(!r.deliverable.toLowerCase().includes(q) && !r.ref.toLowerCase().includes(q)) return false;
+    const hay = [r.ref, r.deliverable, r.owner, r.sme, r.comment, r.description, r.dept].join(' ').toLowerCase();
+    if(!hay.includes(q)) return false;
   }
-  if(milestonesOnly && !/milestone/i.test(r.type)) return false;
   return true;
 }
 
-// ---------- timeline ----------
-function buildTimeline(){
-  const container = document.getElementById('timeline');
-  const options = {
-    stack: false,
-    orientation: {axis: 'top'},
-    zoomMin: 1000*60*60*24*3,
-    zoomMax: 1000*60*60*24*365*3,
-    horizontalScroll: true,
-    verticalScroll: true,
-    height: '100%',
-    maxHeight: '100%',
-    zoomKey: 'ctrlKey',
-    margin: {item: 4, axis: 8},
-    tooltip: {followMouse:true, overflowMethod:'flip', template: () => ''},
-    template: (item) => item.htmlContent !== undefined ? item.htmlContent : (item.content || '')
-  };
-  timeline = new vis.Timeline(container, ITEMS, GROUPS, options);
-  timeline.addCustomTime(new Date(), 'now');
+/* ---------- KPIs ---------- */
+function renderKpis(){
+  const n = ROWS.length;
+  const c = s => ROWS.filter(r => r.status === s).length;
+  const done = c('Complete');
+  const cards = [
+    {id:'all',      n:n,                                  t:'Milestones',      col:'#B7BEE0'},
+    {id:'complete', n:done,                               t:'Complete',        col:'#1AE279', pc:Math.round(100*done/n)+'% of plan'},
+    {id:'ontrack',  n:c('On Track'),                      t:'On Track',        col:'#49D8CD'},
+    {id:'atrisk',   n:c('At Risk'),                       t:'At Risk',         col:'#E21A83'},
+    {id:'noupdate', n:c('No Update Received'),            t:'No Update',       col:'#6960EC'},
+    {id:'notstart', n:c('Not Started'),                   t:'Not Started',     col:'#3E6680'},
+    {id:'overdue',  n:ROWS.filter(r => r.overdue).length, t:'Overdue',         col:'#E21A83'},
+    {id:'soon',     n:ROWS.filter(r => r.dueSoon).length, t:'Due in 30 days',  col:'#F2B01E'},
+    {id:'flight',   n:ROWS.filter(r => r.inFlight).length,t:'In flight now',   col:'#1AE279'},
+    {id:'undated',  n:ROWS.filter(r => !r.start && !r.end).length, t:'Undated', col:'#6B7280'}
+  ];
+  // these only appear once the underlying column is populated
+  if(HAS.reported) cards.push({id:'stale',  n:ROWS.filter(r => r.stale).length,  t:'Stale reports', col:'#6960EC'});
+  if(HAS.baseline) cards.push({id:'slipped',n:ROWS.filter(r => r.slip > 0).length,t:'Slipped',       col:'#E21A83'});
+  document.getElementById('kpis').innerHTML = cards.map(k =>
+    '<div class="kpi" data-kpi="'+k.id+'" style="--k:'+k.col+'"><div class="n">'+k.n+'</div><div class="t">'+k.t+'</div>'+
+    (k.pc ? '<div class="pc">'+k.pc+'</div>' : '')+'</div>'
+  ).join('');
+  document.querySelectorAll('.kpi').forEach(el => { el.onclick = () => kpiClick(el.dataset.kpi); });
+  document.getElementById('overdue-badge').textContent = ROWS.filter(r => r.overdue).length;
+  document.getElementById('drawer-overdue-count').textContent = ROWS.filter(r => r.overdue).length;
+}
+function setStatusFilter(labels){
+  const dd = document.querySelector('.dd[data-key="status"]');
+  dd.querySelectorAll('.dd-list input').forEach(cb => { cb.checked = labels.includes(cb.value); });
+  syncDropdown(dd);
+}
+function kpiClick(id){
+  const statusFor = {complete:'Complete', ontrack:'On Track', atrisk:'At Risk', noupdate:'No Update Received', notstart:'Not Started'};
+  catFilter = null;
+  document.getElementById('btn-overdue').classList.remove('active');
+  if(id === 'all'){ setStatusFilter([]); }
+  else if(statusFor[id]){ setStatusFilter([statusFor[id]]); }
+  else if(id === 'overdue'){ setStatusFilter([]); catFilter = 'overdue'; document.getElementById('btn-overdue').classList.add('active'); applyFilters(); }
+  else if(id === 'undated'){ setStatusFilter([]); openDrawer('undated'); }
+  else if(id === 'stale' || id === 'slipped'){ setStatusFilter([]); openDrawer('dq'); }
+  else if(id === 'soon'){ setStatusFilter([]); applyFilters(); jumpWindow(TODAY, new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate()+30)); }
+  else if(id === 'flight'){ setStatusFilter([]); applyFilters(); jumpWindow(new Date(TODAY.getFullYear(), TODAY.getMonth()-1, 1), new Date(TODAY.getFullYear(), TODAY.getMonth()+2, 1)); }
+  document.querySelectorAll('.kpi').forEach(el => el.classList.toggle('on', el.dataset.kpi === id && id !== 'all'));
+}
 
-  // custom tooltip
+/* ---------- donut ---------- */
+function renderDonut(){
+  const rows = ROWS.filter(r => {
+    if(filters.dept.size && !filters.dept.has(r.dept)) return false;
+    if(chainRoot !== null && !CHAIN.has(r.id)) return false;
+    return true;
+  });
+  const total = rows.length || 1;
+  const counts = {};
+  CATS.forEach(c => counts[c.key] = rows.filter(r => r.cat === c.key).length);
+
+  // 88x88 box, r=37.5 so a 13px stroke sits inside
+  const R = 37.5, C = 2 * Math.PI * R;
+  let acc = 0;
+  const arcs = CATS.filter(c => counts[c.key]).map(c => {
+    const frac = counts[c.key] / total;
+    const seg = '<circle cx="44" cy="44" r="'+R+'" stroke="'+c.color+'"'+
+      ' stroke-dasharray="'+(frac*C - 1.2).toFixed(2)+' '+(C - frac*C + 1.2).toFixed(2)+'"'+
+      ' stroke-dashoffset="'+(-acc*C).toFixed(2)+'"'+
+      ' data-cat="'+c.key+'" class="'+(catFilter && catFilter !== c.key ? 'dim' : '')+'">'+
+      '<title>'+c.label+': '+counts[c.key]+' ('+Math.round(100*frac)+'%)</title></circle>';
+    acc += frac;
+    return seg;
+  }).join('');
+  document.getElementById('donut-svg').innerHTML =
+    '<circle cx="44" cy="44" r="'+R+'" stroke="rgba(255,255,255,.06)" stroke-dasharray="none"></circle>' + arcs;
+
+  const doneP = Math.round(100 * counts.complete / total);
+  document.getElementById('donut-total').textContent = doneP + '%';
+  document.getElementById('donut-sub').textContent = 'complete';
+  document.getElementById('donut-key').innerHTML = CATS.map(c =>
+    '<div class="krow'+(catFilter === c.key ? ' on' : '')+'" data-cat="'+c.key+'">'+
+      '<i style="background:'+c.color+'"></i><span class="lb">'+c.label+'</span>'+
+      '<b>'+counts[c.key]+'</b><em>'+Math.round(100*counts[c.key]/total)+'%</em></div>').join('');
+
+  const bind = (el) => { el.onclick = () => setCat(el.dataset.cat === catFilter ? null : el.dataset.cat); };
+  document.querySelectorAll('#donut-key .krow').forEach(bind);
+  document.querySelectorAll('#donut-svg circle[data-cat]').forEach(bind);
+}
+function setCat(cat){
+  catFilter = cat;
+  document.getElementById('btn-overdue').classList.toggle('active', cat === 'overdue');
+  document.querySelectorAll('.kpi').forEach(el => el.classList.remove('on'));
+  applyFilters();
+}
+function populateDonutScope(){
+  const sel = document.getElementById('f-donut-scope');
+  sel.innerHTML = '<option value="">All departments</option>' +
+    filterOptions.dept.map(d => '<option value="'+escapeHtml(d)+'">'+escapeHtml(d)+'</option>').join('');
+  sel.onchange = () => {
+    const v = sel.value;
+    const dd = document.querySelector('.dd[data-key="dept"]');
+    dd.querySelectorAll('.dd-list input').forEach(cb => { cb.checked = (v !== '' && cb.value === v); });
+    filters.dept = new Set(syncDropdownLabel(dd));
+    applyFilters();
+  };
+}
+function syncDonutScope(){
+  const sel = document.getElementById('f-donut-scope');
+  sel.value = (filters.dept.size === 1) ? Array.from(filters.dept)[0] : '';
+}
+
+/* ---------- countdown ---------- */
+function renderCountdown(){
+  const oc = new Date(OPENING_CEREMONY), s = new Date(EXPO_START), e = new Date(EXPO_END);
+  const big = document.getElementById('cd-days'), lbl = document.getElementById('cd-lbl');
+  if(TODAY < oc){ big.textContent = daysBetween(TODAY, oc); lbl.textContent = 'Days to Opening Ceremony'; }
+  else if(TODAY < s){ big.textContent = daysBetween(TODAY, s); lbl.textContent = 'Days to first operational day'; }
+  else if(TODAY <= e){ big.textContent = (daysBetween(s, TODAY)+1)+' / 93'; lbl.textContent = 'Expo day'; }
+  else { big.textContent = daysBetween(e, TODAY); lbl.textContent = 'Days since Expo close'; }
+}
+
+/* ---------- density strip ---------- */
+function renderDensity(){
+  const dated = ROWS.filter(r => r.due);
+  if(!dated.length) return;
+  const min = new Date(Math.min.apply(null, dated.map(r => r.due)));
+  const max = new Date(Math.max.apply(null, dated.map(r => r.due)));
+  const months = [];
+  let cur = new Date(min.getFullYear(), min.getMonth(), 1);
+  const stop = new Date(max.getFullYear(), max.getMonth(), 1);
+  while(cur <= stop){ months.push(new Date(cur)); cur.setMonth(cur.getMonth()+1); }
+  const buckets = months.map(m => {
+    const inM = dated.filter(r => r.due.getFullYear() === m.getFullYear() && r.due.getMonth() === m.getMonth());
+    const by = {}; STATUS_ORDER.forEach(s => by[s] = inM.filter(r => r.status === s).length);
+    return {m, total:inM.length, by};
+  });
+  const peak = Math.max.apply(null, buckets.map(b => b.total)) || 1;
+  const eS = new Date(OPENING_CEREMONY), eE = new Date(EXPO_END);
+
+  document.getElementById('dchart').innerHTML = buckets.map((b,i) => {
+    const inExpo = b.m >= new Date(eS.getFullYear(), eS.getMonth(), 1) && b.m <= new Date(eE.getFullYear(), eE.getMonth(), 1);
+    const isNow  = b.m.getFullYear() === TODAY.getFullYear() && b.m.getMonth() === TODAY.getMonth();
+    const segs = STATUS_ORDER.filter(s => b.by[s]).map(s =>
+      '<span class="seg" style="height:'+(100*b.by[s]/peak)+'%;background:'+STATUS_MAP[s].color+'"></span>'
+    ).join('');
+    const tip = MONTHS[b.m.getMonth()]+' '+b.m.getFullYear()+': '+b.total+' due\n'+
+      STATUS_ORDER.filter(s => b.by[s]).map(s => '  '+s+' '+b.by[s]).join('\n');
+    return '<div class="dcol'+(inExpo?' expo':'')+(isNow?' now':'')+'" data-mi="'+i+'" title="'+escapeHtml(tip)+'">'+segs+'</div>';
+  }).join('');
+  document.getElementById('dlabels').innerHTML = buckets.map(b => {
+    const jan = b.m.getMonth() === 0;
+    const q = b.m.getMonth() % 3 === 0;
+    return '<div class="dlab">'+(jan ? '<b>'+b.m.getFullYear()+'</b>' : (q ? MONTHS[b.m.getMonth()] : ''))+'</div>';
+  }).join('');
+  document.querySelectorAll('.dcol').forEach(el => {
+    el.onclick = () => {
+      const b = buckets[+el.dataset.mi];
+      jumpWindow(new Date(b.m.getFullYear(), b.m.getMonth()-1, 15), new Date(b.m.getFullYear(), b.m.getMonth()+2, 15));
+    };
+  });
+}
+
+/* ---------- legend ---------- */
+function renderLegend(){
+  const parts = STATUS_ORDER.filter(s => ROWS.some(r => r.status === s)).map(s =>
+    '<span class="chip"><span class="swatch" style="background:'+STATUS_MAP[s].color+'"></span>'+STATUS_MAP[s].label+'</span>');
+  parts.push('<span class="divider"></span>');
+  parts.push('<span class="chip"><span class="swatch" style="background:#fff;height:8px;width:22px;border-radius:2px"></span>Start and end</span>');
+  parts.push('<span class="chip"><span class="swatch triangle"></span>Key milestone</span>');
+  parts.push('<span class="chip"><span class="swatch diamond" style="background:#fff"></span>SME milestone</span>');
+  parts.push('<span class="chip"><span class="swatch circle" style="background:#fff"></span>Single date</span>');
+  parts.push('<span class="divider"></span>');
+  parts.push('<span class="chip"><span class="swatch" style="background:transparent;border:1px dashed rgba(26,226,121,.7)"></span>Rolled up from children</span>');
+  parts.push('<span class="chip"><span class="swatch" style="background:transparent;box-shadow:0 0 0 1.5px #E21A83"></span>Overdue</span>');
+  parts.push('<span class="divider"></span>');
+  if(HAS.baseline){
+    parts.push('<span class="divider"></span>');
+    parts.push('<span class="chip"><span class="swatch" style="background:transparent;border:1px solid rgba(255,255,255,.4);height:7px;width:22px"></span>Baseline</span>');
+    parts.push('<span class="chip"><span class="swatch" style="background:transparent;border:1px dashed #E21A83;height:7px;width:22px"></span>Slipped baseline</span>');
+  }
+  parts.push('<span class="divider"></span>');
+  parts.push('<span class="chip"><span class="swatch" style="background:var(--s21-pink);width:3px;border-radius:0"></span>Opening Ceremony 14 May 2027</span>');
+  parts.push('<span class="chip"><span class="swatch" style="background:rgba(26,226,121,.22);border:1px solid rgba(26,226,121,.6)"></span>Expo live, 15 May to 15 Aug 2027</span>');
+  parts.push('<span class="divider"></span>');
+  parts.push('<span class="chip" style="gap:4px">Tier'+
+    '<span class="tier-pill t-1" style="font-size:9px;padding:1px 5px;border-radius:3px;font-weight:800">T1</span>'+
+    '<span class="tier-pill t-2" style="font-size:9px;padding:1px 5px;border-radius:3px;font-weight:800">T2</span>'+
+    '<span class="tier-pill t-3" style="font-size:9px;padding:1px 5px;border-radius:3px;font-weight:800">T3</span>'+
+    '<span class="tier-pill t-4" style="font-size:9px;padding:1px 5px;border-radius:3px;font-weight:800">T4</span></span>');
+  document.getElementById('legend').innerHTML = parts.join('');
+}
+
+/* ---------- timeline ---------- */
+function buildTimeline(){
+  timeline = new vis.Timeline(document.getElementById('timeline'), ITEMS, GROUPS, {
+    stack:false,
+    orientation:{axis:'top'},
+    start:new Date(TODAY.getFullYear(), TODAY.getMonth()-3, 1),
+    end:new Date(TODAY.getFullYear(), TODAY.getMonth()+9, 1),
+    zoomMin:1000*60*60*24*7,
+    zoomMax:1000*60*60*24*365*4,
+    horizontalScroll:true,
+    verticalScroll:true,
+    height:'100%',
+    maxHeight:'100%',
+    zoomKey:'ctrlKey',
+    showCurrentTime:true,
+    selectable:true,
+    editable:false,
+    margin:{item:4, axis:8},
+    tooltip:{followMouse:false, overflowMethod:'cap'},
+    template:(item) => item.content || ''
+  });
+
   const tt = document.createElement('div');
-  tt.className = 'tt'; tt.style.position='fixed'; tt.style.pointerEvents='none'; tt.style.display='none'; tt.style.zIndex=1000;
+  tt.className = 'tt';
+  Object.assign(tt.style, {position:'fixed', pointerEvents:'none', display:'none', zIndex:1000});
   document.body.appendChild(tt);
-  timeline.on('itemover', (props) => {
-    const raw = ITEMS.get(props.item);
-    if(!raw) return;
-    const rowId = raw.rowId !== undefined ? raw.rowId : props.item;
-    const r = ROWS[rowId];
-    if(!r) return;
-    tt.innerHTML = tooltipHtml(r, raw.isSummary);
+  timeline.on('itemover', (p) => {
+    const raw = ITEMS.get(p.item); if(!raw) return;
+    const r = ROWS[raw.rowId !== undefined ? raw.rowId : p.item]; if(!r) return;
+    tt.innerHTML = raw.isBaseline
+      ? '<h4>Baseline</h4><div class="tt-row"><div class="tt-k">Deliverable</div><div class="tt-v">'+escapeHtml(r.deliverable||'')+'</div></div>'+
+        '<div class="tt-row"><div class="tt-k">Baseline end</div><div class="tt-v">'+fmtDate(r.baseEnd)+'</div></div>'+
+        '<div class="tt-row"><div class="tt-k">Current end</div><div class="tt-v">'+(fmtDate(r.end)||'not set')+'</div></div>'+
+        (r.slip ? '<div class="tt-warn">! slipped '+r.slip+' days</div>' : '')
+      : tooltipHtml(r, raw.isSummary);
     tt.style.display = 'block';
   });
-  timeline.on('itemout', () => { tt.style.display='none'; });
+  timeline.on('itemout', () => { tt.style.display = 'none'; });
+  timeline.on('select', (p) => {
+    const raw = p.items && p.items.length ? ITEMS.get(p.items[0]) : null;
+    selectRow(raw && raw.rowId !== undefined ? raw.rowId : null);
+  });
+  timeline.on('doubleClick', (p) => { if(p.item){ const raw = ITEMS.get(p.item); if(raw && raw.rowId !== undefined) isolateChain(raw.rowId); } });
   document.addEventListener('mousemove', (e) => {
-    if(tt.style.display === 'block'){
-      const pad = 14;
-      let x = e.clientX + pad, y = e.clientY + pad;
-      const rect = tt.getBoundingClientRect();
-      if(x + rect.width > window.innerWidth) x = e.clientX - rect.width - pad;
-      if(y + rect.height > window.innerHeight) y = e.clientY - rect.height - pad;
-      tt.style.left = x+'px'; tt.style.top = y+'px';
-    }
+    if(tt.style.display !== 'block') return;
+    const pad = 14, rect = tt.getBoundingClientRect();
+    let x = e.clientX + pad, y = e.clientY + pad;
+    if(x + rect.width  > window.innerWidth)  x = e.clientX - rect.width  - pad;
+    if(y + rect.height > window.innerHeight) y = e.clientY - rect.height - pad;
+    tt.style.left = x+'px'; tt.style.top = y+'px';
   });
 }
 
 function tooltipHtml(r, isSummary){
   const sm = r.statusMeta;
-  const fmt = d => d ? d.toISOString().slice(0,10) : '<span style="color:#666">(none)</span>';
-  const pctPart = showPct && r.pctCalc !== null
-    ? `<div class="tt-row"><div class="tt-k">% Complete</div><div class="tt-v">${r.pctCalc}%${r.childrenIds.length?' <span style="color:'+sm.color+'">(calc from '+r.childrenIds.length+' child)</span>':''}</div></div>` : '';
-  const cmt = r.comment ? `<div class="tt-row"><div class="tt-k">Comment</div><div class="tt-v">${escapeHtml(r.comment.slice(0,180))}${r.comment.length>180?'...':''}</div></div>` : '';
-  const summaryFlag = isSummary ? '<div class="tt-row"><div class="tt-k"></div><div class="tt-v" style="color:var(--s21-mal);font-style:italic;font-size:10px">(rolled up from child dates)</div></div>' : '';
-  return `<h4>${escapeHtml(r.deliverable || '(untitled)')}</h4>
-    <div class="tt-row"><div class="tt-k">Status</div><div class="tt-v"><span class="st-pill ${sm.cls}" style="background:${sm.color}">${sm.label}</span></div></div>
-    <div class="tt-row"><div class="tt-k">Department</div><div class="tt-v">${escapeHtml(r.dept)}</div></div>
-    <div class="tt-row"><div class="tt-k">Tier / Type</div><div class="tt-v">Tier ${r.tier ?? '-'} · ${escapeHtml(r.type||'-')}</div></div>
-    <div class="tt-row"><div class="tt-k">REF</div><div class="tt-v">${escapeHtml(r.ref||'-')}</div></div>
-    <div class="tt-row"><div class="tt-k">SME</div><div class="tt-v">${escapeHtml(r.sme||'-')}</div></div>
-    <div class="tt-row"><div class="tt-k">Start</div><div class="tt-v">${fmt(r.start)}</div></div>
-    <div class="tt-row"><div class="tt-k">End</div><div class="tt-v">${fmt(r.end)}</div></div>
-    ${pctPart}
-    ${summaryFlag}
-    ${cmt}`;
+  const none = '<span style="color:#666">not set</span>';
+  const row = (k,v) => '<div class="tt-row"><div class="tt-k">'+k+'</div><div class="tt-v">'+v+'</div></div>';
+  let out = '<h4>'+escapeHtml(r.deliverable || '(untitled)')+'</h4>';
+  out += row('Status','<span class="st-pill '+sm.cls+'" style="background:'+sm.color+'">'+sm.label+'</span>');
+  out += row('Department', escapeHtml(r.dept) + (r.subteam ? ' / '+escapeHtml(r.subteam) : ''));
+  out += row('Tier / Type','Tier '+(r.tier ?? '-')+' &middot; '+escapeHtml(r.type || '-'));
+  out += row('REF', escapeHtml(r.ref || '-') + ' <span style="color:var(--ink-2);font-size:9px">(sheet row '+r.xlRow+')</span>');
+  if(r.owner) out += row('Owner', escapeHtml(r.owner));
+  if(r.sme)   out += row('SME', escapeHtml(r.sme));
+  out += row('Start', fmtDate(r.start) || none);
+  out += row('End',   fmtDate(r.end)   || none);
+  if(r.start && r.end) out += row('Duration', daysBetween(r.start, r.end)+' days');
+  if(showPct && r.pctCalc !== null) out += row('Progress', r.pctCalc+'%' + (r.leafCount ? ' <span style="color:'+sm.color+'">(rolled up from '+r.leafCount+' leaf rows)</span>' : ''));
+  if(r.description) out += row('Service', escapeHtml(r.description.slice(0,220)) + (r.description.length>220?'...':''));
+  if(r.comment)     out += row('Comment', escapeHtml(r.comment.slice(0,220)) + (r.comment.length>220?'...':''));
+  if(r.update)      out += row('This week', escapeHtml(r.update.slice(0,220)) + (r.update.length>220?'...':''));
+  if(isSummary) out += '<div class="tt-row"><div class="tt-k"></div><div class="tt-v" style="color:var(--s21-mal);font-style:italic;font-size:10px">Rolled up from child dates</div></div>';
+  const warns = [];
+  if(r.overdue) warns.push(r.daysLate+' days overdue');
+  if(r.swapped) warns.push('end date was before start date in the sheet, swapped for display');
+  if(r.badStart) warns.push('start cell reads "'+r.badStart+'"');
+  if(r.badEnd)   warns.push('end cell reads "'+r.badEnd+'"');
+  if(r.dupRef)   warns.push('duplicate REF');
+  if(warns.length) out += '<div class="tt-warn">! '+warns.map(escapeHtml).join(' &middot; ')+'</div>';
+  return out;
 }
 
-// ---------- render ----------
+/* ---------- inspector and chain view ---------- */
+function selectRow(id){
+  selectedId = id;
+  const r = ROWS[id];
+  const ins = document.getElementById('inspector');
+  if(!r){ ins.classList.remove('open'); if(timeline) timeline.redraw(); return; }
+  const sm = r.statusMeta;
 
-function el(tag, className, text){
+  document.getElementById('ins-head').innerHTML =
+    (r.ref ? '<span class="ref-pill'+(r.refPlaceholder?' ph':'')+'">'+escapeHtml(r.ref)+'</span>' : '') +
+    '<span class="tier-pill t-'+(r.tier||'x')+'">T'+(r.tier ?? '-')+'</span>' +
+    '<span class="st-pill" style="background:'+sm.color+';color:'+(['Complete','On Track'].includes(r.status)?'#0D0C4E':'#fff')+
+      ';padding:2px 9px;border-radius:999px;font-size:9.5px;font-weight:700;text-transform:uppercase">'+sm.label+'</span>' +
+    (r.overdue ? '<span class="late-pill">'+r.daysLate+' days overdue</span>' : '') +
+    (r.stale ? '<span class="stale-pill">not reported '+r.staleDays+'d</span>' : '') +
+    (r.slip > 0 ? '<span class="slip-pill">slipped '+r.slip+'d</span>' : '') +
+    '<span class="ins-title">'+escapeHtml(r.deliverable || '(untitled)')+'</span>';
+
+  const bits = [
+    ['Department', escapeHtml(r.dept) + (r.subteam ? ' / '+escapeHtml(r.subteam) : '')],
+    ['Type', escapeHtml(r.type || '-')],
+    ['Owner', escapeHtml(r.owner || 'not set')],
+    ['SME', escapeHtml(r.sme || 'not set')],
+    ['Start', fmtDate(r.start) || 'not set'],
+    ['End', fmtDate(r.end) || 'not set'],
+    ['Sheet row', r.xlRow]
+  ];
+  if(r.pctCalc !== null) bits.push(['Progress', r.pctCalc+'% ('+r.pctSource+')']);
+  if(r.reported) bits.push(['Last reported', fmtDate(r.reported)]);
+  if(r.baseEnd) bits.push(['Baseline end', fmtDate(r.baseEnd)]);
+  document.getElementById('ins-meta').innerHTML = bits.map(b => '<span>'+b[0]+' <b>'+b[1]+'</b></span>').join('');
+
+  const notes = [];
+  if(r.description) notes.push('<b>Service</b> '+escapeHtml(r.description.slice(0,300)));
+  if(r.comment)     notes.push('<b>Comment</b> '+escapeHtml(r.comment.slice(0,300)));
+  if(r.update)      notes.push('<b>This week</b> '+escapeHtml(r.update.slice(0,300)));
+  if(r.predIds && r.predIds.length)
+    notes.push('<b>Predecessors</b> ' + r.predIds.map(i => ROWS[i].ref+' ('+(fmtDate(ROWS[i].end || ROWS[i].start) || 'undated')+')').join(', '));
+  if(r.succIds && r.succIds.length)
+    notes.push('<b>Successors</b> ' + r.succIds.map(i => ROWS[i].ref).join(', '));
+  document.getElementById('ins-note').innerHTML = notes.join('<br>');
+
+  // evidence has to live here rather than in the tooltip, a floating tooltip
+  // cannot be clicked
+  const acts = [];
+  if(r.evidence && /^https?:\/\//i.test(r.evidence))
+    acts.push('<a class="btn" href="'+escapeHtml(r.evidence)+'" target="_blank" rel="noopener">Open evidence</a>');
+  else if(r.evidence)
+    acts.push('<span style="font-size:10px;color:var(--ink-2);max-width:200px;text-align:right">'+escapeHtml(r.evidence.slice(0,80))+'</span>');
+  acts.push('<button class="btn" onclick="isolateChain('+id+')">Isolate chain</button>');
+  acts.push('<button class="btn ghost" onclick="selectRow(null)">Close</button>');
+  document.getElementById('ins-actions').innerHTML = acts.join('');
+
+  ins.classList.add('open');
+  if(timeline) setTimeout(() => timeline.redraw(), 60);
+}
+
+/* Chain = the predecessor and successor graph when that column exists, otherwise
+   the REF family (parent, self, all descendants), which is still worth isolating. */
+function buildChain(id){
+  const out = new Set();
+  const walk = (i, dir) => {
+    if(out.has(i)) return;
+    out.add(i);
+    const r = ROWS[i];
+    if(HAS.predecessor){
+      if(dir >= 0) (r.succIds||[]).forEach(x => walk(x, 1));
+      if(dir <= 0) (r.predIds||[]).forEach(x => walk(x, -1));
+    }
+  };
+  walk(id, 0);
+  if(HAS.predecessor){ (ROWS[id].succIds||[]).forEach(x => walk(x,1)); (ROWS[id].predIds||[]).forEach(x => walk(x,-1)); }
+  if(!HAS.predecessor){
+    const root = ROWS[id];
+    const family = (r) => { out.add(r.id); r.childrenIds.forEach(c => family(ROWS[c])); };
+    let top = root;
+    while(top.parentRef){
+      const par = ROWS.find(x => x.ref === top.parentRef && !x.refPlaceholder);
+      if(!par) break;
+      top = par;
+    }
+    family(top);
+  }
+  return out;
+}
+function isolateChain(id){
+  chainRoot = id;
+  CHAIN = buildChain(id);
+  document.getElementById('chain-ref').textContent = ROWS[id].ref || ROWS[id].deliverable.slice(0,40);
+  document.getElementById('chain-count').textContent = '(' + CHAIN.size + ' linked rows' +
+    (HAS.predecessor ? ' via predecessor links)' : ' via REF hierarchy, no predecessor column in the sheet yet)');
+  document.getElementById('chainbar').classList.add('open');
+  applyFilters();
+}
+function exitChain(){
+  chainRoot = null; CHAIN = new Set();
+  document.getElementById('chainbar').classList.remove('open');
+  applyFilters();
+}
+
+/* ---------- row labels ---------- */
+function el(tag, cls, text){
   const e = document.createElement(tag);
-  if(className) e.className = className;
+  if(cls) e.className = cls;
   if(text != null) e.textContent = text;
   return e;
 }
-
-function buildRowLabel(r, hasVisibleChildren){
+function highlight(text){
+  const q = filters.search;
+  if(!q) return escapeHtml(text);
+  const i = text.toLowerCase().indexOf(q.toLowerCase());
+  if(i < 0) return escapeHtml(text);
+  return escapeHtml(text.slice(0,i)) + '<mark>' + escapeHtml(text.slice(i, i+q.length)) + '</mark>' + escapeHtml(text.slice(i+q.length));
+}
+function buildRowLabel(r, hasKids){
   const tier = r.tier || 'x';
   const wrap = el('div', 'row-line tier-'+tier);
-  wrap.appendChild(el('span', 'indent'));
-  const chev = el('span', 'chevron');
-  if(hasVisibleChildren) chev.textContent = '▼';
-  wrap.appendChild(chev);
-  wrap.appendChild(el('span', 'tier-pill t-'+tier, 'T'+(r.tier ?? '-')));
-  if(r.ref) wrap.appendChild(el('span', 'ref-pill', r.ref));
-  const delivClass = hasVisibleChildren ? 'parent' : (r.tier >= 3 ? 'child' : '');
-  const dv = el('span', 'deliv '+delivClass, r.deliverable || '(untitled)');
+  wrap.appendChild(el('span','indent'));
+  wrap.appendChild(el('span','chevron', hasKids ? '\u25BE' : ''));
+  wrap.appendChild(el('span','tier-pill t-'+tier, 'T'+(r.tier ?? '-')));
+  if(r.ref) wrap.appendChild(el('span','ref-pill'+(r.refPlaceholder ? ' ph' : ''), r.ref));
+  const dv = el('span','deliv '+(hasKids ? 'parent' : (r.tier >= 3 ? 'child' : '')));
+  dv.innerHTML = highlight(r.deliverable || '(untitled)');
   dv.title = r.deliverable || '';
   wrap.appendChild(dv);
+  if(r.overdue){
+    const lp = el('span','late-pill', '+'+r.daysLate+'d');
+    lp.title = r.daysLate+' days past its end date and not marked Complete';
+    wrap.appendChild(lp);
+  }
+  if(r.stale){
+    const sp = el('span','stale-pill', r.staleDays+'d');
+    sp.title = 'Reported '+r.status+' but not updated for '+r.staleDays+' days';
+    wrap.appendChild(sp);
+  }
+  if(r.slip > 0){
+    const sl = el('span','slip-pill', '\u0394'+r.slip+'d');
+    sl.title = 'End date has moved '+r.slip+' days later than baseline';
+    wrap.appendChild(sl);
+  }
+  if(r.dqCount){
+    const dq = el('span','dq-pill','!'+(r.dqCount>1 ? r.dqCount : ''));
+    dq.title = r.dqCount+' data quality issue(s). See the Data quality tab.';
+    wrap.appendChild(dq);
+  }
   if(r.sme){
-    const sp = el('span', 'sme-pill', r.sme);
+    const sp = el('span','sme-pill', r.sme);
     sp.title = r.sme;
     wrap.appendChild(sp);
   }
   return wrap;
 }
-
-function buildDeptLabel(dept, count){
-  const wrap = el('div', 'row-line dept-line');
-  wrap.appendChild(el('span', 'dept-name', dept));
-  wrap.appendChild(el('span', 'dept-count', count));
+function buildGroupLabel(name, rows){
+  const wrap = el('div','row-line dept-line');
+  wrap.appendChild(el('span','dept-name', name));
+  const mini = el('span','dept-mini');
+  mini.title = STATUS_ORDER.filter(s => rows.some(r => r.status === s))
+    .map(s => s+': '+rows.filter(r => r.status === s).length).join(' | ');
+  STATUS_ORDER.forEach(s => {
+    const n = rows.filter(r => r.status === s).length;
+    if(!n) return;
+    const i = document.createElement('i');
+    i.style.width = (100*n/rows.length)+'%';
+    i.style.background = STATUS_MAP[s].color;
+    mini.appendChild(i);
+  });
+  wrap.appendChild(mini);
+  const od = rows.filter(r => r.overdue).length;
+  if(od) wrap.appendChild(el('span','late-pill', od+' late'));
+  wrap.appendChild(el('span','dept-count', rows.length));
   return wrap;
+}
+
+/* ---------- render ---------- */
+function groupKey(r){
+  switch(groupBy){
+    case 'status': return r.status;
+    case 'tier':   return 'Tier '+(r.tier ?? '-');
+    case 'owner':  return r.owner || 'No owner';
+    case 'sme':    return r.sme || 'No SME';
+    case 'quarter':
+      if(!r.due) return 'Undated';
+      return r.due.getFullYear()+' Q'+(Math.floor(r.due.getMonth()/3)+1);
+    default: return r.dept;
+  }
 }
 function applyFilters(){
   filters.search = document.getElementById('f-search').value.trim();
   const visible = ROWS.filter(passesFilters);
   renderGroupsAndItems(visible);
-  updateStats(visible);
-  renderDrawer(visible);
+  updateBadges(visible);
+  renderDonut();
+  syncDonutScope();
+  renderDrawer();
+}
+function updateBadges(visible){
+  const und = visible.filter(r => !r.start && !r.end).length;
+  document.getElementById('undated-badge').textContent = und;
+  document.getElementById('drawer-undated-count').textContent = und;
 }
 
 function renderGroupsAndItems(visible){
   GROUPS.clear(); ITEMS.clear();
+  const groups = [], items = [];
 
-  const visibleIds = new Set(visible.map(v => v.id));
-  const deptsPresent = Array.from(new Set(visible.map(r => r.dept))).sort();
-  const byDept = {};
-  visible.forEach(r => { (byDept[r.dept] = byDept[r.dept] || []).push(r); });
+  // context bands, drawn once with no group so they span everything
+  BANDS.forEach((b,i) => items.push({
+    id:'band-'+i, start:new Date(b.start), end:new Date(b.end),
+    type:'background', className:b.cls, content:''
+  }));
 
-  const groups = [];
-  const items = [];
+  const byGroup = {};
+  visible.forEach(r => { const k = groupKey(r); (byGroup[k] = byGroup[k] || []).push(r); });
+  const keys = Object.keys(byGroup).sort((a,b) => {
+    if(groupBy === 'status') return STATUS_ORDER.indexOf(a) - STATUS_ORDER.indexOf(b);
+    return a.localeCompare(b, undefined, {numeric:true});
+  });
 
-  deptsPresent.forEach(dept => {
-    const deptId = 'dept::'+dept;
-    const deptRows = byDept[dept];
-    const nestedIds = [];
+  keys.forEach(key => {
+    const rowsHere = byGroup[key];
+    const nested = [];
+    const idsHere = new Set(rowsHere.map(r => r.id));
 
-    // build parent-child ordering within dept (only counting visible)
-    const idSetHere = new Set(deptRows.map(r => r.id));
-    const roots = deptRows.filter(r => {
-      if(!r.parentRef) return true;
-      // parent must be visible AND in same dept
-      return !ROWS.some(x => x.ref === r.parentRef && idSetHere.has(x.id));
-    }).sort((a,b) => (a.tier||9)-(b.tier||9) || a.ref.localeCompare(b.ref) || a.deliverable.localeCompare(b.deliverable));
-
-    const ordered = [];
-    const seen = new Set();
-    function walk(r){
-      if(seen.has(r.id)) return;
-      seen.add(r.id);
-      ordered.push(r);
-      const kids = deptRows.filter(c => c.parentRef === r.ref).sort((a,b)=>a.ref.localeCompare(b.ref));
-      kids.forEach(walk);
+    let ordered;
+    if(groupBy === 'dept'){
+      const roots = rowsHere.filter(r => !r.parentRef || !rowsHere.some(x => x.ref === r.parentRef && idsHere.has(x.id)))
+        .sort((a,b) => (a.tier||9)-(b.tier||9) || String(a.ref).localeCompare(String(b.ref), undefined, {numeric:true}));
+      ordered = [];
+      const seen = new Set();
+      (function walkAll(list){
+        list.forEach(function walk(r){
+          if(seen.has(r.id)) return;
+          seen.add(r.id); ordered.push(r);
+          rowsHere.filter(c => c.parentRef && c.parentRef === r.ref)
+            .sort((a,b) => String(a.ref).localeCompare(String(b.ref), undefined, {numeric:true}))
+            .forEach(walk);
+        });
+      })(roots);
+      rowsHere.forEach(r => { if(!seen.has(r.id)) ordered.push(r); });
+    } else {
+      ordered = rowsHere.slice().sort((a,b) =>
+        (a.due ? a.due.getTime() : 8e15) - (b.due ? b.due.getTime() : 8e15) ||
+        String(a.ref).localeCompare(String(b.ref), undefined, {numeric:true}));
     }
-    roots.forEach(walk);
-    deptRows.forEach(r => { if(!seen.has(r.id)) ordered.push(r); });
 
     ordered.forEach(r => {
       const gid = 'row::'+r.id;
-      nestedIds.push(gid);
-      const visibleKids = deptRows.filter(c => c.parentRef === r.ref);
-      const hasVisibleChildren = visibleKids.length > 0;
-      groups.push({id: gid, content: buildRowLabel(r, hasVisibleChildren), treeLevel: 2});
+      nested.push(gid);
+      const kids = (groupBy === 'dept') ? rowsHere.filter(c => c.parentRef && c.parentRef === r.ref) : [];
+      const hasKids = kids.length > 0;
+      groups.push({id:gid, content:buildRowLabel(r, hasKids), treeLevel:2});
 
-      // build items
-      // If row has its own start+end, always show a bar
+      const cls = [];
+      if(r.overdue) cls.push('od');
+
+      if(HAS.baseline && r.baseEnd){
+        // a full baseline range if both ends are set, otherwise a hollow marker on
+        // the baseline date, which is how most people actually baseline a milestone
+        const bs = r.baseStart || (r.start && r.start < r.baseEnd ? r.start : null);
+        items.push(bs
+          ? {id:'b-'+r.id, rowId:r.id, isBaseline:true, group:gid, start:bs, end:r.baseEnd,
+             type:'range', className:'baseline'+(r.slip > 0 ? ' slipped' : ''), content:''}
+          : {id:'b-'+r.id, rowId:r.id, isBaseline:true, group:gid, start:r.baseEnd,
+             type:'point', className:'baseline-pt'+(r.slip > 0 ? ' slipped' : ''), content:''});
+      }
       if(r.start && r.end){
-        items.push({
-          id: 'i-'+r.id, rowId: r.id,
-          group: gid,
-          start: r.start,
-          end: r.end,
-          type: 'range',
-          className: r.statusMeta.cls,
-          content: escapeHtml((r.deliverable||'').slice(0,32))
-        });
-      } else if(r.end || r.start){
-        // point milestone: shape and colour set via className on the item
-        const when = r.end || r.start;
+        const label = escapeHtml((r.deliverable || '').slice(0,60));
+        const fill = (showPct && r.pctCalc) ? '<span class="bar-fill" style="width:'+r.pctCalc+'%"></span>' : '';
+        items.push({id:'i-'+r.id, rowId:r.id, group:gid, start:r.start, end:r.end, type:'range',
+          className:[r.statusMeta.cls].concat(cls).join(' '), content:fill+'<span>'+label+'</span>'});
+      } else if(r.start || r.end){
         let shape = 'dot';
         if(/key milestone/i.test(r.type)) shape = 'triangle';
         else if(/sme milestone/i.test(r.type)) shape = 'rhombus';
-        items.push({
-          id: 'i-'+r.id, rowId: r.id,
-          group: gid,
-          start: when,
-          type: 'point',
-          className: 'shape-'+shape+' '+r.statusMeta.mark,
-          content: ''
-        });
+        items.push({id:'i-'+r.id, rowId:r.id, group:gid, start:(r.end || r.start), type:'point',
+          className:['shape-'+shape, r.statusMeta.mark].concat(cls).join(' '),
+          content:escapeHtml(r.ref || '')});
       }
-      // if fully undated AND has visible children, we'll add a summary bar below
 
-      // parent summary bar (if children are visible)
-      if(hasVisibleChildren){
-        // collect date range from ALL currently visible descendants
-        const descDates = [];
-        function collectDates(node){
-          const kids = deptRows.filter(c => c.parentRef === node.ref);
-          kids.forEach(k => {
-            if(k.start) descDates.push(k.start);
-            if(k.end) descDates.push(k.end);
-            collectDates(k);
+      if(hasKids){
+        const dates = [];
+        (function collect(node){
+          rowsHere.filter(c => c.parentRef && c.parentRef === node.ref).forEach(k => {
+            if(k.start) dates.push(k.start);
+            if(k.end) dates.push(k.end);
+            collect(k);
           });
-        }
-        collectDates(r);
-        if(descDates.length){
-          const minD = new Date(Math.min.apply(null, descDates));
-          const maxD = new Date(Math.max.apply(null, descDates));
-          // only add if there's a real range OR the parent has no own dates
-          const hasOwnRange = r.start && r.end;
-          if(!hasOwnRange && minD.getTime() !== maxD.getTime()){
-            items.push({
-              id: 's-'+r.id, rowId: r.id, isSummary: true,
-              group: gid,
-              start: minD,
-              end: maxD,
-              type: 'range',
-              className: 'summary'
-            });
+        })(r);
+        if(dates.length && !(r.start && r.end)){
+          const mn = new Date(Math.min.apply(null, dates)), mx = new Date(Math.max.apply(null, dates));
+          if(mn.getTime() !== mx.getTime()){
+            items.push({id:'s-'+r.id, rowId:r.id, isSummary:true, group:gid,
+              start:mn, end:mx, type:'range', className:'summary', content:''});
           }
         }
       }
     });
 
     groups.push({
-      id: deptId,
-      content: buildDeptLabel(dept, ordered.length),
-      nestedGroups: nestedIds,
-      treeLevel: 1,
-      showNested: true,
-      className: 'dept-row',
-      style: 'height:36px;'
+      id:'grp::'+key,
+      content:buildGroupLabel(key, rowsHere),
+      nestedGroups:nested,
+      treeLevel:1,
+      showNested:!collapsed,
+      className:'dept-row'
     });
   });
 
   GROUPS.add(groups);
   ITEMS.add(items);
 
-  if(items.length){
-    try{ timeline.fit({animation:false}); }catch(e){}
+  // Only auto fit on the very first render. Touching a filter must not throw
+  // away the window the user has scrolled to.
+  if(firstFit && items.length){
+    firstFit = false;
+    setTimeout(() => {
+      try{ timeline.setWindow(new Date(TODAY.getFullYear(), TODAY.getMonth()-3, 1),
+                              new Date(TODAY.getFullYear(), TODAY.getMonth()+9, 1), {animation:false}); }catch(e){}
+    }, 0);
   }
-  // reset vertical scroll to top so the first group is always at the top of the viewport
-  setTimeout(scrollTimelineTop, 40);
+  setTimeout(scrollTop, 40);
+}
+function scrollTop(){
+  ['#timeline .vis-vertical-scroll','#timeline .vis-panel.vis-left','#timeline .vis-panel.vis-center']
+    .forEach(sel => { const e = document.querySelector(sel); if(e) e.scrollTop = 0; });
 }
 
-function scrollTimelineTop(){
-  const candidates = [
-    document.querySelector('#timeline .vis-vertical-scroll'),
-    document.querySelector('#timeline .vis-panel.vis-left'),
-    document.querySelector('#timeline .vis-panel.vis-center'),
-  ];
-  candidates.forEach(el => { if(el) el.scrollTop = 0; });
+/* ---------- drawer ---------- */
+function openDrawer(tab){
+  drawerTab = tab;
+  document.getElementById('drawer').classList.add('open');
+  document.querySelectorAll('.drawer .tabs button[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+  document.getElementById('btn-dq').classList.toggle('active', tab === 'dq');
+  document.getElementById('btn-undated').classList.toggle('active', tab === 'undated');
+  renderDrawer();
+  if(timeline) setTimeout(() => timeline.redraw(), 60);
+}
+function closeDrawer(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('btn-dq').classList.remove('active');
+  document.getElementById('btn-undated').classList.remove('active');
+  if(timeline) setTimeout(() => timeline.redraw(), 60);
+}
+function pill(r){
+  return '<span style="background:'+r.statusMeta.color+';color:'+(['Complete','On Track'].includes(r.status)?'#0D0C4E':'#fff')+
+    ';padding:2px 8px;border-radius:999px;font-size:9.5px;font-weight:700;white-space:nowrap">'+r.statusMeta.label+'</span>';
+}
+function renderDrawer(){
+  const body = document.getElementById('drawer-body');
+  if(!document.getElementById('drawer').classList.contains('open')) return;
+  const visible = ROWS.filter(passesFilters);
+
+  if(drawerTab === 'undated'){
+    const rows = visible.filter(r => !r.start && !r.end)
+      .sort((a,b) => a.dept.localeCompare(b.dept) || (a.tier||9)-(b.tier||9) || String(a.ref).localeCompare(String(b.ref)));
+    body.innerHTML = rows.length ? tableHtml(
+      ['REF','Department','Tier','Type','Deliverable','Status','Owner','SME'],
+      rows.map(r => ['<span style="color:var(--s21-mal)">'+escapeHtml(r.ref||'-')+'</span>', escapeHtml(r.dept),
+        (r.tier ?? '-'), escapeHtml(r.type||'-'), escapeHtml(r.deliverable||'-'), pill(r),
+        escapeHtml(r.owner||'-'), escapeHtml(r.sme||'-')])
+    ) : '<div class="dq-empty">Nothing undated in the current filter. Good.</div>';
+  }
+
+  else if(drawerTab === 'overdue'){
+    const rows = visible.filter(r => r.overdue).sort((a,b) => b.daysLate - a.daysLate);
+    body.innerHTML = rows.length ? tableHtml(
+      ['Days late','REF','Department','Deliverable','Due','Status','Owner','Comment'],
+      rows.map(r => ['<b style="color:var(--s21-pink)">'+r.daysLate+'</b>',
+        '<span style="color:var(--s21-mal)">'+escapeHtml(r.ref||'-')+'</span>', escapeHtml(r.dept),
+        escapeHtml(r.deliverable||'-'), fmtDate(r.due), pill(r), escapeHtml(r.owner||'-'),
+        escapeHtml((r.comment||'').slice(0,120))])
+    ) : '<div class="dq-empty">Nothing overdue in the current filter.</div>';
+  }
+
+  else {
+    const ids = new Set(visible.map(r => r.id));
+    const rows = DQ.filter(d => ids.has(d.row.id));
+    const counts = {};
+    rows.forEach(d => counts[d.issue] = (counts[d.issue]||0)+1);
+    const summary = '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">' +
+      Object.keys(counts).sort((a,b) => counts[b]-counts[a]).map(k =>
+        '<span style="background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:10.5px">'+
+        escapeHtml(k)+' <b style="color:var(--s21-amber)">'+counts[k]+'</b></span>').join('') + '</div>';
+    body.innerHTML = rows.length ? summary + tableHtml(
+      ['Severity','Issue','Sheet row','REF','Department','Deliverable','Detail'],
+      rows.map(d => ['<span class="dq-sev '+(d.sev==='high'?'high':d.sev==='med'?'med':'low')+'">'+d.sev+'</span>',
+        escapeHtml(d.issue), d.row.xlRow, '<span style="color:var(--s21-mal)">'+escapeHtml(d.row.ref||'-')+'</span>',
+        escapeHtml(d.row.dept), escapeHtml((d.row.deliverable||'-').slice(0,70)), escapeHtml(d.detail)])
+    ) : '<div class="dq-empty">No data quality issues in the current filter.</div>';
+  }
+}
+function tableHtml(headers, rows){
+  return '<table><thead><tr>'+headers.map(h => '<th>'+h+'</th>').join('')+'</tr></thead><tbody>'+
+    rows.map(r => '<tr>'+r.map(c => '<td>'+(c===null||c===undefined?'-':c)+'</td>').join('')+'</tr>').join('')+
+    '</tbody></table>';
 }
 
-function updateStats(visible){
-  document.getElementById('stat-rows').textContent = ROWS.length;
-  const onTl = visible.filter(r => r.start || r.end).length;
-  const und = visible.filter(r => !r.start && !r.end).length;
-  document.getElementById('stat-visible').textContent = onTl;
-  document.getElementById('stat-undated').textContent = und;
-  document.getElementById('undated-badge').textContent = und;
-  document.getElementById('drawer-count').textContent = und;
+/* ---------- export ---------- */
+function exportCsv(){
+  const rows = ROWS.filter(passesFilters);
+  const cols = ['REF','Tier','Type','Department','Sub-Team','Deliverable','Owner / Support','SME','Start Date','End Date',
+    'Status','Category','Days Late','Progress %','Progress Source','Last Reported','Days Since Report',
+    'Baseline End','Slip Days','Predecessor REF','Evidence','Comment','This Week Update','Sheet Row','Data Quality Flags'];
+  const flag = r => [r.swapped?'end before start':'', r.dupRef?'duplicate REF':'',
+    r.badStart?'bad start "'+r.badStart+'"':'', r.badEnd?'bad end "'+r.badEnd+'"':'',
+    r.stale?'stale report':'', r.predMissing?'predecessor not found':'',
+    r.slip>0?'slipped '+r.slip+'d':''].filter(Boolean).join('; ');
+  const esc = v => '"'+String(v === null || v === undefined ? '' : v).replace(/"/g,'""')+'"';
+  const lines = [cols.map(esc).join(',')].concat(rows.map(r => [
+    r.ref, r.tier ?? '', r.type, r.dept, r.subteam, r.deliverable, r.owner, r.sme,
+    r.start ? fmtDate(r.start) : '', r.end ? fmtDate(r.end) : '',
+    r.status, (CATS.find(c => c.key === r.cat)||{}).label || '', r.daysLate || '',
+    r.pctCalc ?? '', r.pctCalc === null ? '' : r.pctSource,
+    r.reported ? fmtDate(r.reported) : '', r.staleDays || '',
+    r.baseEnd ? fmtDate(r.baseEnd) : '', r.slip || '',
+    (r.predRefs||[]).join(' '), r.evidence, r.comment, r.update, r.xlRow, flag(r)
+  ].map(esc).join(',')));
+  const blob = new Blob(['\ufeff'+lines.join('\r\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'EX27_Ops_Timeline_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 
-function renderDrawer(visible){
-  const tbody = document.querySelector('#undated-table tbody');
-  const undated = visible.filter(r => !r.start && !r.end)
-    .sort((a,b) => a.dept.localeCompare(b.dept) || (a.tier||9)-(b.tier||9) || a.ref.localeCompare(b.ref));
-  tbody.innerHTML = undated.map(r => `
-    <tr>
-      <td style="color:var(--s21-mal)">${escapeHtml(r.ref||'-')}</td>
-      <td>${escapeHtml(r.dept)}</td>
-      <td>${r.tier ?? '-'}</td>
-      <td>${escapeHtml(r.type||'-')}</td>
-      <td>${escapeHtml(r.deliverable||'-')}</td>
-      <td><span class="st-pill ${r.statusMeta.cls}" style="background:${r.statusMeta.color};padding:2px 8px;border-radius:999px;font-size:10px;font-weight:700">${r.statusMeta.label}</span></td>
-      <td>${escapeHtml(r.sme||'-')}</td>
-    </tr>`).join('');
+/* ---------- shareable view state in the URL ---------- */
+function writeHash(){
+  const p = new URLSearchParams();
+  ['dept','status','tier','type','owner'].forEach(k => { if(filters[k].size) p.set(k, Array.from(filters[k]).join('~')); });
+  if(filters.search) p.set('q', filters.search);
+  if(groupBy !== 'dept') p.set('g', groupBy);
+  if(catFilter) p.set('cat', catFilter);
+  if(keyOnly) p.set('key','1');
+  return location.origin + location.pathname + (p.toString() ? '#'+p.toString() : '');
+}
+function readHash(){
+  if(!location.hash) return;
+  const p = new URLSearchParams(location.hash.slice(1));
+  ['dept','status','tier','type','owner'].forEach(k => {
+    const v = p.get(k); if(!v) return;
+    const want = v.split('~');
+    const dd = document.querySelector('.dd[data-key="'+k+'"]');
+    if(!dd) return;
+    dd.querySelectorAll('.dd-list input').forEach(cb => { cb.checked = want.includes(cb.value); });
+    filters[k] = new Set(syncDropdownLabel(dd));
+  });
+  if(p.get('q')) document.getElementById('f-search').value = p.get('q');
+  if(p.get('g')){ groupBy = p.get('g'); document.getElementById('f-groupby').value = groupBy; }
+  const cat = p.get('cat') || (p.get('od') === '1' ? 'overdue' : null);
+  if(cat){ catFilter = cat; document.getElementById('btn-overdue').classList.toggle('active', cat === 'overdue'); }
+  if(p.get('key') === '1'){ keyOnly = true; document.getElementById('btn-key').classList.add('active'); }
 }
 
-function renderLegend(){
-  const el = document.getElementById('legend');
-  const parts = Object.values(STATUS_MAP).filter(s => ROWS.some(r => r.status === s.label)).map(s =>
-    `<span class="chip"><span class="swatch" style="background:${s.color}"></span>${s.label}</span>`
-  );
-  parts.push('<span class="divider"></span>');
-  parts.push('<span class="chip"><span class="swatch" style="background:#fff;height:8px;width:22px;border-radius:2px"></span>Range (Start + End)</span>');
-  parts.push('<span class="chip"><span class="swatch triangle"></span>Key Milestone</span>');
-  parts.push('<span class="chip"><span class="swatch diamond" style="background:#fff"></span>SME Milestone</span>');
-  parts.push('<span class="chip"><span class="swatch circle" style="background:#fff"></span>Other (single date)</span>');
-  parts.push('<span class="divider"></span>');
-  parts.push('<span class="chip"><span class="swatch" style="background:transparent;border:1px dashed rgba(26,226,121,.7)"></span>Rolled up (parent summary)</span>');
-  parts.push('<span class="divider"></span>');
-  parts.push('<span class="chip" style="gap:4px">Tiers <span style="background:#1AE279;color:#0D0C4E;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:800">T1</span><span style="background:#49D8CD;color:#0D0C4E;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:800">T2</span><span style="background:#6960EC;color:#fff;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:800">T3</span><span style="background:rgba(255,255,255,.18);color:#fff;padding:1px 5px;border-radius:3px;font-size:9px;font-weight:800">T4</span></span>');
-  el.innerHTML = parts.join('');
-}
-
-// ---------- controls ----------
-function bindControls(){
-  document.getElementById('f-search').addEventListener('input', applyFilters);
-  // resizer for label column
-  const resizer = document.getElementById('resizer');
-  let isResizing = false, startX = 0, startW = 420;
-  resizer.addEventListener('mousedown', (e) => {
-    isResizing = true;
-    startX = e.clientX;
-    startW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--label-width')) || 420;
-    resizer.classList.add('active');
-    document.body.classList.add('resizing');
-    e.preventDefault();
-  });
-  document.addEventListener('mousemove', (e) => {
-    if(!isResizing) return;
-    const dx = e.clientX - startX;
-    const w = Math.max(220, Math.min(760, startW + dx));
-    document.documentElement.style.setProperty('--label-width', w + 'px');
-  });
-  document.addEventListener('mouseup', () => {
-    if(!isResizing) return;
-    isResizing = false;
-    resizer.classList.remove('active');
-    document.body.classList.remove('resizing');
-    if(timeline) setTimeout(() => timeline.redraw(), 20);
-  });
-  document.querySelectorAll('.btn[data-scale]').forEach(b => {
-    b.addEventListener('click', () => {
-      document.querySelectorAll('.btn[data-scale]').forEach(x => x.classList.remove('active'));
-      b.classList.add('active');
-      setScale(b.dataset.scale);
-    });
-  });
-  document.getElementById('btn-today').addEventListener('click', () => {
-    const now = new Date();
-    timeline.moveTo(now, {animation:true});
-  });
-  document.getElementById('btn-expo').addEventListener('click', () => {
-    timeline.setWindow(new Date('2027-06-01'), new Date('2027-12-31'), {animation:true});
-  });
-  document.getElementById('btn-milestones').addEventListener('click', (e) => {
-    milestonesOnly = !milestonesOnly;
-    e.currentTarget.classList.toggle('active', milestonesOnly);
-    applyFilters();
-  });
-  document.getElementById('btn-pct').addEventListener('click', (e) => {
-    showPct = !showPct;
-    e.currentTarget.textContent = (showPct ? 'Hide' : 'Show') + ' % Complete';
-    e.currentTarget.classList.toggle('active', showPct);
-  });
-  document.getElementById('btn-drawer').addEventListener('click', (e) => {
-    const d = document.getElementById('drawer');
-    d.classList.toggle('open');
-    const btn = e.currentTarget;
-    btn.classList.toggle('active', d.classList.contains('open'));
-    // preserve the badge count element
-    const badge = document.getElementById('undated-badge');
-    const openState = d.classList.contains('open');
-    btn.innerHTML = (openState ? 'Hide' : 'Show') + ' Undated ';
-    btn.appendChild(badge);
-    // trigger vis-timeline redraw so it recalculates height
-    if(timeline) setTimeout(() => timeline.redraw(), 50);
-  });
-  document.getElementById('btn-reset').addEventListener('click', () => {
-    document.querySelectorAll('.dd').forEach(dd => {
-      dd.querySelectorAll('.dd-list input').forEach(cb => cb.checked = false);
-      syncDropdown(dd);
-    });
-    document.getElementById('f-search').value = '';
-    milestonesOnly = false;
-    document.getElementById('btn-milestones').classList.remove('active');
-    applyFilters();
-  });
-  document.getElementById('btn-retry').addEventListener('click', load);
-}
-
+/* ---------- controls ---------- */
+function jumpWindow(a,b){ if(timeline) timeline.setWindow(a,b,{animation:true}); }
 function setScale(scale){
   if(!timeline) return;
   const w = timeline.getWindow();
-  const center = new Date((w.start.getTime()+w.end.getTime())/2);
-  let span;
-  if(scale === 'day') span = 1000*60*60*24*7;
-  else if(scale === 'week') span = 1000*60*60*24*90;
-  else span = 1000*60*60*24*365*1.2;
-  timeline.setWindow(new Date(center.getTime()-span/2), new Date(center.getTime()+span/2), {animation:true});
+  const c = new Date((w.start.getTime()+w.end.getTime())/2);
+  const day = 86400000;
+  const span = scale === 'month' ? day*45 : scale === 'quarter' ? day*130 : day*400;
+  timeline.setWindow(new Date(c.getTime()-span/2), new Date(c.getTime()+span/2), {animation:true});
+}
+function toast(msg){
+  const t = document.createElement('div');
+  t.textContent = msg;
+  Object.assign(t.style, {position:'fixed', bottom:'22px', left:'50%', transform:'translateX(-50%)',
+    background:'#0D0C4E', border:'1px solid #1AE279', color:'#EEF2FF', padding:'9px 16px',
+    borderRadius:'999px', fontSize:'12px', zIndex:2000, fontFamily:'Montserrat,sans-serif'});
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2200);
+}
+function bindControls(){
+  document.getElementById('f-search').addEventListener('input', applyFilters);
+  document.getElementById('f-groupby').addEventListener('change', (e) => {
+    groupBy = e.target.value;
+    document.getElementById('btn-collapse').classList.remove('active');
+    collapsed = false;
+    document.getElementById('btn-collapse').textContent = 'Collapse all';
+    applyFilters();
+  });
+
+  const resizer = document.getElementById('resizer');
+  let resizing = false, startX = 0, startW = 440;
+  resizer.addEventListener('mousedown', (e) => {
+    resizing = true; startX = e.clientX;
+    startW = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--label-width')) || 440;
+    resizer.classList.add('active'); document.body.classList.add('resizing'); e.preventDefault();
+  });
+  document.addEventListener('mousemove', (e) => {
+    if(!resizing) return;
+    document.documentElement.style.setProperty('--label-width', Math.max(240, Math.min(820, startW + e.clientX - startX))+'px');
+  });
+  document.addEventListener('mouseup', () => {
+    if(!resizing) return;
+    resizing = false; resizer.classList.remove('active'); document.body.classList.remove('resizing');
+    if(timeline) setTimeout(() => timeline.redraw(), 20);
+  });
+
+  document.querySelectorAll('.btn[data-scale]').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.btn[data-scale]').forEach(x => x.classList.remove('active'));
+      b.classList.add('active'); setScale(b.dataset.scale);
+    };
+  });
+  document.getElementById('btn-fit').onclick = () => { try{ timeline.fit({animation:true}); }catch(e){} };
+  document.getElementById('btn-today').onclick = () => jumpWindow(
+    new Date(TODAY.getFullYear(), TODAY.getMonth()-1, 1), new Date(TODAY.getFullYear(), TODAY.getMonth()+3, 1));
+  document.getElementById('btn-expo').onclick = () => jumpWindow(
+    new Date(new Date(OPENING_CEREMONY).getTime()-21*86400000), new Date(new Date(EXPO_END).getTime()+21*86400000));
+
+  document.getElementById('btn-overdue').onclick = () => setCat(catFilter === 'overdue' ? null : 'overdue');
+  document.getElementById('btn-chain-exit').onclick = exitChain;
+  document.getElementById('btn-key').onclick = (e) => {
+    keyOnly = !keyOnly;
+    e.currentTarget.classList.toggle('active', keyOnly);
+    applyFilters();
+  };
+  document.getElementById('btn-pct').onclick = (e) => {
+    showPct = !showPct;
+    e.currentTarget.classList.toggle('active', showPct);
+    applyFilters();
+  };
+  document.getElementById('btn-labels').onclick = (e) => {
+    showLabels = !showLabels;
+    document.body.classList.toggle('labels-on', showLabels);
+    e.currentTarget.classList.toggle('active', showLabels);
+  };
+  document.getElementById('btn-collapse').onclick = (e) => {
+    collapsed = !collapsed;
+    e.currentTarget.classList.toggle('active', collapsed);
+    e.currentTarget.textContent = collapsed ? 'Expand all' : 'Collapse all';
+    applyFilters();
+  };
+  document.getElementById('btn-dq').onclick = () => {
+    const d = document.getElementById('drawer');
+    (d.classList.contains('open') && drawerTab === 'dq') ? closeDrawer() : openDrawer('dq');
+  };
+  document.getElementById('btn-undated').onclick = () => {
+    const d = document.getElementById('drawer');
+    (d.classList.contains('open') && drawerTab === 'undated') ? closeDrawer() : openDrawer('undated');
+  };
+  document.getElementById('btn-drawer-close').onclick = closeDrawer;
+  document.querySelectorAll('.drawer .tabs button[data-tab]').forEach(b => { b.onclick = () => openDrawer(b.dataset.tab); });
+
+  document.getElementById('btn-csv').onclick = exportCsv;
+  document.getElementById('btn-link').onclick = () => {
+    const url = writeHash();
+    history.replaceState(null, '', url);
+    if(navigator.clipboard) navigator.clipboard.writeText(url).then(() => toast('View link copied'), () => toast('URL updated, copy from the address bar'));
+    else toast('URL updated, copy from the address bar');
+  };
+  document.getElementById('btn-reset').onclick = () => {
+    document.querySelectorAll('.dd').forEach(dd => {
+      dd.querySelectorAll('.dd-list input').forEach(cb => cb.checked = false);
+      filters[dd.dataset.key] = new Set(syncDropdownLabel(dd));
+    });
+    document.getElementById('f-search').value = '';
+    catFilter = null; keyOnly = false;
+    chainRoot = null; CHAIN = new Set();
+    document.getElementById('chainbar').classList.remove('open');
+    selectRow(null);
+    document.getElementById('btn-overdue').classList.remove('active');
+    document.getElementById('btn-key').classList.remove('active');
+    document.querySelectorAll('.kpi').forEach(el => el.classList.remove('on'));
+    history.replaceState(null, '', location.pathname);
+    applyFilters();
+  };
+  document.getElementById('btn-retry').onclick = load;
+  document.getElementById('file-input').onchange = (e) => {
+    const f = e.target.files && e.target.files[0];
+    if(!f) return;
+    document.getElementById('src-name').textContent = f.name;
+    const fr = new FileReader();
+    fr.onload = () => parseWorkbook(fr.result);
+    fr.onerror = () => showError(new Error('Could not read that file.'));
+    fr.readAsArrayBuffer(f);
+  };
 }
 
+window.selectRow = selectRow;
+window.isolateChain = isolateChain;
+
 bindControls();
-load();
+load().then(() => { readHash(); applyFilters(); });
 </script>
 </body>
 </html>
