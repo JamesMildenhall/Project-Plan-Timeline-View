@@ -54,19 +54,19 @@ header .spacer{flex:1}
 .countdown .big{font-size:22px;font-weight:800;color:var(--s21-mal);line-height:1}
 .countdown .lbl{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-top:3px}
 
-/* ---------- KPI strip ---------- */
-.kpis{display:flex;gap:8px;padding:10px 20px;background:var(--s21-blue);border-bottom:1px solid var(--line);flex-shrink:0;overflow-x:auto}
-.kpi{flex:1 1 0;min-width:96px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-left:3px solid var(--k,var(--s21-slate));
-  border-radius:6px;padding:7px 10px;cursor:pointer;transition:background .15s ease,border-color .15s ease}
-.kpi:hover{background:rgba(255,255,255,.09)}
-.kpi.on{background:rgba(26,226,121,.10);border-color:var(--s21-mal)}
-.kpi .n{font-size:19px;font-weight:800;color:#fff;line-height:1.1}
-.kpi .t{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2);margin-top:2px;font-weight:600;white-space:nowrap}
-.kpi .pc{font-size:9px;color:var(--ink-2);opacity:.75}
+/* ---------- slim metrics strip ---------- */
+.metrics{display:flex;gap:6px;padding:6px 20px;background:var(--s21-blue);border-bottom:1px solid var(--line);flex-shrink:0;overflow-x:auto;align-items:center}
+.kpi{display:flex;align-items:baseline;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--line);
+  border-left:3px solid var(--k,var(--s21-slate));border-radius:5px;padding:4px 10px;cursor:pointer;white-space:nowrap;
+  transition:background .15s ease,border-color .15s ease;flex-shrink:0}
+.kpi:hover{background:rgba(255,255,255,.10)}
+.kpi.on{background:rgba(26,226,121,.13);border-color:var(--s21-mal)}
+.kpi .n{font-size:14px;font-weight:800;color:#fff;line-height:1}
+.kpi .t{font-size:9px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+.kpi .pc{font-size:9px;color:var(--s21-mal);font-weight:700}
 
 /* ---------- density strip ---------- */
-.toprow{display:flex;align-items:stretch;gap:0;background:var(--s21-blue);border-bottom:1px solid var(--line);flex-shrink:0}
-.donut{display:flex;align-items:center;gap:12px;padding:6px 18px 8px 20px;border-right:1px solid var(--line);flex-shrink:0}
+.donut{display:flex;align-items:center;gap:12px;padding:7px 18px 9px 20px;border-right:1px solid var(--line);flex-shrink:0}
 .donut .dwrap{position:relative;width:88px;height:88px;flex-shrink:0}
 .donut svg{width:88px;height:88px;transform:rotate(-90deg);display:block}
 .donut svg circle{fill:none;stroke-width:13;cursor:pointer;transition:opacity .15s ease,stroke-width .15s ease}
@@ -86,7 +86,7 @@ header .spacer{flex:1}
 .donut .dkey .krow em{color:var(--ink-2);font-style:normal;font-size:9px;min-width:30px;text-align:right}
 .donut select{margin-top:5px;background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:5px;padding:4px 6px;font-family:inherit;font-size:10px;outline:none;max-width:190px}
 .donut select:focus{border-color:var(--s21-mal)}
-.density{padding:6px 20px 8px;background:var(--s21-blue);flex:1;min-width:0}
+.density{padding:7px 20px 9px;flex:1;min-width:0}
 .density .dh{display:flex;align-items:center;gap:10px;margin-bottom:3px}
 .density .dh span{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
 .dchart{display:flex;align-items:flex-end;gap:2px;height:42px}
@@ -100,19 +100,33 @@ header .spacer{flex:1}
 .dlab b{color:#fff;font-weight:700}
 
 /* ---------- controls ---------- */
-.controls{padding:10px 20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;background:var(--s21-blue-2);border-bottom:1px solid var(--line);flex-shrink:0}
-.ctrl{display:flex;flex-direction:column;gap:4px;position:relative}
-.ctrl label{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
-.ctrl input[type=text],.ctrl select{background:var(--s21-blue);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;outline:none}
-.ctrl input[type=text]:focus,.ctrl select:focus{border-color:var(--s21-mal)}
+.toolbar{padding:7px 18px;display:flex;flex-wrap:wrap;gap:4px;align-items:center;background:var(--s21-blue-2);border-bottom:1px solid var(--line);flex-shrink:0}
+.tb-flex{flex:1 1 20px}
+.tb-sel,.tb-search{background:var(--s21-blue);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-family:inherit;font-size:11px;outline:none;height:29px}
+.tb-sel{cursor:pointer;font-weight:600;letter-spacing:.04em}
+.tb-search{flex:0 1 130px;min-width:100px;max-width:220px;border-radius:999px}
+.tb-sel:focus,.tb-search:focus,.tb-sel:hover{border-color:var(--s21-mal)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg .btn{border:none;border-radius:0;padding:6px 11px;min-width:30px}
+.seg .btn+.btn{border-left:1px solid var(--line)}
+
+/* collapsible panels, so the chrome stays out of the way until asked for */
+.panel{display:none;padding:9px 20px;background:var(--s21-blue);border-bottom:1px solid var(--line);flex-shrink:0;
+  align-items:center;flex-wrap:wrap;gap:6px}
+.panel.open{display:flex}
+#panel-charts.open{display:flex;padding:0;align-items:stretch;gap:0}
+#panel-legend.open{display:block;padding:0}
+.panel .hint{font-size:10px;color:var(--ink-2);opacity:.75;white-space:nowrap}
+.btn.tgl.active{background:rgba(26,226,121,.16);color:var(--s21-mal);border-color:var(--s21-mal)}
 
 .dd{position:relative}
-.dd-btn{width:100%;background:var(--s21-blue);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-family:inherit;font-size:12px;text-align:left;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:8px;outline:none}
+.dd-btn{background:var(--s21-blue);color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 10px;font-family:inherit;font-size:11px;font-weight:600;letter-spacing:.03em;text-align:left;cursor:pointer;display:flex;align-items:center;gap:6px;outline:none;height:29px;max-width:190px}
+.dd-btn.set{border-color:var(--s21-mal);color:var(--s21-mal)}
 .dd-btn:hover,.dd-btn.active{border-color:var(--s21-mal)}
-.dd-btn .dd-lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dd-btn .dd-lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px}
 .dd-btn .dd-count{background:var(--s21-mal);color:var(--s21-blue);font-weight:700;font-size:10px;padding:1px 7px;border-radius:999px;flex-shrink:0}
 .dd-btn .dd-arrow{color:var(--ink-2);font-size:10px;flex-shrink:0}
-.dd-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--s21-blue);border:1px solid var(--s21-mal);border-radius:8px;padding:8px;z-index:40;box-shadow:0 8px 30px rgba(0,0,0,.6);display:none;min-width:240px}
+.dd-panel{position:absolute;top:calc(100% + 5px);left:0;background:var(--s21-blue);border:1px solid var(--s21-mal);border-radius:8px;padding:8px;z-index:40;box-shadow:0 8px 30px rgba(0,0,0,.6);display:none;min-width:240px}
 .dd-panel.open{display:block}
 .dd-search{width:100%;background:var(--s21-blue-2);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:6px 8px;font-size:11px;font-family:inherit;outline:none;margin-bottom:6px}
 .dd-actions{display:flex;gap:6px;margin-bottom:6px}
@@ -124,15 +138,14 @@ header .spacer{flex:1}
 .dd-list label .cnt{margin-left:auto;font-size:9px;color:var(--ink-2);background:rgba(255,255,255,.07);padding:1px 6px;border-radius:999px}
 .dd-list input[type=checkbox]{accent-color:var(--s21-mal);flex-shrink:0}
 
-.buttons{padding:8px 20px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;background:var(--s21-blue-2);border-bottom:1px solid var(--line);flex-shrink:0}
-.btn{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-family:inherit;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s ease;white-space:nowrap}
+.btn{background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:6px 11px;font-family:inherit;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .15s ease;white-space:nowrap}
 .btn:hover{border-color:var(--s21-mal);color:var(--s21-mal)}
 .btn.active{background:var(--s21-mal);color:var(--s21-blue);border-color:var(--s21-mal)}
 .btn.warn.active{background:var(--s21-pink);border-color:var(--s21-pink);color:#fff}
 .btn.ghost{opacity:.65}
 .vr{width:1px;background:var(--line);align-self:stretch;margin:0 4px}
 
-.legend{padding:7px 20px;display:flex;flex-wrap:wrap;gap:13px;align-items:center;background:var(--s21-blue);border-bottom:1px solid var(--line);font-size:10.5px;color:var(--ink-2);flex-shrink:0}
+.legend{padding:8px 20px;display:flex;flex-wrap:wrap;gap:13px;align-items:center;font-size:10.5px;color:var(--ink-2)}
 .legend .chip{display:inline-flex;align-items:center;gap:6px}
 .legend .swatch{width:12px;height:12px;border-radius:3px;display:inline-block;flex-shrink:0}
 .legend .swatch.diamond{transform:rotate(45deg);border-radius:2px}
@@ -212,7 +225,7 @@ body.labels-on .vis-item.vis-point .vis-item-content{display:block !important;pa
 .vis-item.vis-point.shape-triangle .vis-dot{width:0 !important;height:0 !important;background:transparent !important;border-left:9px solid transparent !important;border-right:9px solid transparent !important;border-bottom:16px solid currentColor !important;transform:translate(-50%,-60%)}
 .vis-item.c-complete,.vis-item.vis-dot.c-complete{color:var(--s21-mal) !important}
 .vis-item.c-ontrack,.vis-item.vis-dot.c-ontrack{color:var(--s21-turq) !important}
-.vis-item.c-atrisk,.vis-item.vis-dot.c-atrisk{color:var(--s21-pink) !important}
+.vis-item.c-atrisk,.vis-item.vis-dot.c-atrisk{color:var(--s21-amber) !important}
 .vis-item.c-notstarted,.vis-item.vis-dot.c-notstarted{color:var(--s21-slate) !important}
 .vis-item.c-noupdate,.vis-item.vis-dot.c-noupdate{color:var(--s21-mslate) !important}
 .vis-item.c-tbc,.vis-item.vis-dot.c-tbc{color:var(--s21-grey) !important}
@@ -226,7 +239,7 @@ body.labels-on .vis-item.vis-point .vis-item-content{display:block !important;pa
 /* status colours */
 .st-complete{background:var(--s21-mal) !important;color:#0D0C4E !important;font-weight:700}
 .st-ontrack{background:var(--s21-turq) !important;color:#0D0C4E !important;font-weight:600}
-.st-atrisk{background:var(--s21-pink) !important}
+.st-atrisk{background:var(--s21-amber) !important;color:#0D0C4E !important;font-weight:600}
 .st-notstarted{background:var(--s21-slate) !important}
 .st-noupdate{background:var(--s21-mslate) !important}
 .st-tbc{background:var(--s21-grey) !important}
@@ -318,7 +331,7 @@ body.labels-on .vis-item.vis-point .vis-item-content{display:block !important;pa
 .count-badge.amber{background:var(--s21-amber);color:#0D0C4E}
 
 @media (max-width: 1200px){
-  .toprow{flex-direction:column}
+  #panel-charts.open{flex-direction:column}
   .donut{border-right:none;border-bottom:1px solid var(--line)}
 }
 @media (max-width: 900px){
@@ -327,7 +340,7 @@ body.labels-on .vis-item.vis-point .vis-item-content{display:block !important;pa
 }
 @media print{
   body{overflow:visible;height:auto;background:#fff}
-  .controls,.buttons,.density,#resizer,.drawer{display:none !important}
+  .toolbar,.panel,#resizer,.drawer,.inspector{display:none !important}
   header{background:#0D0C4E !important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
@@ -343,22 +356,71 @@ body.labels-on .vis-item.vis-point .vis-item-content{display:block !important;pa
   </div>
   <div class="titles">
     <h1>EX27 <span class="mal">/</span> Operations Delivery Timeline</h1>
-    <div class="sub">Source <code id="src-name">EX27_Ops_Project_Plan_v4.xlsx</code> &nbsp;Tracker last updated <code id="src-updated">-</code></div>
+    <div class="sub">Source <code id="src-name">EX27_Ops_Project_Plan_v4.xlsx</code> &nbsp;Updated <code id="src-updated">-</code></div>
   </div>
   <div class="spacer"></div>
   <div class="countdown">
     <div class="big" id="cd-days">-</div>
-    <div class="lbl" id="cd-lbl">Days to Expo opening</div>
+    <div class="lbl" id="cd-lbl">Days to Opening Ceremony</div>
   </div>
 </header>
 
-<div class="kpis" id="kpis"></div>
+<div class="metrics" id="metrics"></div>
 
-<div class="toprow">
+<div class="toolbar">
+  <select id="f-groupby" class="tb-sel" title="Group rows by">
+    <option value="dept">Rows: Dept</option>
+    <option value="status">Rows: Status</option>
+    <option value="tier">Rows: Tier</option>
+    <option value="owner">Rows: Owner</option>
+    <option value="sme">Rows: SME</option>
+    <option value="quarter">Rows: Quarter</option>
+  </select>
+  <div class="dd" data-key="dept"><button class="dd-btn" type="button"><span class="dd-lbl">Dept</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button><div class="dd-panel"></div></div>
+  <div class="dd" data-key="status"><button class="dd-btn" type="button"><span class="dd-lbl">Status</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button><div class="dd-panel"></div></div>
+  <div class="dd" data-key="tier"><button class="dd-btn" type="button"><span class="dd-lbl">Tier</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button><div class="dd-panel"></div></div>
+  <div class="dd" data-key="type"><button class="dd-btn" type="button"><span class="dd-lbl">Type</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button><div class="dd-panel"></div></div>
+  <div class="dd" data-key="sme"><button class="dd-btn" type="button"><span class="dd-lbl">SME</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button><div class="dd-panel"></div></div>
+  <div class="dd" data-key="owner"><button class="dd-btn" type="button"><span class="dd-lbl">Owner</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button><div class="dd-panel"></div></div>
+  <span class="vr"></span>
+  <div class="seg">
+    <button class="btn" data-scale="month">M</button>
+    <button class="btn active" data-scale="quarter">Q</button>
+    <button class="btn" data-scale="year">Y</button>
+  </div>
+  <button class="btn" id="btn-today">Today</button>
+  <button class="btn" id="btn-expo">Expo</button>
+  <span class="vr"></span>
+  <button class="btn warn" id="btn-overdue">Overdue <span class="count-badge pink" id="overdue-badge">0</span></button>
+  <button class="btn" id="btn-key">Key only</button>
+  <button class="btn" id="btn-dq">DQ <span class="count-badge amber" id="dq-badge">0</span></button>
+  <button class="btn" id="btn-undated">Undated <span class="count-badge" id="undated-badge">0</span></button>
+  <span class="vr"></span>
+  <button class="btn tgl" data-panel="charts">Charts</button>
+  <button class="btn tgl" data-panel="legend">Legend</button>
+  <button class="btn tgl" data-panel="more">More<span class="dd-arrow" style="margin-left:5px">&#9662;</span></button>
+  <button class="btn ghost hidden" id="btn-reset" title="Clear all filters">Clear filters</button>
+</div>
+
+<div class="panel" id="panel-more">
+  <button class="btn" id="btn-fit">Fit all</button>
+  <button class="btn" id="btn-pct">Progress bars</button>
+  <button class="btn" id="btn-labels">Point labels</button>
+  <button class="btn" id="btn-collapse">Collapse all</button>
+  <span class="vr"></span>
+  <input type="text" id="f-search" class="tb-search" placeholder="Search ref, deliverable, comment..." />
+  <span class="vr"></span>
+  <button class="btn" id="btn-csv">Export CSV</button>
+  <button class="btn" id="btn-link">Copy view link</button>
+  <span class="tb-flex"></span>
+  <span class="hint">Ctrl and scroll to zoom &middot; drag the divider to resize the label column &middot; click a bar for detail &middot; double click to isolate its chain</span>
+</div>
+
+<div class="panel" id="panel-charts">
   <div class="donut">
     <div class="dwrap">
       <svg id="donut-svg" viewBox="0 0 88 88"></svg>
-      <div class="dcentre"><b id="donut-total">0</b><s id="donut-sub">of plan</s></div>
+      <div class="dcentre"><b id="donut-total">0</b><s id="donut-sub">complete</s></div>
     </div>
     <div class="dkey">
       <div class="kh">Delivery position</div>
@@ -373,83 +435,7 @@ body.labels-on .vis-item.vis-point .vis-item-content{display:block !important;pa
   </div>
 </div>
 
-<div class="controls">
-  <div class="ctrl">
-    <label>Group rows by</label>
-    <select id="f-groupby">
-      <option value="dept">Department (hierarchy)</option>
-      <option value="status">Status</option>
-      <option value="tier">Tier</option>
-      <option value="owner">Owner / Support</option>
-      <option value="sme">SME</option>
-      <option value="quarter">Quarter due</option>
-    </select>
-  </div>
-  <div class="ctrl">
-    <label>Department</label>
-    <div class="dd" data-key="dept">
-      <button class="dd-btn" type="button"><span class="dd-lbl">All departments</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button>
-      <div class="dd-panel"></div>
-    </div>
-  </div>
-  <div class="ctrl">
-    <label>Status</label>
-    <div class="dd" data-key="status">
-      <button class="dd-btn" type="button"><span class="dd-lbl">All statuses</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button>
-      <div class="dd-panel"></div>
-    </div>
-  </div>
-  <div class="ctrl">
-    <label>Tier</label>
-    <div class="dd" data-key="tier">
-      <button class="dd-btn" type="button"><span class="dd-lbl">All tiers</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button>
-      <div class="dd-panel"></div>
-    </div>
-  </div>
-  <div class="ctrl">
-    <label>Type</label>
-    <div class="dd" data-key="type">
-      <button class="dd-btn" type="button"><span class="dd-lbl">All types</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button>
-      <div class="dd-panel"></div>
-    </div>
-  </div>
-  <div class="ctrl">
-    <label>Owner / Support</label>
-    <div class="dd" data-key="owner">
-      <button class="dd-btn" type="button"><span class="dd-lbl">All owners</span><span class="dd-count hidden">0</span><span class="dd-arrow">&#9662;</span></button>
-      <div class="dd-panel"></div>
-    </div>
-  </div>
-  <div class="ctrl">
-    <label>Search (ref, deliverable, owner, comment)</label>
-    <input type="text" id="f-search" placeholder="Type to filter..." />
-  </div>
-</div>
-
-<div class="buttons">
-  <button class="btn" data-scale="month">Month</button>
-  <button class="btn active" data-scale="quarter">Quarter</button>
-  <button class="btn" data-scale="year">Year</button>
-  <button class="btn" id="btn-fit">Fit all</button>
-  <span class="vr"></span>
-  <button class="btn" id="btn-today">Today</button>
-  <button class="btn" id="btn-expo">Expo window</button>
-  <span class="vr"></span>
-  <button class="btn warn" id="btn-overdue">Overdue only <span class="count-badge pink" id="overdue-badge">0</span></button>
-  <button class="btn" id="btn-key">Key milestones only</button>
-  <button class="btn" id="btn-pct">Progress bars</button>
-  <button class="btn" id="btn-labels">Point labels</button>
-  <button class="btn" id="btn-collapse">Collapse all</button>
-  <span class="vr"></span>
-  <button class="btn" id="btn-dq">Data quality <span class="count-badge amber" id="dq-badge">0</span></button>
-  <button class="btn" id="btn-undated">Undated <span class="count-badge" id="undated-badge">0</span></button>
-  <span class="vr"></span>
-  <button class="btn ghost" id="btn-csv">Export CSV</button>
-  <button class="btn ghost" id="btn-link">Copy view link</button>
-  <button class="btn ghost" id="btn-reset">Reset</button>
-</div>
-
-<div class="legend" id="legend"></div>
+<div class="panel" id="panel-legend"><div class="legend" id="legend"></div></div>
 
 <main>
   <div class="loader" id="loader"><div class="spinner"></div><p>Loading tracker...</p></div>
@@ -518,7 +504,7 @@ const BANDS = [
 const STATUS_MAP = {
   'Complete':            {key:'complete',   label:'Complete',            cls:'st-complete',   mark:'c-complete',   color:'#1AE279'},
   'On Track':            {key:'ontrack',    label:'On Track',            cls:'st-ontrack',    mark:'c-ontrack',    color:'#49D8CD'},
-  'At Risk':             {key:'atrisk',     label:'At Risk',             cls:'st-atrisk',     mark:'c-atrisk',     color:'#E21A83'},
+  'At Risk':             {key:'atrisk',     label:'At Risk',             cls:'st-atrisk',     mark:'c-atrisk',     color:'#F2B01E'},
   'Not Started':         {key:'notstarted', label:'Not Started',         cls:'st-notstarted', mark:'c-notstarted', color:'#3E6680'},
   'No Update Received':  {key:'noupdate',   label:'No Update Received',  cls:'st-noupdate',   mark:'c-noupdate',   color:'#6960EC'},
   'TBC':                 {key:'tbc',        label:'TBC',                 cls:'st-tbc',        mark:'c-tbc',        color:'#6B7280'},
@@ -568,6 +554,21 @@ function cleanText(v){
   const t = String(v).replace(/\s+/g,' ').trim();
   return (t.toLowerCase() === 'none') ? '' : t;
 }
+/* SME cells hold things like "Matt and Steve", "David/Andrew" and
+   "Ilkin - Soft oversight". Filtering on the literal string would mean picking
+   Matt returns 3 rows and misses the 45 he shares with Steve, so split to people. */
+const NO_SME = '(no SME named)';
+function smePeople(raw){
+  const t = cleanText(raw);
+  if(!t) return [NO_SME];
+  const people = t
+    .replace(/\s*-\s*[^,\/&]*$/,'')            // drop qualifiers like "- Soft oversight"
+    .split(/\s*(?:\/|&|\band\b|,|\+)\s*/i)
+    .map(x => x.trim())
+    .filter(Boolean);
+  return people.length ? Array.from(new Set(people)) : [NO_SME];
+}
+
 function normDept(d){
   const t = cleanText(d);
   if(!t || t.toLowerCase() === 'tbc') return 'Unassigned';
@@ -651,9 +652,19 @@ let timeline = null, firstFit = true, collapsed = false;
 let showPct = false, keyOnly = false, showLabels = false;
 let groupBy = 'dept';
 let lastUpdated = null;
-let catFilter = null, chainRoot = null, selectedId = null;
-let filters = {dept:new Set(), status:new Set(), tier:new Set(), type:new Set(), owner:new Set(), search:''};
-let filterOptions = {dept:[], status:[], tier:[], type:[], owner:[]};
+let catFilter = null, flagFilter = null, chainRoot = null, selectedId = null;
+
+// Predicates behind the KPI cards. Previously "Due in 30 days" and "In flight now"
+// only moved the viewport, which looked like the filter had not worked.
+const FLAG_TESTS = {
+  soon:    r => r.dueSoon,
+  flight:  r => r.inFlight,
+  stale:   r => r.stale,
+  slipped: r => r.slip > 0,
+  undated: r => !r.start && !r.end
+};
+let filters = {dept:new Set(), status:new Set(), tier:new Set(), type:new Set(), owner:new Set(), sme:new Set(), search:''};
+let filterOptions = {dept:[], status:[], tier:[], type:[], owner:[], sme:[]};
 let drawerTab = 'undated';
 
 /* ---------- load ---------- */
@@ -764,6 +775,7 @@ function build(){
       description:cleanText(r['Description of Service']),
       owner:cleanText(r['Owner / Support']),
       sme:cleanText(r['SME / SME']),
+      smePeople:smePeople(r['SME / SME']),
       start, end, swapped,
       badStart:sdP.bad ? sdP.raw : '',
       badEnd:edP.bad ? edP.raw : '',
@@ -925,9 +937,12 @@ function populateFilters(){
   filterOptions.tier   = unique(ROWS.map(r => r.tier)).sort((a,b) => a-b).map(String);
   filterOptions.type   = unique(ROWS.map(r => r.type));
   filterOptions.owner  = unique(ROWS.map(r => r.owner));
+  filterOptions.sme    = unique([].concat.apply([], ROWS.map(r => r.smePeople)))
+                           .sort((a,b) => (a === NO_SME) - (b === NO_SME) || a.localeCompare(b));
   document.querySelectorAll('.dd').forEach(buildDropdown);
 }
 function optCount(key, val){
+  if(key === 'sme') return ROWS.filter(r => r.smePeople.includes(val)).length;
   return ROWS.filter(r => String(key === 'tier' ? r.tier : r[key]) === val).length;
 }
 function buildDropdown(dd){
@@ -972,11 +987,11 @@ function syncDropdownLabel(dd){
   const key = dd.dataset.key;
   const checked = Array.from(dd.querySelectorAll('.dd-list input:checked')).map(cb => cb.value);
   const cnt = dd.querySelector('.dd-count'), lbl = dd.querySelector('.dd-lbl');
-  const allLbl = {dept:'All departments', status:'All statuses', tier:'All tiers', type:'All types', owner:'All owners'}[key];
-  const manyLbl = {dept:'Departments', status:'Statuses', tier:'Tiers', type:'Types', owner:'Owners'}[key];
-  if(!checked.length){ cnt.classList.add('hidden'); lbl.textContent = allLbl; }
-  else if(checked.length === 1){ cnt.classList.add('hidden'); lbl.textContent = checked[0]; }
-  else { cnt.classList.remove('hidden'); cnt.textContent = checked.length; lbl.textContent = manyLbl; }
+  const shortLbl = {dept:'Dept', status:'Status', tier:'Tier', type:'Type', owner:'Owner', sme:'SME'}[key];
+  const btn = dd.querySelector('.dd-btn');
+  if(!checked.length){ cnt.classList.add('hidden'); lbl.textContent = shortLbl; btn.classList.remove('set'); }
+  else if(checked.length === 1){ cnt.classList.add('hidden'); lbl.textContent = checked[0]; btn.classList.add('set'); }
+  else { cnt.classList.remove('hidden'); cnt.textContent = checked.length; lbl.textContent = shortLbl; btn.classList.add('set'); }
   return checked;
 }
 function syncDropdown(dd){
@@ -994,7 +1009,9 @@ function passesFilters(r){
   if(filters.tier.size   && !filters.tier.has(String(r.tier))) return false;
   if(filters.type.size   && !filters.type.has(r.type))      return false;
   if(filters.owner.size  && !filters.owner.has(r.owner))    return false;
+  if(filters.sme.size    && !r.smePeople.some(x => filters.sme.has(x))) return false;
   if(catFilter && r.cat !== catFilter) return false;
+  if(flagFilter && !FLAG_TESTS[flagFilter](r)) return false;
   if(keyOnly && !r.isKey) return false;
   if(chainRoot !== null && !CHAIN.has(r.id)) return false;
   if(filters.search){
@@ -1008,31 +1025,47 @@ function passesFilters(r){
 /* ---------- KPIs ---------- */
 function renderKpis(){
   const n = ROWS.length;
-  const c = s => ROWS.filter(r => r.status === s).length;
+  const c = st => ROWS.filter(r => r.status === st).length;
   const done = c('Complete');
   const cards = [
-    {id:'all',      n:n,                                  t:'Milestones',      col:'#B7BEE0'},
-    {id:'complete', n:done,                               t:'Complete',        col:'#1AE279', pc:Math.round(100*done/n)+'% of plan'},
-    {id:'ontrack',  n:c('On Track'),                      t:'On Track',        col:'#49D8CD'},
-    {id:'atrisk',   n:c('At Risk'),                       t:'At Risk',         col:'#E21A83'},
-    {id:'noupdate', n:c('No Update Received'),            t:'No Update',       col:'#6960EC'},
-    {id:'notstart', n:c('Not Started'),                   t:'Not Started',     col:'#3E6680'},
-    {id:'overdue',  n:ROWS.filter(r => r.overdue).length, t:'Overdue',         col:'#E21A83'},
-    {id:'soon',     n:ROWS.filter(r => r.dueSoon).length, t:'Due in 30 days',  col:'#F2B01E'},
-    {id:'flight',   n:ROWS.filter(r => r.inFlight).length,t:'In flight now',   col:'#1AE279'},
+    {id:'all',      n:n,                                   t:'Total',      col:'#B7BEE0'},
+    {id:'complete', n:done,                                t:'Complete',   col:'#1AE279', pc:Math.round(100*done/n)+'%'},
+    {id:'overdue',  n:ROWS.filter(r => r.overdue).length,  t:'Overdue',    col:'#E21A83'},
+    {id:'soon',     n:ROWS.filter(r => r.dueSoon).length,  t:'Due 30d',    col:'#F2B01E'},
+    {id:'flight',   n:ROWS.filter(r => r.inFlight).length, t:'In flight',  col:'#1AE279'},
+    {id:'atrisk',   n:c('At Risk'),                        t:'At Risk',    col:'#F2B01E'},
+    {id:'ontrack',  n:c('On Track'),                       t:'On Track',   col:'#49D8CD'},
+    {id:'noupdate', n:c('No Update Received'),             t:'No Update',  col:'#6960EC'},
+    {id:'notstart', n:c('Not Started'),                    t:'Not Started',col:'#3E6680'},
     {id:'undated',  n:ROWS.filter(r => !r.start && !r.end).length, t:'Undated', col:'#6B7280'}
   ];
-  // these only appear once the underlying column is populated
-  if(HAS.reported) cards.push({id:'stale',  n:ROWS.filter(r => r.stale).length,  t:'Stale reports', col:'#6960EC'});
-  if(HAS.baseline) cards.push({id:'slipped',n:ROWS.filter(r => r.slip > 0).length,t:'Slipped',       col:'#E21A83'});
-  document.getElementById('kpis').innerHTML = cards.map(k =>
-    '<div class="kpi" data-kpi="'+k.id+'" style="--k:'+k.col+'"><div class="n">'+k.n+'</div><div class="t">'+k.t+'</div>'+
-    (k.pc ? '<div class="pc">'+k.pc+'</div>' : '')+'</div>'
-  ).join('');
+  if(HAS.reported) cards.push({id:'stale',   n:ROWS.filter(r => r.stale).length,   t:'Stale',   col:'#6960EC'});
+  if(HAS.baseline) cards.push({id:'slipped', n:ROWS.filter(r => r.slip > 0).length,t:'Slipped', col:'#E21A83'});
+
+  document.getElementById('metrics').innerHTML = cards.map(k =>
+    '<div class="kpi" data-kpi="'+k.id+'" style="--k:'+k.col+'" title="Click to filter to '+k.t+'">'+
+      '<span class="n">'+k.n+'</span><span class="t">'+k.t+'</span>'+
+      (k.pc ? '<span class="pc">'+k.pc+'</span>' : '')+'</div>').join('');
   document.querySelectorAll('.kpi').forEach(el => { el.onclick = () => kpiClick(el.dataset.kpi); });
-  document.getElementById('overdue-badge').textContent = ROWS.filter(r => r.overdue).length;
-  document.getElementById('drawer-overdue-count').textContent = ROWS.filter(r => r.overdue).length;
+
+  const od = ROWS.filter(r => r.overdue).length;
+  document.getElementById('overdue-badge').textContent = od;
+  document.getElementById('drawer-overdue-count').textContent = od;
 }
+
+/* ---------- collapsible panels ---------- */
+const PANEL_DEFAULTS = {charts:true, legend:false, more:false};
+let panelsOpen = Object.assign({}, PANEL_DEFAULTS);
+function applyPanels(){
+  Object.keys(panelsOpen).forEach(k => {
+    document.getElementById('panel-'+k).classList.toggle('open', panelsOpen[k]);
+    const b = document.querySelector('.btn.tgl[data-panel="'+k+'"]');
+    if(b) b.classList.toggle('active', panelsOpen[k]);
+  });
+  if(timeline) setTimeout(() => timeline.redraw(), 80);
+}
+function togglePanel(k){ panelsOpen[k] = !panelsOpen[k]; applyPanels(); }
+
 function setStatusFilter(labels){
   const dd = document.querySelector('.dd[data-key="status"]');
   dd.querySelectorAll('.dd-list input').forEach(cb => { cb.checked = labels.includes(cb.value); });
@@ -1040,16 +1073,33 @@ function setStatusFilter(labels){
 }
 function kpiClick(id){
   const statusFor = {complete:'Complete', ontrack:'On Track', atrisk:'At Risk', noupdate:'No Update Received', notstart:'Not Started'};
-  catFilter = null;
+  const already = document.querySelector('.kpi[data-kpi="'+id+'"]');
+  const toggleOff = already && already.classList.contains('on');
+
+  // every card clears the others first, so two filters never fight
+  catFilter = null; flagFilter = null;
   document.getElementById('btn-overdue').classList.remove('active');
-  if(id === 'all'){ setStatusFilter([]); }
-  else if(statusFor[id]){ setStatusFilter([statusFor[id]]); }
-  else if(id === 'overdue'){ setStatusFilter([]); catFilter = 'overdue'; document.getElementById('btn-overdue').classList.add('active'); applyFilters(); }
-  else if(id === 'undated'){ setStatusFilter([]); openDrawer('undated'); }
-  else if(id === 'stale' || id === 'slipped'){ setStatusFilter([]); openDrawer('dq'); }
-  else if(id === 'soon'){ setStatusFilter([]); applyFilters(); jumpWindow(TODAY, new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate()+30)); }
-  else if(id === 'flight'){ setStatusFilter([]); applyFilters(); jumpWindow(new Date(TODAY.getFullYear(), TODAY.getMonth()-1, 1), new Date(TODAY.getFullYear(), TODAY.getMonth()+2, 1)); }
-  document.querySelectorAll('.kpi').forEach(el => el.classList.toggle('on', el.dataset.kpi === id && id !== 'all'));
+  document.querySelectorAll('.kpi').forEach(el => el.classList.remove('on'));
+
+  if(id === 'all' || toggleOff){ setStatusFilter([]); return; }
+
+  if(statusFor[id]){ setStatusFilter([statusFor[id]]); }
+  else if(id === 'overdue'){
+    catFilter = 'overdue';
+    document.getElementById('btn-overdue').classList.add('active');
+    setStatusFilter([]);
+  }
+  else if(FLAG_TESTS[id]){
+    flagFilter = id;
+    setStatusFilter([]);           // this calls applyFilters
+    if(id === 'soon')    jumpWindow(new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate()-7),
+                                    new Date(TODAY.getFullYear(), TODAY.getMonth(), TODAY.getDate()+37));
+    if(id === 'flight')  jumpWindow(new Date(TODAY.getFullYear(), TODAY.getMonth()-1, 1),
+                                    new Date(TODAY.getFullYear(), TODAY.getMonth()+2, 1));
+    if(id === 'undated') openDrawer('undated');
+    if(id === 'stale' || id === 'slipped') openDrawer('dq');
+  }
+  if(already) already.classList.add('on');
 }
 
 /* ---------- donut ---------- */
@@ -1057,6 +1107,7 @@ function renderDonut(){
   const rows = ROWS.filter(r => {
     if(filters.dept.size && !filters.dept.has(r.dept)) return false;
     if(chainRoot !== null && !CHAIN.has(r.id)) return false;
+    if(flagFilter && !FLAG_TESTS[flagFilter](r)) return false;
     return true;
   });
   const total = rows.length || 1;
@@ -1093,6 +1144,7 @@ function renderDonut(){
 }
 function setCat(cat){
   catFilter = cat;
+  flagFilter = null;
   document.getElementById('btn-overdue').classList.toggle('active', cat === 'overdue');
   document.querySelectorAll('.kpi').forEach(el => el.classList.remove('on'));
   applyFilters();
@@ -1288,7 +1340,7 @@ function selectRow(id){
   document.getElementById('ins-head').innerHTML =
     (r.ref ? '<span class="ref-pill'+(r.refPlaceholder?' ph':'')+'">'+escapeHtml(r.ref)+'</span>' : '') +
     '<span class="tier-pill t-'+(r.tier||'x')+'">T'+(r.tier ?? '-')+'</span>' +
-    '<span class="st-pill" style="background:'+sm.color+';color:'+(['Complete','On Track'].includes(r.status)?'#0D0C4E':'#fff')+
+    '<span class="st-pill" style="background:'+sm.color+';color:'+(DARK_TEXT_STATUS.includes(r.status)?'#0D0C4E':'#fff')+
       ';padding:2px 9px;border-radius:999px;font-size:9.5px;font-weight:700;text-transform:uppercase">'+sm.label+'</span>' +
     (r.overdue ? '<span class="late-pill">'+r.daysLate+' days overdue</span>' : '') +
     (r.stale ? '<span class="stale-pill">not reported '+r.staleDays+'d</span>' : '') +
@@ -1463,8 +1515,14 @@ function groupKey(r){
     default: return r.dept;
   }
 }
+function anyFilterActive(){
+  return !!(filters.dept.size || filters.status.size || filters.tier.size || filters.type.size ||
+            filters.owner.size || filters.sme.size || filters.search ||
+            catFilter || flagFilter || keyOnly || chainRoot !== null);
+}
 function applyFilters(){
   filters.search = document.getElementById('f-search').value.trim();
+  document.getElementById('btn-reset').classList.toggle('hidden', !anyFilterActive());
   const visible = ROWS.filter(passesFilters);
   renderGroupsAndItems(visible);
   updateBadges(visible);
@@ -1620,8 +1678,9 @@ function closeDrawer(){
   document.getElementById('btn-undated').classList.remove('active');
   if(timeline) setTimeout(() => timeline.redraw(), 60);
 }
+const DARK_TEXT_STATUS = ['Complete','On Track','At Risk'];
 function pill(r){
-  return '<span style="background:'+r.statusMeta.color+';color:'+(['Complete','On Track'].includes(r.status)?'#0D0C4E':'#fff')+
+  return '<span style="background:'+r.statusMeta.color+';color:'+(DARK_TEXT_STATUS.includes(r.status)?'#0D0C4E':'#fff')+
     ';padding:2px 8px;border-radius:999px;font-size:9.5px;font-weight:700;white-space:nowrap">'+r.statusMeta.label+'</span>';
 }
 function renderDrawer(){
@@ -1705,17 +1764,20 @@ function exportCsv(){
 /* ---------- shareable view state in the URL ---------- */
 function writeHash(){
   const p = new URLSearchParams();
-  ['dept','status','tier','type','owner'].forEach(k => { if(filters[k].size) p.set(k, Array.from(filters[k]).join('~')); });
+  ['dept','status','tier','type','owner','sme'].forEach(k => { if(filters[k].size) p.set(k, Array.from(filters[k]).join('~')); });
   if(filters.search) p.set('q', filters.search);
   if(groupBy !== 'dept') p.set('g', groupBy);
   if(catFilter) p.set('cat', catFilter);
+  if(flagFilter) p.set('flag', flagFilter);
   if(keyOnly) p.set('key','1');
+  const openP = Object.keys(panelsOpen).filter(k => panelsOpen[k]);
+  if(openP.join(',') !== Object.keys(PANEL_DEFAULTS).filter(k => PANEL_DEFAULTS[k]).join(',')) p.set('p', openP.join(',') || 'none');
   return location.origin + location.pathname + (p.toString() ? '#'+p.toString() : '');
 }
 function readHash(){
   if(!location.hash) return;
   const p = new URLSearchParams(location.hash.slice(1));
-  ['dept','status','tier','type','owner'].forEach(k => {
+  ['dept','status','tier','type','owner','sme'].forEach(k => {
     const v = p.get(k); if(!v) return;
     const want = v.split('~');
     const dd = document.querySelector('.dd[data-key="'+k+'"]');
@@ -1727,7 +1789,18 @@ function readHash(){
   if(p.get('g')){ groupBy = p.get('g'); document.getElementById('f-groupby').value = groupBy; }
   const cat = p.get('cat') || (p.get('od') === '1' ? 'overdue' : null);
   if(cat){ catFilter = cat; document.getElementById('btn-overdue').classList.toggle('active', cat === 'overdue'); }
+  const fl = p.get('flag');
+  if(fl && FLAG_TESTS[fl]){
+    flagFilter = fl;
+    const card = document.querySelector('.kpi[data-kpi="'+fl+'"]');
+    if(card) card.classList.add('on');
+  }
   if(p.get('key') === '1'){ keyOnly = true; document.getElementById('btn-key').classList.add('active'); }
+  if(p.get('p') !== null){
+    const want = (p.get('p') === 'none' ? [] : p.get('p').split(','));
+    Object.keys(panelsOpen).forEach(k => panelsOpen[k] = want.includes(k));
+    applyPanels();
+  }
 }
 
 /* ---------- controls ---------- */
@@ -1790,6 +1863,8 @@ function bindControls(){
 
   document.getElementById('btn-overdue').onclick = () => setCat(catFilter === 'overdue' ? null : 'overdue');
   document.getElementById('btn-chain-exit').onclick = exitChain;
+  document.querySelectorAll('.btn.tgl[data-panel]').forEach(b => { b.onclick = () => togglePanel(b.dataset.panel); });
+  applyPanels();
   document.getElementById('btn-key').onclick = (e) => {
     keyOnly = !keyOnly;
     e.currentTarget.classList.toggle('active', keyOnly);
@@ -1835,7 +1910,7 @@ function bindControls(){
       filters[dd.dataset.key] = new Set(syncDropdownLabel(dd));
     });
     document.getElementById('f-search').value = '';
-    catFilter = null; keyOnly = false;
+    catFilter = null; flagFilter = null; keyOnly = false;
     chainRoot = null; CHAIN = new Set();
     document.getElementById('chainbar').classList.remove('open');
     selectRow(null);
